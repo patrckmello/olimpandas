@@ -12,7 +12,7 @@ O cenário deve mostrar um estádio e uma pista com duas raias no mesmo enquadra
 
 Importar a imagem de 1024 × 256 px como Sprite (2D and UI), Sprite Mode Multiple, 256 Pixels Per Unit. Fatiar em quatro quadros de 256 × 256 px, na ordem: em pé, inclinando, caindo, caída. Usar o mesmo pivot na base central em todos os quadros.
 
-No prefab `Assets/Prefabs/Gameplay/Hurdle.prefab`, trocar o sprite do filho `Visual/PlaceholderArt` pelo primeiro quadro. Ajustar esse SpriteRenderer para Draw Mode Simple, cor branca, posição local `(0, 0, 0)` e escala `(1, 1, 1)`. Preencher `fallFrames` no componente `Hurdle` com os quatro quadros na ordem. O collider provisório mede 0,24 × 0,45 unidade e pode ser ajustado ao desenho final. A colisão o desliga quando o panda bate; a animação acontece no objeto `Visual`.
+No prefab `Assets/Prefabs/Gameplay/Hurdle.prefab`, trocar o sprite do filho `Visual/PlaceholderArt` pelo primeiro quadro. Ajustar esse SpriteRenderer para Draw Mode Simple, cor branca, posição local `(0, 0, 0)` e escala `(1, 1, 1)`. Preencher `fallFrames` no componente `Hurdle` com os quatro quadros na ordem. O collider provisório mede 0,24 × 0,45 unidade e pode ser ajustado ao desenho final. A colisão o desliga quando o panda bate e aplica Slow com velocidade a 60% por 1 segundo; intensidade e duração ficam configuráveis no componente. A animação acontece no objeto `Visual`.
 
 ## Integração e teste
 

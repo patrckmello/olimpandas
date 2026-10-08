@@ -8,6 +8,11 @@ public class Hurdle : MonoBehaviour
     [SerializeField] private float frameDuration = 0.08f;
     [SerializeField] private float fallbackFallDuration = 0.25f;
 
+    [Header("Slow on impact")]
+    [Range(0.1f, 1f)]
+    [SerializeField] private float impactSlowMultiplier = 0.6f;
+    [SerializeField] private float impactSlowDuration = 1f;
+
     private Collider2D obstacleCollider;
     private Transform visual;
     private SpriteRenderer visualRenderer;
@@ -21,16 +26,33 @@ public class Hurdle : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.GetComponent<PlayerController>() == null)
+        PlayerController player = collision.collider.GetComponent<PlayerController>();
+        if (player == null)
             return;
 
         float direction = collision.transform.position.x < transform.position.x ? -1f : 1f;
-        Drop(direction);
+        HitPlayer(player, direction);
     }
 
     public void Hit()
     {
         Drop(-1f);
+    }
+
+    public void HitPlayer(PlayerController player)
+    {
+        HitPlayer(player, -1f);
+    }
+
+    private void HitPlayer(PlayerController player, float direction)
+    {
+        if (player == null || IsFallen)
+            return;
+
+        Drop(direction);
+        PlayerStatusEffects effects = player.GetComponent<PlayerStatusEffects>();
+        if (effects != null)
+            effects.ApplySlow(impactSlowMultiplier, impactSlowDuration);
     }
 
     private void Drop(float direction)

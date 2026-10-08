@@ -219,3 +219,5 @@ MonoBehaviour:
   fallFrames: []
   frameDuration: 0.08
   fallbackFallDuration: 0.25
+  impactSlowMultiplier: 0.6
+  impactSlowDuration: 1

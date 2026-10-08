@@ -39,4 +39,46 @@ public static class HurdleSmokeTest
             UnityEngine.Object.DestroyImmediate(hurdle);
         }
     }
+
+    public static void RunSlowOnPlayerImpact()
+    {
+        GameObject hurdle = new GameObject("Hurdle slow test");
+        GameObject player = new GameObject("Player slow test");
+        GameObject slowVfxPrefab = new GameObject("Slow VFX test prefab");
+        try
+        {
+            hurdle.AddComponent<BoxCollider2D>();
+            Hurdle component = hurdle.AddComponent<Hurdle>();
+            player.AddComponent<BoxCollider2D>();
+            PlayerController controller = player.AddComponent<PlayerController>();
+            PlayerStatusEffects effects = player.AddComponent<PlayerStatusEffects>();
+            Transform anchor = new GameObject("Status anchor").transform;
+            anchor.SetParent(player.transform);
+
+            SerializedObject effectData = new SerializedObject(effects);
+            effectData.FindProperty("statusVfxAnchor").objectReferenceValue = anchor;
+            effectData.FindProperty("slowStatusPrefab").objectReferenceValue = slowVfxPrefab;
+            effectData.ApplyModifiedPropertiesWithoutUndo();
+            typeof(PlayerStatusEffects).GetField("controller",
+                BindingFlags.NonPublic | BindingFlags.Instance).SetValue(effects, controller);
+
+            MethodInfo impact = typeof(Hurdle).GetMethod("HitPlayer");
+            if (impact == null)
+                throw new Exception("Hurdle has no player impact handler.");
+            impact.Invoke(component, new object[] { controller });
+
+            if (!component.IsFallen || anchor.childCount != 1)
+                throw new Exception("Hurdle impact did not apply the existing Slow effect.");
+            impact.Invoke(component, new object[] { controller });
+            if (anchor.childCount != 1)
+                throw new Exception("A fallen hurdle applied Slow again.");
+            Debug.Log("HurdleSmokeTest slow impact passed.");
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(hurdle);
+            UnityEngine.Object.DestroyImmediate(player);
+            UnityEngine.Object.DestroyImmediate(slowVfxPrefab);
+        }
+    }
 }

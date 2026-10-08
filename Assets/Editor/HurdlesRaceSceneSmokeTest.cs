@@ -10,6 +10,7 @@ public static class HurdlesRaceSceneSmokeTest
     public static void Run()
     {
         HurdleSmokeTest.Run();
+        HurdleSmokeTest.RunSlowOnPlayerImpact();
         HurdlesLaneSetupSmokeTest.Run();
 
         const string path = "Assets/Scenes/HurdlesRace.unity";
@@ -30,6 +31,14 @@ public static class HurdlesRaceSceneSmokeTest
             throw new Exception("Players do not start at the same distance.");
         if (hurdles.Length != 10)
             throw new Exception("The race needs five hurdles per lane.");
+        foreach (Hurdle hurdle in hurdles)
+        {
+            SerializedObject hurdleData = new SerializedObject(hurdle);
+            float multiplier = hurdleData.FindProperty("impactSlowMultiplier").floatValue;
+            float duration = hurdleData.FindProperty("impactSlowDuration").floatValue;
+            if (multiplier <= 0f || multiplier >= 1f || duration <= 0f)
+                throw new Exception("A hurdle has invalid Slow settings.");
+        }
         foreach (float x in new[] { -7f, 1f, 9f, 17f, 25f })
             if (hurdles.Count(h => Mathf.Abs(h.transform.position.x - x) < 0.01f) != 2)
                 throw new Exception("A hurdle pair is misaligned at X=" + x);
