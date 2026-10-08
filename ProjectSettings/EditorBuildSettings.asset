@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PrototypeRace.unity
     guid: e1c851bf28f098a41b4a896b88ecb9e1
+  - enabled: 1
+    path: Assets/Scenes/HurdlesRace.unity
+    guid: 8dbcaea3985942449a3c3959e268bdc9
   m_configObjects: {}
