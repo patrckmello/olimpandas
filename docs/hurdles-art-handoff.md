@@ -10,9 +10,9 @@ O cenário deve mostrar um estádio e uma pista com duas raias no mesmo enquadra
 
 ## Spritesheet da barreira
 
-Importar a imagem de 1024 × 256 px como Sprite (2D and UI), Sprite Mode Multiple, 256 Pixels Per Unit. Fatiar em quatro quadros de 256 × 256 px, na ordem: em pé, inclinando, caindo, caída. Usar o mesmo pivot na base central em todos os quadros.
+A arte fornecida está em `Assets/Art/Maps/HurdleFall5.png` (2172 × 724 px, fundo transparente). Ela já foi importada como Sprite (2D and UI), Sprite Mode Multiple, 256 Pixels Per Unit, tamanho máximo 4096 e cinco recortes, da barreira em pé até caída. Os quadros têm larguras diferentes; seus pivots foram alinhados ao mesmo apoio da base para a queda não deslocar a barreira na pista.
 
-No prefab `Assets/Prefabs/Gameplay/Hurdle.prefab`, trocar o sprite do filho `Visual/PlaceholderArt` pelo primeiro quadro. Ajustar esse SpriteRenderer para Draw Mode Simple, cor branca, posição local `(0, 0, 0)` e escala `(1, 1, 1)`. Preencher `fallFrames` no componente `Hurdle` com os quatro quadros na ordem. O collider provisório mede 0,24 × 0,45 unidade e pode ser ajustado ao desenho final. A colisão o desliga quando o panda bate e aplica Slow com velocidade a 60% por 1 segundo; intensidade e duração ficam configuráveis no componente. A animação acontece no objeto `Visual`.
+O prefab `Assets/Prefabs/Gameplay/Hurdle.prefab` já usa o primeiro quadro no filho `Visual/HurdleArt`, com Draw Mode Simple, cor branca, posição local `(0, 0, 0)` e escala `(0,3, 0,3, 0,3)`. Os cinco quadros estão ligados a `fallFrames` na ordem da queda. O collider provisório mede 0,24 × 0,45 unidade; conferir o encaixe com o panda no Game View. A colisão o desliga quando o panda bate e aplica Slow com velocidade a 60% por 1 segundo; intensidade e duração ficam configuráveis no componente. A animação acontece no objeto `Visual`.
 
 ## Integração e teste
 

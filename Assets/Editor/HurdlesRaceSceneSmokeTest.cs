@@ -38,6 +38,16 @@ public static class HurdlesRaceSceneSmokeTest
             float duration = hurdleData.FindProperty("impactSlowDuration").floatValue;
             if (multiplier <= 0f || multiplier >= 1f || duration <= 0f)
                 throw new Exception("A hurdle has invalid Slow settings.");
+            SerializedProperty frames = hurdleData.FindProperty("fallFrames");
+            if (frames.arraySize != 5)
+                throw new Exception("A hurdle is missing the five falling sprites.");
+            for (int i = 0; i < frames.arraySize; i++)
+                if (frames.GetArrayElementAtIndex(i).objectReferenceValue == null)
+                    throw new Exception("A hurdle has an empty falling sprite.");
+            Transform art = hurdle.transform.Find("Visual/HurdleArt");
+            if (art == null || art.GetComponent<SpriteRenderer>().sprite == null ||
+                Mathf.Abs(art.localScale.x - 0.3f) > 0.001f)
+                throw new Exception("A hurdle is missing its aligned artwork.");
         }
         foreach (float x in new[] { -7f, 1f, 9f, 17f, 25f })
             if (hurdles.Count(h => Mathf.Abs(h.transform.position.x - x) < 0.01f) != 2)
