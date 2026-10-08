@@ -875,7 +875,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6162de45f95434c935c00771b2a8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
-  nomeCenaJogo: PrototypeRace
+  nomeCenaJogo: HurdlesRace
   painelOpcoes: {fileID: 532576568}
   sliderVolume: {fileID: 242933585}
   toggleTelaCheia: {fileID: 1056901740}
