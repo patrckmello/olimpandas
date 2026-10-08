@@ -51,10 +51,10 @@ public static class HurdlesRaceSceneSmokeTest
                     throw new Exception("A hurdle has an empty falling sprite.");
             Transform art = hurdle.transform.Find("Visual/HurdleArt");
             if (art == null || art.GetComponent<SpriteRenderer>().sprite == null ||
-                Mathf.Abs(art.localScale.x - 0.45f) > 0.001f)
+                Mathf.Abs(art.localScale.x - 0.8f) > 0.001f)
                 throw new Exception("A hurdle is missing its aligned artwork.");
             BoxCollider2D collider = hurdle.GetComponent<BoxCollider2D>();
-            if (collider == null || Mathf.Abs(collider.size.y - 0.65f) > 0.001f)
+            if (collider == null || Mathf.Abs(collider.size.y - 1f) > 0.001f)
                 throw new Exception("A hurdle collider does not match its larger artwork.");
         }
         foreach (float x in new[] { -7f, -1f, 5f, 11f, 17f, 23f, 29f })
