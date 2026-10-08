@@ -549,7 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStatusEffects
   statusVfxAnchor: {fileID: 6822129486909360842}
   stunStatusPrefab: {fileID: 6495468042884788144, guid: 98b7100ad2a21cf428e420e228e69647, type: 3}
-  slowStatusPrefab: {fileID: 4021308906398446375, guid: 18ccf1f8482a19e41b19a9c1efecf155, type: 3}
+  slowStatusPrefab: {fileID: 0}
 --- !u!114 &128481838932801064
 MonoBehaviour:
   m_ObjectHideFlags: 0

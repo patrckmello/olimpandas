@@ -22,6 +22,9 @@ public class MultiplayerCameraFollow : MonoBehaviour
     [SerializeField] private Vector3 victoryOffset =
         new Vector3(0f, 0.7f, -10f);
 
+    [Header("Optional scene bounds")]
+    [SerializeField] private SpriteRenderer backgroundBounds;
+
     private Camera cam;
 
     private Vector3 moveVelocity;
@@ -40,6 +43,7 @@ public class MultiplayerCameraFollow : MonoBehaviour
         if (isFocusingWinner)
         {
             FollowWinner();
+            ClampToBackground();
             return;
         }
 
@@ -48,6 +52,7 @@ public class MultiplayerCameraFollow : MonoBehaviour
 
         MoveCamera();
         ZoomCamera();
+        ClampToBackground();
     }
 
     private void MoveCamera()
@@ -141,6 +146,38 @@ public class MultiplayerCameraFollow : MonoBehaviour
 
         moveVelocity = Vector3.zero;
         zoomVelocity = 0f;
+    }
+
+    private void ClampToBackground()
+    {
+        if (backgroundBounds == null)
+            return;
+
+        const float margin = 0.05f;
+        Bounds bounds = backgroundBounds.bounds;
+        float aspect = Mathf.Max(cam.aspect, 0.01f);
+        float maxHalfHeight = Mathf.Min(
+            bounds.extents.y - margin,
+            (bounds.extents.x - margin) / aspect
+        );
+        if (maxHalfHeight <= 0f)
+            return;
+
+        cam.orthographicSize = Mathf.Min(cam.orthographicSize, maxHalfHeight);
+        float halfHeight = cam.orthographicSize;
+        float halfWidth = halfHeight * aspect;
+        Vector3 position = transform.position;
+        float x = Mathf.Clamp(position.x,
+            bounds.min.x + halfWidth + margin,
+            bounds.max.x - halfWidth - margin);
+        float y = Mathf.Clamp(position.y,
+            bounds.min.y + halfHeight + margin,
+            bounds.max.y - halfHeight - margin);
+        if (!Mathf.Approximately(x, position.x))
+            moveVelocity.x = 0f;
+        if (!Mathf.Approximately(y, position.y))
+            moveVelocity.y = 0f;
+        transform.position = new Vector3(x, y, position.z);
     }
 
     private Bounds GetTargetsBounds()

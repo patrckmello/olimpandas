@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -29,8 +30,12 @@ public static class HurdlesRaceSceneSmokeTest
             throw new Exception("The race needs one P1 and one P2.");
         if (Mathf.Abs(players[0].transform.position.x - players[1].transform.position.x) > 0.01f)
             throw new Exception("Players do not start at the same distance.");
-        if (hurdles.Length != 10)
-            throw new Exception("The race needs five hurdles per lane.");
+        if (hurdles.Length != 14)
+            throw new Exception("The race needs seven hurdles per lane.");
+        foreach (PlayerController player in players)
+            if (new SerializedObject(player.GetComponent<PlayerStatusEffects>())
+                .FindProperty("slowStatusPrefab").objectReferenceValue != null)
+                throw new Exception("Slow VFX should be disabled for the race.");
         foreach (Hurdle hurdle in hurdles)
         {
             SerializedObject hurdleData = new SerializedObject(hurdle);
@@ -46,10 +51,13 @@ public static class HurdlesRaceSceneSmokeTest
                     throw new Exception("A hurdle has an empty falling sprite.");
             Transform art = hurdle.transform.Find("Visual/HurdleArt");
             if (art == null || art.GetComponent<SpriteRenderer>().sprite == null ||
-                Mathf.Abs(art.localScale.x - 0.3f) > 0.001f)
+                Mathf.Abs(art.localScale.x - 0.45f) > 0.001f)
                 throw new Exception("A hurdle is missing its aligned artwork.");
+            BoxCollider2D collider = hurdle.GetComponent<BoxCollider2D>();
+            if (collider == null || Mathf.Abs(collider.size.y - 0.65f) > 0.001f)
+                throw new Exception("A hurdle collider does not match its larger artwork.");
         }
-        foreach (float x in new[] { -7f, 1f, 9f, 17f, 25f })
+        foreach (float x in new[] { -7f, -1f, 5f, 11f, 17f, 23f, 29f })
             if (hurdles.Count(h => Mathf.Abs(h.transform.position.x - x) < 0.01f) != 2)
                 throw new Exception("A hurdle pair is misaligned at X=" + x);
 
@@ -57,6 +65,17 @@ public static class HurdlesRaceSceneSmokeTest
             FindNamed(scene, "Shared athletics track") != 1 ||
             FindNamed(scene, "Lane divider") != 1)
             throw new Exception("The scene must contain one shared stadium and track.");
+        SpriteRenderer stadium = FindAll<SpriteRenderer>(scene)
+            .Single(renderer => renderer.name == "Single stadium backdrop");
+        if (AssetDatabase.GetAssetPath(stadium.sprite) != "Assets/Art/Maps/StadiumTwoLanes.png" ||
+            Mathf.Abs(stadium.bounds.size.x - 56f) > 0.1f)
+            throw new Exception("The shared stadium sprite is missing or mis-scaled.");
+        if (new SerializedObject(camera).FindProperty("backgroundBounds").objectReferenceValue != stadium)
+            throw new Exception("The camera is not bounded by the stadium sprite.");
+        AssertCameraInsideStadium(camera, stadium);
+        foreach (string name in new[] { "Single grandstand", "Shared athletics track", "Lane divider" })
+            if (FindAll<SpriteRenderer>(scene).Single(renderer => renderer.name == name).enabled)
+                throw new Exception("A temporary background layer still covers the stadium sprite.");
         if (finish.GetComponent<BoxCollider2D>() == null ||
             !finish.GetComponent<BoxCollider2D>().isTrigger)
             throw new Exception("The shared finish trigger is missing.");
@@ -68,8 +87,8 @@ public static class HurdlesRaceSceneSmokeTest
         foreach (string property in new[] { "upperLane", "lowerLane" })
         {
             SerializedProperty colliders = laneData.FindProperty(property);
-            if (colliders.arraySize != 6)
-                throw new Exception("Lane setup needs a floor and five hurdles in " + property);
+            if (colliders.arraySize != 8)
+                throw new Exception("Lane setup needs a floor and seven hurdles in " + property);
             for (int i = 0; i < colliders.arraySize; i++)
                 if (colliders.GetArrayElementAtIndex(i).objectReferenceValue == null)
                     throw new Exception("Lane setup has an empty collider reference.");
@@ -85,7 +104,7 @@ public static class HurdlesRaceSceneSmokeTest
         if (!EditorBuildSettings.scenes.Any(entry => entry.path == path && entry.enabled))
             throw new Exception("HurdlesRace is missing from Build Settings.");
 
-        Debug.Log("HurdlesRaceSceneSmokeTest passed: shared stadium and track, two fair lanes, ten hurdles, finish, countdown, camera, UI and build scene.");
+        Debug.Log("HurdlesRaceSceneSmokeTest passed: shared stadium sprite and track, two fair lanes, fourteen hurdles, no Slow VFX, finish, countdown, camera, UI and build scene.");
     }
 
     private static T[] FindAll<T>(Scene scene) where T : Component =>
@@ -103,4 +122,40 @@ public static class HurdlesRaceSceneSmokeTest
         scene.GetRootGameObjects()
             .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
             .Count(item => item.name == name);
+
+    private static void AssertCameraInsideStadium(MultiplayerCameraFollow follow, SpriteRenderer stadium)
+    {
+        Camera cam = follow.GetComponent<Camera>();
+        FieldInfo cameraField = typeof(MultiplayerCameraFollow).GetField("cam",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        MethodInfo clamp = typeof(MultiplayerCameraFollow).GetMethod("ClampToBackground",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        if (cameraField == null || clamp == null)
+            throw new Exception("Camera bounds implementation is missing.");
+
+        Vector3 originalPosition = follow.transform.position;
+        float originalZoom = cam.orthographicSize;
+        cameraField.SetValue(follow, cam);
+        try
+        {
+            foreach (Vector2 point in new[] { new Vector2(-100f, -100f), new Vector2(100f, 100f) })
+            {
+                follow.transform.position = new Vector3(point.x, point.y, -10f);
+                cam.orthographicSize = 20f;
+                clamp.Invoke(follow, null);
+                Bounds bounds = stadium.bounds;
+                float halfWidth = cam.orthographicSize * cam.aspect;
+                if (follow.transform.position.x - halfWidth < bounds.min.x - 0.01f ||
+                    follow.transform.position.x + halfWidth > bounds.max.x + 0.01f ||
+                    follow.transform.position.y - cam.orthographicSize < bounds.min.y - 0.01f ||
+                    follow.transform.position.y + cam.orthographicSize > bounds.max.y + 0.01f)
+                    throw new Exception("The camera shows space outside the stadium sprite.");
+            }
+        }
+        finally
+        {
+            follow.transform.position = originalPosition;
+            cam.orthographicSize = originalZoom;
+        }
+    }
 }
