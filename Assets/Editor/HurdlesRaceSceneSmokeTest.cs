@@ -70,9 +70,20 @@ public static class HurdlesRaceSceneSmokeTest
         if (AssetDatabase.GetAssetPath(stadium.sprite) != "Assets/Art/Maps/StadiumTwoLanes.png" ||
             Mathf.Abs(stadium.bounds.size.x - 56f) > 0.1f)
             throw new Exception("The shared stadium sprite is missing or mis-scaled.");
-        if (new SerializedObject(camera).FindProperty("backgroundBounds").objectReferenceValue != stadium)
-            throw new Exception("The camera is not bounded by the stadium sprite.");
-        AssertCameraInsideStadium(camera, stadium);
+        SpriteRenderer coverage = FindAll<SpriteRenderer>(scene)
+            .Single(renderer => renderer.name == "Stadium overflow fill");
+        if (new SerializedObject(camera).FindProperty("backgroundBounds").objectReferenceValue != coverage ||
+            new SerializedObject(camera).FindProperty("maxZoom").floatValue < 18f)
+            throw new Exception("The camera cannot expand across the race without exposing empty space.");
+        AssertCameraInsideStadium(camera, coverage);
+        foreach (string name in new[] { "Stadium sky extension", "Stadium grass extension",
+                     "Stadium left continuation", "Stadium right continuation" })
+        {
+            SpriteRenderer layer = FindAll<SpriteRenderer>(scene)
+                .Single(renderer => renderer.name == name);
+            if (!layer.enabled || layer.sprite == null || layer.GetComponent<Collider2D>() != null)
+                throw new Exception("A stadium visual extension is missing or has collision: " + name);
+        }
         foreach (string name in new[] { "Single grandstand", "Shared athletics track", "Lane divider" })
             if (FindAll<SpriteRenderer>(scene).Single(renderer => renderer.name == name).enabled)
                 throw new Exception("A temporary background layer still covers the stadium sprite.");
@@ -123,7 +134,7 @@ public static class HurdlesRaceSceneSmokeTest
             .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
             .Count(item => item.name == name);
 
-    private static void AssertCameraInsideStadium(MultiplayerCameraFollow follow, SpriteRenderer stadium)
+    private static void AssertCameraInsideStadium(MultiplayerCameraFollow follow, SpriteRenderer coverage)
     {
         Camera cam = follow.GetComponent<Camera>();
         FieldInfo cameraField = typeof(MultiplayerCameraFollow).GetField("cam",
@@ -141,9 +152,11 @@ public static class HurdlesRaceSceneSmokeTest
             foreach (Vector2 point in new[] { new Vector2(-100f, -100f), new Vector2(100f, 100f) })
             {
                 follow.transform.position = new Vector3(point.x, point.y, -10f);
-                cam.orthographicSize = 20f;
+                cam.orthographicSize = 18f;
                 clamp.Invoke(follow, null);
-                Bounds bounds = stadium.bounds;
+                if (Mathf.Abs(cam.orthographicSize - 18f) > 0.01f)
+                    throw new Exception("Camera zoom is capped before the players fit on screen.");
+                Bounds bounds = coverage.bounds;
                 float halfWidth = cam.orthographicSize * cam.aspect;
                 if (follow.transform.position.x - halfWidth < bounds.min.x - 0.01f ||
                     follow.transform.position.x + halfWidth > bounds.max.x + 0.01f ||
