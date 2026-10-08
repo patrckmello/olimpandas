@@ -1,0 +1,13 @@
+{
+  "name": "olimpandas-launch-video",
+  "private": true,
+  "type": "module",
+  "description": "Vídeo de lançamento do Olimpandas gerado com JavaScript, Playwright e ffmpeg.",
+  "scripts": {
+    "render": "node render.mjs",
+    "preview": "node render.mjs --preview"
+  },
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}

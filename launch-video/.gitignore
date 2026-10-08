@@ -1,0 +1,4 @@
+node_modules/
+out/*
+!out/olimpandas-lancamento.mp4
+!out/poster.png

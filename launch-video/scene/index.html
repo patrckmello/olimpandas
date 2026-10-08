@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Olimpandas — vídeo de lançamento</title>
+<style>
+  @font-face { font-family: 'Newsreader'; src: url('fonts/Newsreader.woff2') format('woff2'); font-weight: 300 700; font-style: normal; font-display: block; }
+  @font-face { font-family: 'Newsreader'; src: url('fonts/Newsreader-Italic.woff2') format('woff2'); font-weight: 300 700; font-style: italic; font-display: block; }
+  @font-face { font-family: 'Inter'; src: url('fonts/Inter.woff2') format('woff2'); font-weight: 300 800; font-display: block; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.woff2') format('woff2'); font-weight: 400 700; font-display: block; }
+  /* Fonte em quadrinhos que já vem com o projeto Unity (TextMesh Pro, licença OFL). */
+  @font-face { font-family: 'Bangers'; src: url('/Assets/TextMesh%20Pro/Examples%20%26%20Extras/Fonts/Bangers.ttf') format('truetype'); font-display: block; }
+
+  :root {
+    --bg: #F0EEE6;
+    --paper: #FAF9F5;
+    --ink: #141413;
+    --ink2: #3D3D3A;
+    --muted: #87867F;
+    --line: #DED8CA;
+    --clay: #D97757;
+    --clay-deep: #C6613F;
+    --p1: #1F5AD6;
+    --p2: #D93A30;
+    --gold: #E9B949;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+  body {
+    font-family: 'Inter', sans-serif; color: var(--ink);
+    -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+  .scene { position: absolute; inset: 0; visibility: hidden; }
+  .w { display: inline-block; white-space: pre; }
+  #fx { position: absolute; inset: 0; pointer-events: none; }
+
+  .eyebrow { font: 600 22px/1 'Inter'; letter-spacing: .2em; text-transform: uppercase; color: var(--clay); }
+  .headline { font: 400 76px/1.04 'Newsreader'; letter-spacing: -0.022em; margin-top: 18px; }
+  .head { position: absolute; left: 140px; top: 74px; }
+
+  /* 1. Abertura */
+  .intro-line {
+    position: absolute; left: 0; right: 0; text-align: center;
+    font: 400 84px/1 'Newsreader'; letter-spacing: -0.022em; color: var(--ink);
+  }
+  #l1 { top: 262px; } #l2 { top: 386px; } #l3 { top: 510px; }
+  #dots .d { display: inline-block; }
+
+  /* 2. Título */
+  .title-wrap { position: absolute; left: 0; right: 0; top: 248px; display: flex; flex-direction: column; align-items: center; }
+  .lockup { display: flex; align-items: center; gap: 40px; }
+  .wordmark { font: 500 212px/1 'Newsreader'; letter-spacing: -0.035em; color: var(--ink); padding-bottom: 14px; }
+  .mark { width: 168px; height: 210px; flex: none; overflow: visible; }
+  #t-eyebrow { margin-bottom: 30px; }
+  #t-sub { font: 400 56px/1.1 'Newsreader'; letter-spacing: -0.015em; color: var(--ink2); margin-top: 26px; }
+  #t-sub em { font-style: italic; color: var(--clay-deep); }
+  .pills { display: flex; gap: 18px; margin-top: 54px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 12px;
+    font: 500 26px/1 'Inter'; color: var(--ink2);
+    padding: 16px 28px; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+  }
+  .pill i { width: 10px; height: 10px; border-radius: 50%; background: var(--clay); display: inline-block; }
+
+  /* Cartões de jogo */
+  .card {
+    position: absolute; overflow: hidden; border-radius: 28px; background: #dfe9f2;
+    box-shadow: 0 40px 90px -40px rgba(20,20,19,.45), 0 0 0 1px rgba(20,20,19,.07);
+  }
+  .card canvas { display: block; }
+  .chip {
+    position: absolute; display: inline-flex; align-items: center; gap: 12px;
+    font: 500 22px/1 'Inter'; color: var(--ink2); padding: 14px 22px; border-radius: 999px;
+    background: var(--paper); border: 1.5px solid var(--line);
+  }
+  .chip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--clay); box-shadow: 0 0 0 5px rgba(217,119,87,.18); }
+
+  /* 3. Corrida */
+  #r-card { left: 140px; top: 236px; width: 1640px; height: 760px; }
+  #r-chip { right: 140px; top: 150px; }
+
+  /* 4. Poderes */
+  .pcard { position: absolute; top: 236px; width: 800px; height: 760px; border-radius: 28px; overflow: hidden; background: var(--paper);
+    box-shadow: 0 40px 90px -40px rgba(20,20,19,.4), 0 0 0 1px rgba(20,20,19,.07); }
+  #pc-stun { left: 140px; } #pc-slow { left: 980px; }
+  .pcard canvas { display: block; }
+  .pcap { position: absolute; left: 0; right: 0; bottom: 0; height: 160px; display: flex; align-items: center; gap: 26px; padding: 0 40px; }
+  .picon { width: 84px; height: 84px; flex: none; background-repeat: no-repeat; background-size: 420px 168px; border-radius: 50%; }
+  .pcap h3 { font: 500 46px/1 'Newsreader'; letter-spacing: -0.02em; }
+  .pcap p { font: 400 25px/1.25 'Inter'; color: var(--muted); margin-top: 10px; }
+  #p-punch { position: absolute; right: 140px; top: 150px; font: italic 400 50px/1 'Newsreader'; color: var(--clay-deep); letter-spacing: -0.01em; }
+
+  /* 5. Benchmarks */
+  #b-legend { position: absolute; left: 140px; top: 238px; display: flex; gap: 34px; font: 500 22px/1 'Inter'; color: var(--ink2); }
+  #b-legend span { display: inline-flex; align-items: center; gap: 12px; }
+  #b-legend b { width: 18px; height: 18px; border-radius: 5px; display: inline-block; }
+  #b-legend em { font-style: normal; color: var(--muted); font-weight: 400; }
+  .bgroup { position: absolute; top: 0; width: 500px; height: 1080px; }
+  .bbar { position: absolute; bottom: 280px; width: 120px; border-radius: 10px 10px 0 0; transform-origin: 50% 100%; }
+  .bval { position: absolute; width: 160px; text-align: center; font: 600 30px/1 'Inter'; color: var(--ink2); font-variant-numeric: tabular-nums; }
+  .bval.hi { color: var(--clay-deep); font-weight: 700; }
+  .baxis { position: absolute; left: 0; right: 0; top: 800px; height: 2px; background: #CFC9BA; }
+  .btitle { position: absolute; left: 0; right: 0; top: 828px; text-align: center; font: 400 40px/1 'Newsreader'; letter-spacing: -0.015em; }
+  .bunit { position: absolute; left: 0; right: 0; top: 880px; text-align: center; font: 400 21px/1 'Inter'; color: var(--muted); }
+  #b-foot { position: absolute; left: 140px; top: 990px; font: 400 21px/1 'Inter'; color: var(--muted); }
+  #b-ops { position: absolute; left: 1468px; top: 92px; font: italic 400 54px/1 'Newsreader'; color: var(--clay-deep); }
+
+  /* 6. Roadmap */
+  #m-head { position: absolute; left: 140px; top: 150px; }
+  .gchip {
+    position: absolute; width: 530px; height: 132px; border-radius: 24px; background: var(--paper);
+    border: 1.5px solid var(--line); display: flex; align-items: center; gap: 24px; padding: 0 30px;
+  }
+  .gchip.on { border: 2.5px solid var(--clay); background: #FBF3EE; }
+  .gchip .emo { font: 62px/1 'Noto Color Emoji'; width: 78px; text-align: center; }
+  .gchip h4 { font: 400 38px/1 'Newsreader'; letter-spacing: -0.015em; }
+  .gchip small { display: block; margin-top: 12px; font: 600 16px/1 'Inter'; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .gchip.on small { color: var(--clay-deep); }
+  #m-bears { position: absolute; left: 140px; top: 900px; font: 400 27px/1.3 'Inter'; color: var(--ink2); }
+  #m-bears b { font-weight: 600; color: var(--ink); }
+
+  /* 7. Teclado */
+  #k-title { position: absolute; left: 0; right: 0; top: 104px; text-align: center; font: 400 96px/1 'Newsreader'; letter-spacing: -0.025em; }
+  #k-sub { position: absolute; left: 0; right: 0; top: 236px; text-align: center; font: 400 29px/1 'Inter'; color: var(--muted); }
+  .key {
+    position: absolute; width: 104px; height: 104px; border-radius: 20px; background: var(--paper);
+    border: 2px solid #D6D0C1; border-bottom-width: 9px; display: flex; align-items: center; justify-content: center;
+    font: 600 42px/1 'JetBrains Mono'; color: var(--ink2);
+  }
+  .key.wide { width: 222px; font-size: 30px; }
+  .key.dim { opacity: .38; }
+  .plabel { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 10px; font: 800 30px/1 'Inter'; letter-spacing: .04em; }
+  .plabel img { width: 66px; }
+
+  /* 8. Final */
+  #e-wipe { position: absolute; inset: 0; background: var(--clay); }
+  .end-wrap { position: absolute; left: 0; right: 0; top: 214px; display: flex; flex-direction: column; align-items: center; }
+  #e-tag { font: italic 400 62px/1 'Newsreader'; letter-spacing: -0.015em; color: var(--ink); margin-top: 28px; }
+  .fine { position: absolute; bottom: 52px; font: 500 22px/1 'Inter'; color: rgba(20,20,19,.72); }
+  #e-fine-l { left: 72px; } #e-fine-r { right: 72px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <section class="scene" id="s-intro">
+    <p class="intro-line" id="l1">Passamos meses treinando.</p>
+    <p class="intro-line" id="l2">Comemos muito bambu.</p>
+    <p class="intro-line" id="l3"><span id="l3t">Hoje, apresentamos</span><span id="dots"><span class="d">.</span><span class="d">.</span><span class="d">.</span></span></p>
+  </section>
+
+  <section class="scene" id="s-title">
+    <div class="title-wrap">
+      <div class="eyebrow" id="t-eyebrow">Apresentando</div>
+      <div class="lockup" id="t-lockup"><svg class="mark" id="t-mark"></svg><h1 class="wordmark" id="t-word">Olimpandas</h1></div>
+      <p id="t-sub">Nosso panda mais capaz <em>até agora.</em></p>
+      <div class="pills" id="t-pills">
+        <span class="pill"><i></i>2 jogadores · PvP local</span>
+        <span class="pill"><i></i>Melhor de 3</span>
+        <span class="pill"><i></i>Feito com Unity + C#</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s-race">
+    <header class="head" id="r-head">
+      <div class="eyebrow">Prova 01</div>
+      <h2 class="headline">100m com barreiras</h2>
+    </header>
+    <div class="chip" id="r-chip"><span class="dot"></span>Em desenvolvimento</div>
+    <div class="card" id="r-card"><canvas id="race-cv" width="1640" height="760"></canvas></div>
+  </section>
+
+  <section class="scene" id="s-powers">
+    <header class="head" id="p-head">
+      <div class="eyebrow">Poderes</div>
+      <h2 class="headline">Stun e Slow.</h2>
+    </header>
+    <p id="p-punch">Porque amizade tem limite.</p>
+    <div class="pcard" id="pc-stun">
+      <canvas width="800" height="600"></canvas>
+      <div class="pcap"><div class="picon" style="background-position:-336px 0"></div><div><h3>Stun</h3><p>Congela o adversário na hora.</p></div></div>
+    </div>
+    <div class="pcard" id="pc-slow">
+      <canvas width="800" height="600"></canvas>
+      <div class="pcap"><div class="picon" style="background-position:-336px -84px"></div><div><h3>Slow</h3><p>Deixa o adversário em câmera lenta.</p></div></div>
+    </div>
+  </section>
+
+  <section class="scene" id="s-bench">
+    <header class="head" id="b-head">
+      <div class="eyebrow">Benchmarks</div>
+      <h2 class="headline">Desempenho de ponta.<span style="color:var(--clay)">*</span></h2>
+    </header>
+    <div id="b-legend">
+      <span><b style="background:var(--clay)"></b>Panda-gigante</span>
+      <span><b style="background:#B7B2A6"></b>Urso-polar <em>(em breve)</em></span>
+      <span><b style="background:#DCD7CB"></b>Seu amigo</span>
+    </div>
+    <div id="b-groups"></div>
+    <p id="b-foot">*Benchmarks internos, medidos pelos próprios pandas. Metodologia: confia.</p>
+    <div id="b-ops">ops.</div>
+  </section>
+
+  <section class="scene" id="s-roadmap">
+    <header class="head" id="m-head">
+      <div class="eyebrow">Roadmap</div>
+      <h2 class="headline">E isso é só o começo.</h2>
+    </header>
+    <div id="m-grid"></div>
+    <p id="m-bears">Novos atletas a caminho: <b>Grizzly, Urso-polar, Urso-do-sol, Urso-de-óculos e Panda-vermelho.</b></p>
+  </section>
+
+  <section class="scene" id="s-keys">
+    <h2 id="k-title">Um teclado. Dois pandas.</h2>
+    <p id="k-sub">PvP local · Melhor de 3 · Revanche garantida</p>
+    <div id="k-keys"></div>
+  </section>
+
+  <section class="scene" id="s-end">
+    <div id="e-wipe"></div>
+    <div class="end-wrap">
+      <div class="lockup" id="e-lockup"><svg class="mark" id="e-mark"></svg><h1 class="wordmark" id="e-word">Olimpandas</h1></div>
+      <p id="e-tag">Que vença o melhor panda.</p>
+    </div>
+    <div class="fine" id="e-fine-l">github.com/patrckmello/olimpandas</div>
+    <div class="fine" id="e-fine-r">Projeto acadêmico · Unity + C# · Em desenvolvimento</div>
+  </section>
+
+  <canvas id="fx" width="1920" height="1080"></canvas>
+</div>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
