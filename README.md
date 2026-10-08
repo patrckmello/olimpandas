@@ -6,22 +6,34 @@ Olimpandas é um party game 2D competitivo desenvolvido em Unity e C#. Dois joga
 
 ## Visão geral
 
-A proposta do Olimpandas é reunir provas rápidas e fáceis de entender em uma experiência PvP local. O primeiro recorte jogável é uma corrida de plataforma para dois jogadores, usada para validar o loop principal: iniciar a prova, competir, identificar o vencedor, entregar uma medalha e avançar para a rodada seguinte.
+A proposta do Olimpandas é reunir provas rápidas e fáceis de entender em uma experiência PvP local. O primeiro recorte jogável valida o loop principal: iniciar a prova, competir, identificar o vencedor, entregar uma medalha e avançar para a rodada seguinte.
+
+O foco atual é transformar o protótipo de corrida na primeira prova oficial do projeto: **100m com barreiras**.
+
+O backlog completo e atualizado está em `docs/backlog.md`.
 
 ## Estado atual
 
-O protótipo atual possui:
+O projeto já possui:
 
 - PvP local para dois jogadores;
 - movimentação, pulo e dash independentes;
+- Air Dash limitado a um uso por ciclo no ar;
 - câmera compartilhada com enquadramento dinâmico;
-- pista de corrida com plataformas e obstáculos;
+- foco/zoom no vencedor;
 - checkpoints, zonas de queda e respawn individual;
 - detecção da linha de chegada e do vencedor;
 - medalhas persistentes entre rodadas;
 - partida melhor de três;
 - interface de resultado e opção de próxima prova ou nova partida;
+- countdown de largada;
 - Panda-gigante integrado com animações de Idle, Run, Jump, Fall, Dash e Victory;
+- Dash Trail separado da spritesheet;
+- base reutilizável de Stun e Slow;
+- projéteis, pickups e efeitos visuais de Stun e Slow;
+- inventário/HUD de poderes;
+- spawn aleatório e respawn de pickups;
+- setas de direção dos jogadores.
 
 ## Controles
 
@@ -31,6 +43,24 @@ O protótipo atual possui:
 | Mover para a direita  | `D`              | `Seta para a direita`  |
 | Pular                 | `W`              | `Seta para cima`       |
 | Dash                  | `Shift esquerdo` | `Shift direito`        |
+
+As teclas de poderes são configuradas por jogador no Inspector e podem mudar durante o desenvolvimento.
+
+## Minigames planejados
+
+O roadmap ativo de provas é:
+
+- **100m com barreiras** — em desenvolvimento;
+- **Salto a distância**;
+- **Lançamento de dardo**;
+- **Levantamento de peso**;
+- **Sumô**;
+- **Canoagem**;
+- **Natação**;
+- **Tênis**;
+- **Pescaria**.
+
+Ideias antigas como Arco e Flecha, Curling e Snowboard não fazem mais parte do roadmap ativo neste momento.
 
 ## Tecnologias
 
@@ -71,31 +101,40 @@ Assets/
   Audio/            Música e efeitos sonoros
   Prefabs/          Objetos reutilizáveis do jogo
   Scenes/           Cenas jogáveis e protótipos
-  Scripts/          Organização planejada dos scripts por sistema
+  Scripts/
+    Core/           Sistemas compartilhados
+    Minigames/      Regras e objetos específicos das provas
+    Player/         Movimento, respawn e status do jogador
+    Powers/         Inventário, pickups, projéteis e poderes
+    UI/             Interface e fluxo de telas
+docs/               Documentação e backlog
 Packages/           Dependências do projeto Unity
 ProjectSettings/    Configurações versionadas do Unity
 ```
 
-Parte da organização técnica ainda está em andamento; alguns scripts permanecem diretamente em `Assets/` enquanto são migrados para a estrutura definitiva.
+## Próximo marco
 
-## Roadmap
+O próximo marco é concluir uma versão jogável do **100m com barreiras**, reaproveitando os sistemas já validados.
 
-- consolidar prefabs e a organização dos scripts;
-- concluir a integração do Panda-gigante como personagem mestre;
-- implementar os poderes Stun e Slow;
-- adicionar Arco e Flecha e Curling;
-- criar seleção de personagens e expandir o elenco;
-- substituir placeholders por arte e mapas com Tilemap;
-- avaliar Snowboard e Pesca conforme o cronograma;
-- considerar multiplayer online e WebGL somente após estabilizar o jogo local.
+A prova deve possuir:
+
+- pista de atletismo com leitura clara para P1 e P2;
+- largada justa após countdown;
+- barreiras como objetos independentes do background;
+- chegada e vitória reutilizando o fluxo atual;
+- poderes e câmera compartilhada sem comprometer a leitura do minigame;
+- arte de estádio e obstáculos integrada sem alterar a física estável do `PlayerBase`.
+
+Depois de validar essa prova, o desenvolvimento segue para os demais minigames descritos em `docs/backlog.md`.
 
 ## Limitações atuais
 
-- o projeto é um protótipo acadêmico em desenvolvimento;
-- o modo disponível é PvP local;
-- há apenas uma prova jogável;
-- arte, áudio, organização interna e balanceamento ainda podem mudar;
-- não há sistema de contas, backend, matchmaking ou ranking online.
+- o projeto continua em desenvolvimento;
+- o modo principal atual é PvP local para dois jogadores;
+- ainda não existe uma coleção finalizada de múltiplas provas;
+- arte, áudio e balanceamento ainda podem mudar;
+- não há sistema de contas, backend, matchmaking ou ranking online;
+- multiplayer online e expansão WebGL não são prioridade antes da estabilização do jogo local.
 
 ---
 
@@ -103,27 +142,40 @@ Parte da organização técnica ainda está em andamento; alguns scripts permane
 
 Olimpandas is a competitive 2D party game built with Unity and C#. Two local players compete in short minigames, earn medals, and try to win a best-of-three match.
 
-> **Academic project:** this repository was created with a focus on learning and practicing game development, C#, Unity, and Git/GitHub collaboration. The game is still under development and is not a commercial or finished release.
+> **Academic project:** this repository focuses on learning and practicing game development, C#, Unity, and Git/GitHub collaboration. The game is still under development and is not a commercial or finished release.
+
+### Current focus
+
+The current milestone is the first official event: **100m hurdles**.
+
+The up-to-date product backlog is available at `docs/backlog.md`.
 
 ### Current features
 
 - two-player local PvP;
-- independent movement, jumping, and dashing;
-- dynamic shared camera;
-- prototype platform race with obstacles;
+- independent movement, jumping, dashing and Air Dash;
+- dynamic shared camera and winner focus;
 - checkpoints and individual respawning;
 - finish-line and winner detection;
 - persistent medals and best-of-three match flow;
-- result screen and round restart flow.
+- countdown before race start;
+- Giant Panda animation set: Idle, Run, Jump, Fall, Dash and Victory;
+- reusable Stun and Slow systems;
+- Stun/Slow projectiles, pickups and visual feedback;
+- power inventory HUD and randomized pickup spawning;
+- player direction arrows.
 
-### Controls
+### Planned minigames
 
-| Action     | Player 1     | Player 2      |
-| ---------- | ------------ | ------------- |
-| Move left  | `A`          | `Left Arrow`  |
-| Move right | `D`          | `Right Arrow` |
-| Jump       | `W`          | `Up Arrow`    |
-| Dash       | `Left Shift` | `Right Shift` |
+- 100m hurdles;
+- long jump;
+- javelin throw;
+- weightlifting;
+- sumo;
+- canoeing;
+- swimming;
+- tennis;
+- fishing.
 
 ### Run the project
 
@@ -133,4 +185,4 @@ Olimpandas is a competitive 2D party game built with Unity and C#. Two local pla
 4. Open `Assets/Scenes/PrototypeRace.unity`.
 5. Press **Play** in the Unity Editor.
 
-No standalone build is currently distributed in this repository.
+No standalone build is currently distributed.
