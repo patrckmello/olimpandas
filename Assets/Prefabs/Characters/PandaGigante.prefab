@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &2991710288695308978
+--- !u!1001 &7390155610663986270
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3317407939725242005, guid: d37eee96997902741a5874759c536289, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3317407939725242005, guid: d37eee96997902741a5874759c536289, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3317407939725242005, guid: d37eee96997902741a5874759c536289, type: 3}
       propertyPath: m_LocalPosition.z
@@ -50,16 +50,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5256377273297578779, guid: d37eee96997902741a5874759c536289, type: 3}
       propertyPath: m_Name
-      value: UrsoPolar
+      value: PlayerBase
       objectReference: {fileID: 0}
-    - target: {fileID: 6494635543146359761, guid: d37eee96997902741a5874759c536289, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 916513332, guid: b4d4380bdb37f551ca033acc00303f41, type: 3}
-    - target: {fileID: 7990945518757233135, guid: d37eee96997902741a5874759c536289, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 53cbf589a3997a896a63dffcc3e32a7e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
