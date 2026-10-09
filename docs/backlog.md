@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 07/10/2026.
+> Atualizado em 09/10/2026.
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -20,19 +20,17 @@
 
 ## Prioridade atual
 
-O foco atual é transformar a cena/protótipo de corrida na primeira prova oficial do jogo:
+A cena `HurdlesRace` já existe e o fluxo de corrida local/MD3 foi testado. As prioridades seguintes são conectar o menu de seleção de personagens ao fluxo já implementado, validar a experiência ponta a ponta e consolidar a primeira prova oficial:
 
 **100m com barreiras**
 
 Objetivos imediatos:
 
-1. criar uma cena própria da prova, preservando `PrototypeRace` como sandbox técnico;
-2. definir duas áreas/raias visualmente legíveis para P1 e P2;
-3. substituir o percurso genérico de plataforma por uma pista plana de atletismo;
-4. integrar background de estádio e arte definitiva das barreiras;
-5. posicionar barreiras de forma justa para os dois jogadores;
-6. manter countdown, câmera compartilhada, chegada, medalhas, Victory e fluxo melhor de 3;
-7. testar a prova completa antes de expandir conteúdo.
+1. integrar a futura tela de seleção ao `CharacterSelectionManager` persistente;
+2. conectar `ChangeCharacters()` à navegação para a tela de seleção (hoje apenas desbloqueia e zera o placar);
+3. validar o ciclo menu → escolha P1/P2 → `HurdlesRace` → MD3 → revanche ou nova escolha;
+4. validar apresentação e colisão das barreiras, enquadramento de duas raias, câmera, poderes e resultado sem regressões;
+5. continuar testando a prova completa antes de expandir o conteúdo.
 
 ## Estado dos sistemas compartilhados
 
@@ -43,6 +41,12 @@ Objetivos imediatos:
 | Dash e Air Dash | **VALIDADO** | Um Air Dash por ciclo no ar. |
 | Dash Trail | **VALIDADO** | VFX separado da spritesheet. |
 | Panda-gigante | **VALIDADO** | Idle, Run, Jump, Fall, Dash e Victory. |
+| Urso-polar | **VALIDADO** | Segundo personagem com sprites/Animator próprios, testado em corrida 1v1. |
+| Prefab Variants de personagens | **IMPLEMENTADO** | `PandaGigante.prefab` e `UrsoPolar.prefab` reutilizam `PlayerBase`. |
+| Seleção dinâmica P1/P2 | **VALIDADO** | Panda/Panda, Panda/Polar, Polar/Panda e Polar/Polar testados em Unity. |
+| Escolha persistente/travada na MD3 | **VALIDADO** | `CharacterSelectionManager`, `MatchCharacterInitializer` e aplicação por `PlayerCharacterVisual`. |
+| Botões REVANCHE e TROCAR PERSONAGENS | **VALIDADO** | Resultado e ação de desbloqueio testados; navegação de troca ainda pendente. |
+| Tela de seleção / navegação | **PLANEJADO** | Menu ainda não coleta escolhas nem recebe retorno de `ChangeCharacters()`. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
 | Melhor de 3 / medalhas | **VALIDADO** | Primeiro a 2 medalhas vence a partida. |
@@ -192,18 +196,15 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 
 ## Personagens
 
-Personagens planejados:
+**Jogáveis, validados:** Panda-gigante (personagem mestre) e Urso-polar.
 
-- Grizzly;
-- Urso-polar;
-- Urso-do-sol;
-- Panda-gigante;
-- Urso-de-óculos;
-- Panda-vermelho.
+**Planejados:** Grizzly, Urso-do-sol, Urso-de-óculos e Panda-vermelho.
 
-O **Panda-gigante continua sendo o personagem mestre**. Os demais devem reutilizar `PlayerBase`, câmera, poderes, física e fluxo de vitória.
+Os dois jogáveis reutilizam `PlayerBase`, câmera, poderes, física e fluxo de vitória. A seleção visual é configurada independentemente para P1 e P2. A UI de seleção ainda não foi implementada.
 
-A produção do elenco completo só deve avançar depois que a base compartilhada estiver estável em várias provas.
+Contrato técnico para o colega responsável pelo menu: [docs/character-selection-integration.md](character-selection-integration.md).
+
+A produção do restante do elenco deve esperar a estabilidade do recorte local em mais provas.
 
 ## Escopo adiado
 
@@ -219,3 +220,14 @@ Continuam fora do foco atual:
 - produção dos seis personagens antes de validar múltiplos minigames.
 
 O objetivo continua sendo um **vertical slice local, reutilizável e jogável** antes de expandir escopo.
+
+## Entrega da integração de personagens — critérios de aceite pendentes
+
+- [ ] Menu permite selecionar e confirmar personagens de P1 e P2 separadamente.
+- [ ] As escolhas são aplicadas ao carregar a cena `HurdlesRace`.
+- [ ] Uma MD3 inteira mantém os personagens escolhidos e o placar entre rodadas.
+- [ ] REVANCHE inicia uma nova MD3 sem alterar os personagens.
+- [ ] TROCAR PERSONAGENS abre a tela de seleção e permite nova combinação.
+- [ ] O fluxo completo funciona sem regressões em poderes, câmera, controles e vitória.
+
+Os testes de combinações e a lógica de travamento/revanche já foram validados isoladamente. Os itens acima são para a **integração ponta a ponta do menu**, ainda pendente.
