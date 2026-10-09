@@ -8,7 +8,9 @@ Olimpandas é um party game 2D competitivo desenvolvido em Unity e C#. Dois joga
 
 A proposta do Olimpandas é reunir provas rápidas e fáceis de entender em uma experiência PvP local. O primeiro recorte jogável valida o loop principal: iniciar a prova, competir, identificar o vencedor, entregar uma medalha e avançar para a rodada seguinte.
 
-O foco atual é transformar o protótipo de corrida na primeira prova oficial do projeto: **100m com barreiras**.
+O foco atual é consolidar a primeira prova oficial, **100m com barreiras**, e preparar a integração da seleção de personagens ao menu. A cena jogável é `HurdlesRace`; `PrototypeRace` permanece como protótipo técnico.
+
+**Documentação:** [Product Backlog](docs/backlog.md) · [Integração do menu e seleção de personagens](docs/character-selection-integration.md).
 
 O backlog completo e atualizado está em `docs/backlog.md`.
 
@@ -27,7 +29,11 @@ O projeto já possui:
 - partida melhor de três;
 - interface de resultado e opção de próxima prova ou nova partida;
 - countdown de largada;
-- Panda-gigante integrado com animações de Idle, Run, Jump, Fall, Dash e Victory;
+- Panda-gigante e Urso-polar com animações independentes de Idle, Run, Jump, Fall, Dash e Victory;
+- prefabs variantes de `PlayerBase` para ambos os personagens;
+- seleção dinâmica de personagem para P1 e P2 (as quatro combinações testadas no Unity);
+- escolhas preservadas e travadas durante a MD3;
+- opções REVANCHE e TROCAR PERSONAGENS no resultado final; a navegação para o menu de seleção ainda não foi implementada;
 - Dash Trail separado da spritesheet;
 - base reutilizável de Stun e Slow;
 - projéteis, pickups e efeitos visuais de Stun e Slow;
@@ -88,7 +94,7 @@ cd olimpandas
 1. No Unity Hub, selecione **Add > Add project from disk**.
 2. Escolha a pasta clonada do projeto.
 3. Abra o projeto com a versão indicada do Unity.
-4. Abra a cena `Assets/Scenes/PrototypeRace.unity`.
+4. Abra a cena `Assets/Scenes/HurdlesRace.unity` para testar a prova atual (`PrototypeRace.unity` é o protótipo técnico).
 5. Pressione **Play** no Unity Editor.
 
 Não há uma build distribuída neste repositório no momento.
@@ -114,24 +120,16 @@ ProjectSettings/    Configurações versionadas do Unity
 
 ## Próximo marco
 
-O próximo marco é concluir uma versão jogável do **100m com barreiras**, reaproveitando os sistemas já validados.
+Integrar o **menu de seleção de personagens** ao fluxo já testado de Panda-gigante/Urso-polar e validar entrada no `HurdlesRace`, MD3, revanche e troca de personagens de ponta a ponta. O botão TROCAR PERSONAGENS atualmente libera a escolha e reinicia o placar, mas ainda não navega até uma tela de seleção. Veja [o contrato de integração](docs/character-selection-integration.md).
 
-A prova deve possuir:
-
-- pista de atletismo com leitura clara para P1 e P2;
-- largada justa após countdown;
-- barreiras como objetos independentes do background;
-- chegada e vitória reutilizando o fluxo atual;
-- poderes e câmera compartilhada sem comprometer a leitura do minigame;
-- arte de estádio e obstáculos integrada sem alterar a física estável do `PlayerBase`.
-
-Depois de validar essa prova, o desenvolvimento segue para os demais minigames descritos em `docs/backlog.md`.
+Em paralelo, continuar o polimento e a validação da primeira prova 100m com barreiras. Não expandir para online, seis jogadores ou vários minigames antes do vertical slice local.
 
 ## Limitações atuais
 
 - o projeto continua em desenvolvimento;
 - o modo principal atual é PvP local para dois jogadores;
 - ainda não existe uma coleção finalizada de múltiplas provas;
+- a tela de seleção de personagens e o retorno a ela ainda dependem de integração com o menu;
 - arte, áudio e balanceamento ainda podem mudar;
 - não há sistema de contas, backend, matchmaking ou ranking online;
 - multiplayer online e expansão WebGL não são prioridade antes da estabilização do jogo local.
@@ -159,7 +157,10 @@ The up-to-date product backlog is available at `docs/backlog.md`.
 - finish-line and winner detection;
 - persistent medals and best-of-three match flow;
 - countdown before race start;
-- Giant Panda animation set: Idle, Run, Jump, Fall, Dash and Victory;
+- Giant Panda and Polar Bear animation sets: Idle, Run, Jump, Fall, Dash and Victory;
+- dynamic P1/P2 character appearance selection, all four combinations tested;
+- locked character choices throughout a best-of-three match;
+- rematch/change-characters result actions; the selection screen navigation is not yet implemented;
 - reusable Stun and Slow systems;
 - Stun/Slow projectiles, pickups and visual feedback;
 - power inventory HUD and randomized pickup spawning;
@@ -182,7 +183,9 @@ The up-to-date product backlog is available at `docs/backlog.md`.
 1. Clone this repository.
 2. Add the cloned folder to Unity Hub.
 3. Open it with Unity `6000.5.9f1` or a compatible version.
-4. Open `Assets/Scenes/PrototypeRace.unity`.
+4. Open `Assets/Scenes/HurdlesRace.unity` (the current event; `PrototypeRace` is a technical prototype).
 5. Press **Play** in the Unity Editor.
+
+Selection-screen integration is still pending. See [character selection integration guide](docs/character-selection-integration.md).
 
 No standalone build is currently distributed.
