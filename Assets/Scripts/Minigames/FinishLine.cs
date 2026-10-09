@@ -1,3 +1,4 @@
+
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -9,6 +10,9 @@ public class FinishLine : MonoBehaviour
     [SerializeField] private TMP_Text victoryText;
     [SerializeField] private TMP_Text medalText;
     [SerializeField] private TMP_Text nextButtonText;
+
+    [Header("Botão de troca de personagens")]
+    [SerializeField] private GameObject changeCharacterButton;
 
     [Header("Câmera")]
     [SerializeField]
@@ -22,20 +26,20 @@ public class FinishLine : MonoBehaviour
 
     private void Awake()
     {
-        // Se esquecer de arrastar a câmera,
-        // tenta encontrar automaticamente.
         if (multiplayerCamera == null)
         {
             multiplayerCamera =
-                FindFirstObjectByType<
-                    MultiplayerCameraFollow
-                >();
+                FindFirstObjectByType<MultiplayerCameraFollow>();
+        }
+
+        // O botão extra começa escondido.
+        if (changeCharacterButton != null)
+        {
+            changeCharacterButton.SetActive(false);
         }
     }
 
-    private void OnTriggerEnter2D(
-        Collider2D other
-    )
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (raceFinished)
             return;
@@ -54,14 +58,12 @@ public class FinishLine : MonoBehaviour
         int playerId = winner.PlayerId;
 
         bool matchFinished =
-            GameManager.Instance.AddMedal(
-                playerId
-            );
+            GameManager.Instance.AddMedal(playerId);
 
-        // Primeiro trava a prova.
+        // Congela os jogadores e dispara a vitória.
         FreezeAllPlayers(winner);
 
-        // Depois aproxima no vencedor.
+        // Aproxima a câmera do vencedor.
         if (multiplayerCamera != null)
         {
             multiplayerCamera.FocusOnWinner(
@@ -74,27 +76,30 @@ public class FinishLine : MonoBehaviour
             victoryText.text =
                 $"PLAYER {playerId}\nCAMPEÃO!";
 
-            nextButtonText.text =
-                "JOGAR NOVAMENTE";
+            nextButtonText.text = "REVANCHE";
+
+            if (changeCharacterButton != null)
+            {
+                changeCharacterButton.SetActive(true);
+            }
         }
         else
         {
             victoryText.text =
                 $"PLAYER {playerId}\nVENCEU!";
 
-            nextButtonText.text =
-                "PRÓXIMA PROVA";
+            nextButtonText.text = "PRÓXIMA PROVA";
+
+            if (changeCharacterButton != null)
+            {
+                changeCharacterButton.SetActive(false);
+            }
         }
 
         medalText.text =
-            $"MEDALHAS\n" +
-            $"{GameManager.Instance.GetScore()}";
+            $"MEDALHAS\n{GameManager.Instance.GetScore()}";
 
-        // Espera a animação aparecer
-        // antes de mostrar o painel.
-        StartCoroutine(
-            ShowVictoryPanel()
-        );
+        StartCoroutine(ShowVictoryPanel());
 
         Debug.Log(
             $"PLAYER {playerId} VENCEU A PROVA!"
@@ -110,21 +115,16 @@ public class FinishLine : MonoBehaviour
         victoryPanel.SetActive(true);
     }
 
-    private void FreezeAllPlayers(
-        PlayerController winner
-    )
+    private void FreezeAllPlayers(PlayerController winner)
     {
         PlayerController[] players =
             FindObjectsByType<PlayerController>(
                 FindObjectsSortMode.None
             );
 
-        foreach (
-            PlayerController player in players
-        )
+        foreach (PlayerController player in players)
         {
-            bool isWinner =
-                player == winner;
+            bool isWinner = player == winner;
 
             player.FinishRace(isWinner);
 
@@ -133,9 +133,7 @@ public class FinishLine : MonoBehaviour
 
             if (rb != null)
             {
-                rb.linearVelocity =
-                    Vector2.zero;
-
+                rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
                 rb.simulated = false;
             }
@@ -144,3 +142,4 @@ public class FinishLine : MonoBehaviour
         }
     }
 }
+
