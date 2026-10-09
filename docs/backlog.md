@@ -44,12 +44,15 @@ Objetivos imediatos:
 - **Formato interno adaptável à modalidade:** modalidades de confrontos curtos, como Corrida e Sumô, **podem usar MD3 interna**; outras (Tênis, Pescaria, Salto a distância, Lançamento de dardo etc.) devem usar regras próprias de pontos, tempo ou tentativas. Não obrigar todos os minigames a seguirem MD3 idêntica.
 - **Personagens no MVP:** diferença **somente visual**; mesmos parâmetros de gameplay e acesso aos poderes para Panda-gigante, Urso-polar e personagens futuros.
 - **Escolha de personagem:** P1/P2 escolhem antes do Circuito, mantêm os ursos durante toda a MD3 geral; revanche preserva escolha e nova seleção permite trocar.
+- **Empates:** se uma disputa terminar empatada, haverá **disputa extra até existir um vencedor**. O formato e o limite operacional desse desempate serão definidos por modalidade; empate não entrega medalha geral.
+- **Poderes por modalidade:** cada minigame define explicitamente quais poderes estão disponíveis (incluindo a possibilidade de nenhum). Não presumir Stun/Slow em todos os esportes.
+- **Duração-alvo do circuito:** **5–8 minutos** por Circuito Olímpico completo, como objetivo de design a validar com playtests, não como temporizador global já implementado.
 
 > **Mudança futura, ainda não implementada:** o código atual `GameManager.AddMedal` concede medalha diretamente à vitória da corrida, e `NextRoundButton` recarrega a cena atual. Isso é o comportamento validado no protótipo, **não** a regra final de medalhas por modalidade. Será necessário distinguir vencedor da disputa interna, vencedor da modalidade e campeão geral antes de integrar múltiplas provas.
 
 ### Hipóteses de design a validar por playtest (não são regras fechadas)
 
-- Duração desejada de um Circuito Olímpico: aproximadamente **8–15 minutos**; medir antes de fixar tempos por prova.
+- A meta **definida** é **5–8 minutos por Circuito Olímpico**; medir por playtest e ajustar tempos internos para aproximar o jogo dessa meta.
 - Corrida e Sumô são candidatos a MD3 interna; Tênis pode funcionar por pontos, Pescaria por pontuação com cronômetro, e provas de marca por tentativas. Definir regras exatas separadamente antes da implementação de cada uma.
 - Uma tela de sorteio animada deve mostrar o próximo esporte; ritmo, animação e confirmação de controles dependem de testes de usabilidade.
 - **Prova Livre** para escolher minigames diretamente é uma possibilidade posterior, não parte do MVP.
@@ -58,11 +61,11 @@ Objetivos imediatos:
 
 | Tema | Pergunta que precisa de resposta | Impacto |
 | --- | --- | --- |
-| Duração das provas | Qual duração-alvo por modalidade e circuito completo? Limite de tempo em corridas e combates? | Evitar partidas longas ou travadas |
-| Empate | Como resolver empates exatos, tempo esgotado, dupla eliminação ou ausência de marca válida? | Evitar nenhuma medalha / rodadas sem fim |
+| Tempo por modalidade | Considerando o circuito de 5–8 minutos, quanto dura cada confronto, tentativa e transição? Qual o teto de tempo quando ninguém termina? | Preservar a meta de duração |
+| Desempate por esporte | A disputa extra repete a prova inteira, usa morte súbita ou variante curta? O que fazer se os empates se repetirem muitas vezes? | Garantir um vencedor sem partidas intermináveis |
 | Formato de cada esporte | Corrida e Sumô terão MD3 obrigatória? Quantos pontos, tentativas ou segundos nas demais provas? | Condição de vitória e UI específicas |
 | Reinício de disputa interna | Entre tentativas/rounds, o que reseta: posição, poderes, cooldown, obstáculos, cenário? | Consistência competitiva |
-| Powers por modalidade | Stun/Slow e pickups funcionam em todas as provas, apenas algumas ou são desabilitados em modalidades de precisão? | Balanceamento e regras diferentes |
+| Lista de poderes por modalidade | Quais poderes específicos são habilitados em Corrida, Sumô, Tênis etc.? Há limite por disputa e o inventário reseta entre rounds? | Balanceamento e justiça |
 | Sorteio e repetição | Deve haver pesos por modalidade, duração ou categoria? Alguma prova pode ficar fora de determinados circuitos? | Justiça e variedade |
 | Desistência / pausa | Como pausar, reiniciar, desistir, voltar ao menu ou lidar com jogador ausente? | UX local e recuperação de estado |
 | Controles | Teclado compartilhado é suficiente no MVP? Suporte a controles, remapeamento e tela de instruções? | Acessibilidade e entrada |
@@ -71,9 +74,29 @@ Objetivos imediatos:
 | Nova partida | REVANCHE faz novo sorteio desde o começo? TROCAR PERSONAGENS volta para qual cena/painel? | Navegação e estado persistente |
 | Falhas de carregamento | O que fazer se a cena sorteada estiver indisponível ou sem configuração válida? | Robustez |
 
+### Registro das decisões fechadas em 09/10/2026
+
+| Decisão | Regra aprovada | Status técnico |
+| --- | --- | --- |
+| Empates | Disputa extra até surgir vencedor | **REGRA DEFINIDA; NÃO IMPLEMENTADA** no fluxo genérico |
+| Poderes | Cada modalidade determina os poderes permitidos | **REGRA DEFINIDA; CONFIGURAÇÃO POR MODALIDADE PENDENTE** |
+| Duração | Circuito Olímpico com alvo de 5–8 minutos | **META DEFINIDA; A VALIDAR POR PLAYTEST** |
+
+### Próximas decisões prioritárias
+
+1. **Formato da MD3 interna da corrida:** definir se cada corrida vencida vale 1 ponto interno e duas vitórias dão a medalha geral, ou se a corrida usa outra regra.
+2. **Tempo máximo e desempate concreto por modalidade:** como impedir que disputas extras ultrapassem repetidamente a meta de 5–8 minutos.
+3. **Inventário e poderes:** decidir quais são permitidos na Corrida, quando pickups surgem e se os poderes acumulados reiniciam entre disputas.
+4. **Critérios de vitória dos demais esportes:** pontos/tentativas, validade e desempate de cada modalidade antes de desenvolvê-la.
+5. **Duração e ritmo:** definir orçamento de tempo para sorteio, introdução, gameplay e tela de resultado; testar com pessoas.
+6. **Revanche e navegação:** novo sorteio no início da revanche? Endereço final da tela de seleção e comportamento de sair/pausar.
+
 ### Backlog de implementação desse fluxo
 
 - [ ] Definir contrato entre `GameManager` (medalhas do circuito) e placar/regras internas de cada minigame, sem destruir a corrida atual.
+- [ ] Adicionar catálogo de poderes permitidos por modalidade e aplicar as restrições sem afetar o sistema de poderes existente.
+- [ ] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte.
+- [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos.
 - [ ] Criar catálogo de modalidades habilitadas e `MinigameRotationManager` simples.
 - [ ] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição.
 - [ ] Criar apresentação de sorteio e transição para a cena sorteada.
