@@ -13,6 +13,12 @@ public class PlayerCharacterVisual : MonoBehaviour
     {
         playerController = GetComponent<PlayerController>();
 
+        if (playerController == null)
+        {
+            Debug.LogError("PlayerCharacterVisual requer PlayerController no mesmo objeto.", this);
+            return;
+        }
+
         if (CharacterSelectionManager.Instance == null)
         {
             Debug.LogWarning(

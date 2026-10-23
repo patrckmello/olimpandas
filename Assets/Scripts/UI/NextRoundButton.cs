@@ -4,10 +4,12 @@ using UnityEngine.SceneManagement;
 
 public class NextRoundButton : MonoBehaviour
 {
+    [SerializeField] private string characterSelectSceneName = "CharacterSelect";
+
     // Próxima rodada ou revanche com os mesmos personagens.
     public void NextRound()
     {
-        if (GameManager.Instance.IsMatchFinished())
+        if (GameManager.Instance != null && GameManager.Instance.IsMatchFinished())
         {
             GameManager.Instance.ResetMatch();
         }
@@ -20,7 +22,8 @@ public class NextRoundButton : MonoBehaviour
     // Inicia uma revanche diretamente.
     public void Rematch()
     {
-        GameManager.Instance.ResetMatch();
+        if (GameManager.Instance != null)
+            GameManager.Instance.ResetMatch();
 
         // Mantém os personagens selecionados e bloqueados.
         SceneManager.LoadScene(
@@ -31,18 +34,14 @@ public class NextRoundButton : MonoBehaviour
     // Prepara uma nova seleção.
     public void ChangeCharacters()
     {
-        GameManager.Instance.ResetMatch();
+        if (GameManager.Instance != null)
+            GameManager.Instance.ResetMatch();
 
         if (CharacterSelectionManager.Instance != null)
         {
             CharacterSelectionManager.Instance.UnlockSelection();
         }
 
-        // A navegação para a tela de seleção será
-        // conectada pelo responsável pelo menu.
-        Debug.Log(
-            "Nova seleção liberada. Aguardando integração do menu."
-        );
+        SceneManager.LoadScene(characterSelectSceneName);
     }
 }
-

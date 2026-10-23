@@ -47,15 +47,27 @@ public class CharacterSelectMenu : MonoBehaviour
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     private CharacterType[] characters;
+    private bool navigating;
 
     private void Awake()
     {
         characters = (CharacterType[])Enum.GetValues(typeof(CharacterType));
+        if (startButton != null) startButton.interactable = false;
     }
 
     private void Start()
     {
+        if (!IsPanelConfigured(player1, 1) || !IsPanelConfigured(player2, 2) ||
+            startButton == null || backButton == null)
+        {
+            Debug.LogError("Referências obrigatórias da seleção não configuradas.", this);
+            enabled = false;
+            return;
+        }
+
         EnsureSelectionManager();
+        // Uma entrada na seleção inicia uma nova MD3, inclusive após voltar ao menu.
+        if (GameManager.Instance != null) GameManager.Instance.ResetMatch();
 
         // Entrando num fluxo de nova escolha: libera a seleção.
         CharacterSelectionManager.Instance.UnlockSelection();
@@ -67,6 +79,13 @@ public class CharacterSelectMenu : MonoBehaviour
         if (backButton != null) backButton.onClick.AddListener(BackToMainMenu);
 
         RefreshAll();
+    }
+
+    private static bool IsPanelConfigured(PlayerPanel panel, int playerId)
+    {
+        return panel != null && panel.playerId == playerId &&
+            panel.previousButton != null && panel.nextButton != null &&
+            panel.confirmButton != null;
     }
 
     // O manager é persistente (DontDestroyOnLoad) e descarta duplicatas.
@@ -130,7 +149,7 @@ public class CharacterSelectMenu : MonoBehaviour
             p.previewImage.sprite = previews[p.index];
 
         if (p.characterNameLabel != null)
-            p.characterNameLabel.text = p.index < displayNames.Length
+            p.characterNameLabel.text = displayNames != null && p.index < displayNames.Length
                 ? displayNames[p.index]
                 : characters[p.index].ToString();
 
@@ -146,7 +165,9 @@ public class CharacterSelectMenu : MonoBehaviour
 
     private void StartMatch()
     {
-        if (!(player1.ready && player2.ready)) return;
+        if (navigating || !(player1.ready && player2.ready)) return;
+        navigating = true;
+        startButton.interactable = false;
 
         // Garante as duas escolhas no manager, trava e carrega a prova.
         var selection = CharacterSelectionManager.Instance;
@@ -159,6 +180,10 @@ public class CharacterSelectMenu : MonoBehaviour
 
     private void BackToMainMenu()
     {
+        if (navigating) return;
+        navigating = true;
+        CharacterSelectionManager.Instance.UnlockSelection();
+        if (GameManager.Instance != null) GameManager.Instance.ResetMatch();
         SceneManager.LoadScene(mainMenuSceneName);
     }
 }
