@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private string nomeCenaJogo = "Jogo";
+    [SerializeField] private string nomeCenaJogo = "CharacterSelect";
     [SerializeField] private GameObject painelOpcoes;
     [SerializeField] private Slider sliderVolume;
     [SerializeField] private Toggle toggleTelaCheia;

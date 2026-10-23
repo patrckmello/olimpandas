@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 09/10/2026.
+> Atualizado em 22/10/2026.
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -20,17 +20,14 @@
 
 ## Prioridade atual
 
-A cena `HurdlesRace` já existe e o fluxo de corrida local/MD3 foi testado. As prioridades seguintes são conectar o menu de seleção de personagens ao fluxo já implementado, validar a experiência ponta a ponta e consolidar a primeira prova oficial:
-
-**100m com barreiras**
+O fluxo `MainMenu → CharacterSelect → HurdlesRace → resultado da MD3` está implementado, incluindo revanche e retorno à seleção. O relatório de verificações está em [integração de personagens](character-selection-integration.md).
 
 Objetivos imediatos:
 
-1. integrar a futura tela de seleção ao `CharacterSelectionManager` persistente;
-2. conectar `ChangeCharacters()` à navegação para a tela de seleção (hoje apenas desbloqueia e zera o placar);
-3. validar o ciclo menu → escolha P1/P2 → `HurdlesRace` → MD3 → revanche ou nova escolha;
-4. validar apresentação e colisão das barreiras, enquadramento de duas raias, câmera, poderes e resultado sem regressões;
-5. continuar testando a prova completa antes de expandir o conteúdo.
+1. concluir o aceite visual e o playtest humano da seleção e corrida nas quatro combinações;
+2. verificar controles, animações, poderes, câmera, checkpoints e respawn sem regressões;
+3. iniciar o próximo marco: contrato de modalidades e `MinigameRotationManager`, mantendo as decisões abaixo;
+4. continuar o polimento de **100m com barreiras** antes de expandir o conteúdo.
 
 ## Regras de produto — Circuito Olímpico (decisões de 09/10/2026)
 
@@ -89,7 +86,7 @@ Objetivos imediatos:
 3. **Inventário e poderes:** decidir quais são permitidos na Corrida, quando pickups surgem e se os poderes acumulados reiniciam entre disputas.
 4. **Critérios de vitória dos demais esportes:** pontos/tentativas, validade e desempate de cada modalidade antes de desenvolvê-la.
 5. **Duração e ritmo:** definir orçamento de tempo para sorteio, introdução, gameplay e tela de resultado; testar com pessoas.
-6. **Revanche e navegação:** novo sorteio no início da revanche? Endereço final da tela de seleção e comportamento de sair/pausar.
+6. **Revanche e navegação:** novo sorteio no início da revanche? A seleção atual é `CharacterSelect`; definir pausa/desistência no circuito futuro.
 
 ### Backlog de implementação desse fluxo
 
@@ -118,8 +115,8 @@ Objetivos imediatos:
 | Prefab Variants de personagens | **IMPLEMENTADO** | `PandaGigante.prefab` e `UrsoPolar.prefab` reutilizam `PlayerBase`. |
 | Seleção dinâmica P1/P2 | **VALIDADO** | Panda/Panda, Panda/Polar, Polar/Panda e Polar/Polar testados em Unity. |
 | Escolha persistente/travada na MD3 | **VALIDADO** | `CharacterSelectionManager`, `MatchCharacterInitializer` e aplicação por `PlayerCharacterVisual`. |
-| Botões REVANCHE e TROCAR PERSONAGENS | **VALIDADO** | Resultado e ação de desbloqueio testados; navegação de troca ainda pendente. |
-| Tela de seleção / navegação | **PLANEJADO** | Menu ainda não coleta escolhas nem recebe retorno de `ChangeCharacters()`. |
+| Botões REVANCHE e TROCAR PERSONAGENS | **IMPLEMENTADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano da integração pendente. |
+| Tela de seleção / navegação | **IMPLEMENTADO** | `CharacterSelectMenu` recebe confirmações independentes e permite voltar ao `MainMenu`. Ver relatório de testes. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
 | Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo; separar MD3 interna da modalidade e MD3 geral ainda é **PLANEJADO**. |
@@ -273,9 +270,9 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 
 **Planejados:** Grizzly, Urso-do-sol, Urso-de-óculos e Panda-vermelho.
 
-Os dois jogáveis reutilizam `PlayerBase`, câmera, poderes, física e fluxo de vitória. A seleção visual é configurada independentemente para P1 e P2. A UI de seleção ainda não foi implementada.
+Os dois jogáveis reutilizam `PlayerBase`, câmera, poderes, física e fluxo de vitória. A seleção visual é configurada independentemente para P1 e P2. A UI `CharacterSelect` está implementada com prévias, navegação independente, confirmação/cancelamento e início condicionado às duas confirmações.
 
-Contrato técnico para o colega responsável pelo menu: [docs/character-selection-integration.md](character-selection-integration.md).
+Fluxo, métodos e roteiro de validação: [docs/character-selection-integration.md](character-selection-integration.md).
 
 A produção do restante do elenco deve esperar a estabilidade do recorte local em mais provas.
 
@@ -294,7 +291,7 @@ Continuam fora do foco atual:
 
 O objetivo continua sendo um **vertical slice local, reutilizável e jogável** antes de expandir escopo.
 
-## Entrega da integração de personagens — critérios de aceite pendentes
+## Entrega da integração de personagens — implementação e aceite
 
 - [ ] Menu permite selecionar e confirmar personagens de P1 e P2 separadamente.
 - [ ] As escolhas são aplicadas ao carregar a cena `HurdlesRace`.
@@ -303,4 +300,4 @@ O objetivo continua sendo um **vertical slice local, reutilizável e jogável** 
 - [ ] TROCAR PERSONAGENS abre a tela de seleção e permite nova combinação.
 - [ ] O fluxo completo funciona sem regressões em poderes, câmera, controles e vitória.
 
-Os testes de combinações e a lógica de travamento/revanche já foram validados isoladamente. Os itens acima são para a **integração ponta a ponta do menu**, ainda pendente.
+Os comportamentos acima estão implementados; as caixas representam o **aceite humano ponta a ponta**, ainda pendente. Os registros anteriores de VALIDADO referem-se aos testes históricos informados no projeto, não a uma nova validação visual nesta revisão. As verificações automatizadas desta entrega e seus limites estão no relatório de integração.

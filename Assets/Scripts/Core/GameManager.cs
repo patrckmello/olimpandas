@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     public bool AddMedal(int playerId)
     {
         if (playerId == 1)
