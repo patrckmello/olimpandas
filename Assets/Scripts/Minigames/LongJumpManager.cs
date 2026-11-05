@@ -46,7 +46,9 @@ public class LongJumpManager : MonoBehaviour
     [SerializeField] private float perfectFlashDuration = 0.5f;
 
     [Header("Areia")]
+    [SerializeField] private SpriteRenderer sandPit;
     [SerializeField] private Transform[] bestMarkers;
+    [SerializeField] private SpriteRenderer[] landingImprints;
     [SerializeField] private ParticleSystem landingDust;
     [SerializeField] private int dustParticles = 24;
 
@@ -134,6 +136,11 @@ public class LongJumpManager : MonoBehaviour
             jumper.body.WakeUp();
             jumper.lastMark = NoMark;
             jumper.perfect = false;
+
+            // Areia rastelada entre tentativas.
+            SpriteRenderer imprint = Lane(landingImprints, jumper);
+            if (imprint != null)
+                imprint.gameObject.SetActive(false);
         }
 
         yield return ShowStep(IsTiebreak ? "DESEMPATE" : $"TENTATIVA {attempt}/{attempts}");
@@ -212,9 +219,9 @@ public class LongJumpManager : MonoBehaviour
 
         jumper.perfect = true;
         jumper.runner.Boost(perfectBoost);
-        int index = Array.IndexOf(jumpers, jumper);
-        if (foulBoards != null && index < foulBoards.Length && foulBoards[index] != null)
-            StartCoroutine(Flash(foulBoards[index]));
+        SpriteRenderer board = Lane(foulBoards, jumper);
+        if (board != null)
+            StartCoroutine(Flash(board));
         PerfectTakeoff?.Invoke(jumper.controller.PlayerId);
     }
 
@@ -222,30 +229,44 @@ public class LongJumpManager : MonoBehaviour
     {
         Bounds bounds = jumper.collider.bounds;
         float mark = (bounds.max.x - lineX) * metersPerUnit;
+        Vector3 feet = new Vector3(bounds.center.x, bounds.min.y, 0f);
 
-        if (landingDust != null)
+        // Poeira e marca só quando cai dentro da caixa de areia.
+        if (sandPit == null || (feet.x > sandPit.bounds.min.x && feet.x < sandPit.bounds.max.x))
         {
-            var emit = new ParticleSystem.EmitParams
+            if (landingDust != null)
             {
-                position = new Vector3(bounds.center.x, bounds.min.y, 0f),
-                applyShapeToPosition = true
-            };
-            landingDust.Emit(emit, dustParticles);
+                var emit = new ParticleSystem.EmitParams { position = feet, applyShapeToPosition = true };
+                landingDust.Emit(emit, dustParticles);
+            }
+
+            SpriteRenderer imprint = Lane(landingImprints, jumper);
+            if (imprint != null)
+            {
+                imprint.transform.position = new Vector3(feet.x, feet.y, imprint.transform.position.z);
+                imprint.gameObject.SetActive(true);
+            }
         }
 
         bool valid = mark > 0f;
         if (valid && mark > jumper.bestMark)
         {
-            int index = Array.IndexOf(jumpers, jumper);
-            if (bestMarkers != null && index < bestMarkers.Length && bestMarkers[index] != null)
+            Transform marker = Lane(bestMarkers, jumper);
+            if (marker != null)
             {
-                Transform marker = bestMarkers[index];
                 marker.position = new Vector3(bounds.max.x, marker.position.y, marker.position.z);
                 marker.gameObject.SetActive(true);
             }
         }
 
         Resolve(jumper, valid ? mark : NoMark);
+    }
+
+    // Elemento da raia do jogador num array por raia (ordem P1, P2).
+    private T Lane<T>(T[] perLane, Jumper jumper) where T : UnityEngine.Object
+    {
+        int index = Array.IndexOf(jumpers, jumper);
+        return perLane != null && index < perLane.Length ? perLane[index] : null;
     }
 
     private void Resolve(Jumper jumper, float mark)

@@ -63,14 +63,21 @@ public static class LongJumpSmokeTest
         Check(data.FindProperty("attempts").intValue == 3, "Three attempts");
         foreach (PlayerController player in players)
             Check(player.GetComponent<LongJumpRunner>() != null, "Rhythm runner on " + player.name);
-        foreach (string property in new[] { "foulBoards", "bestMarkers" })
+        foreach (string property in new[] { "foulBoards", "bestMarkers", "landingImprints" })
         {
             SerializedProperty array = data.FindProperty(property);
             Check(array.arraySize == 2, property + " per lane");
             for (int i = 0; i < 2; i++)
                 Check(array.GetArrayElementAtIndex(i).objectReferenceValue != null, property + " reference");
         }
-        Check(data.FindProperty("landingDust").objectReferenceValue != null, "Landing dust");
+        var pit = (SpriteRenderer)data.FindProperty("sandPit").objectReferenceValue;
+        float[] feet = players.Select(p => p.GetComponent<Collider2D>().bounds.min.y).ToArray();
+        Check(pit != null && pit.bounds.min.x > foulLine.position.x &&
+            pit.bounds.min.y < feet.Min() && pit.bounds.max.y > feet.Max(),
+            "One sand pit after the line covering both lanes");
+        var dust = (ParticleSystem)data.FindProperty("landingDust").objectReferenceValue;
+        Check(dust != null && dust.GetComponent<ParticleSystemRenderer>().sharedMaterial.mainTexture != null,
+            "Landing dust with round grain texture");
         Check(data.FindProperty("cameraFollow").objectReferenceValue != null, "Camera follow");
 
         SessionState.SetBool(Running, true);
@@ -142,6 +149,7 @@ public class LongJumpSmokeRunner : MonoBehaviour
         PlayerController[] players = FindObjectsByType<PlayerController>().OrderBy(p => p.PlayerId).ToArray();
         LongJumpRunner[] runners = players.Select(p => p.GetComponent<LongJumpRunner>()).ToArray();
         Transform[] markers = Field<Transform[]>(manager, "bestMarkers");
+        SpriteRenderer[] imprints = Field<SpriteRenderer[]>(manager, "landingImprints");
         float lineX = Field<Transform>(manager, "foulLine").position.x;
         var perfects = new List<int>();
         manager.PerfectTakeoff += perfects.Add;
@@ -168,9 +176,14 @@ public class LongJumpSmokeRunner : MonoBehaviour
         for (int i = 0; i < 2; i++)
             LongJumpSmokeTest.Check(markers[i].gameObject.activeSelf &&
                 Mathf.Abs(markers[i].position.x - (lineX + 3f)) < 0.1f, $"Best mark flag P{i + 1}");
+        for (int i = 0; i < 2; i++)
+            LongJumpSmokeTest.Check(imprints[i].gameObject.activeSelf &&
+                Mathf.Abs(imprints[i].transform.position.x - players[i].GetComponent<Collider2D>().bounds.center.x) < 0.1f,
+                $"Landing imprint P{i + 1} under the jumper");
 
         // Tentativa 2: alternar acelera, repetir o lado não; sem toques a velocidade cai.
         yield return WaitForAttempt(manager, players, 2);
+        LongJumpSmokeTest.Check(imprints.All(m => !m.gameObject.activeSelf), "Sand raked between attempts");
         float tapBoost = Field<float>(runners[0], "tapBoost");
         runners[0].RegisterTap(1);
         runners[0].RegisterTap(1);
