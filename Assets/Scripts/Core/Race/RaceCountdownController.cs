@@ -10,6 +10,9 @@ public class RaceCountdownController : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TMP_Text countdownText;
 
+    [Header("Cronômetro")]
+    [SerializeField] private Timer timer;
+
     [Header("Tempo")]
     [SerializeField] private float stepDuration = 1f;
     [SerializeField] private float goDuration = 0.8f;
@@ -29,6 +32,11 @@ public class RaceCountdownController : MonoBehaviour
         }
 
         SetPlayersEnabled(true);
+
+        if (timer != null)
+        {
+            timer.StartTimer();
+        }
 
         yield return new WaitForSeconds(goDuration);
 
