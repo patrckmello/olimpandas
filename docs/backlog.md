@@ -59,28 +59,40 @@ Uma modalidade só conta como entregue quando existir o fluxo completo **entrada
 | Responsável | Foco principal | Tarefas da entrega |
 | --- | --- | --- |
 | **Patrick** | Mecânicas, sprites e integração de gameplay | Fechar 100m; implementar lógica de Salto, Canoagem e Pescaria; produzir/integrar Grizzly e Urso-de-óculos; manter base compartilhada e contratos dos minigames. |
-| **Gabriel** | Interface e experiência geral | HUDs específicos, instruções de cada prova, telas de sorteio/transição, resultado, medalhas, adaptação da seleção para 4 personagens e consistência visual do menu. |
-| **Cadu** | Montagem, conteúdo simples e QA | Duplicar/configurar cenas, importar assets com presets já definidos, posicionar colliders/obstáculos/spawn points, preencher referências no Inspector, testar combinações, registrar bugs e ajudar no build final. |
+| **Gabriel** | UI principal e fluxo de navegação | Menu, seleção de personagens, telas de sorteio/transição, resultado geral, medalhas, campeão, revanche/troca de personagens e consistência visual entre as telas. |
+| **Cadu (EoGarlos)** | Microfeatures de UI/gamefeel com implementação própria | Criar componentes fechados de HUD e feedback, com script + prefab próprios: cronômetro, contador de tentativas, placar da Pescaria, indicador de progresso da Canoagem, avisos simples de falta/resultado e painel de controles/créditos. Não altera lógica interna dos minigames de Patrick; consome dados/eventos expostos por eles. |
 
 ### Plano por semana
 
 #### Semana 1 — consolidar a base
 - **Patrick:** finalizar/polir 100m com barreiras e deixar Salto a distância jogável do início ao fim; iniciar sprites do Grizzly.
-- **Gabriel:** fechar HUD/resultado do 100m, preparar componente visual reutilizável para instruções e resultado das próximas provas, adaptar seleção para quatro personagens sem quebrar os dois já existentes.
-- **Cadu:** revisar referências das cenas atuais, montar a cena base do Salto a partir dos prefabs existentes, posicionar linha de falta/área de pouso, executar checklist de 100m e registrar bugs.
+- **Gabriel:** fechar resultado do 100m, preparar o visual reutilizável de instruções/transições e adaptar a seleção para quatro personagens sem quebrar os dois já existentes.
+- **Cadu:** evoluir o cronômetro que já criou para um HUD reutilizável de tempo, exibir o tempo final da corrida e criar um contador visual de tentativas para o Salto a distância. Cada item deve ser um componente isolado, com script/prefab próprio, sem alterar a regra da corrida ou do salto.
 - **Gate da semana:** 100m validado + Salto a distância jogável + terceiro personagem pelo menos integrado em teste.
 
 #### Semana 2 — variedade de gameplay
 - **Patrick:** implementar Canoagem MVP e Pescaria MVP; concluir Grizzly e iniciar/concluir Urso-de-óculos conforme pipeline já validado.
-- **Gabriel:** HUD de distância/tentativas do Salto, HUD de corrida da Canoagem e placar/tempo da Pescaria; tela curta de instruções antes de cada modalidade.
-- **Cadu:** montar rio/obstáculos/spawn points da Canoagem, preparar peixes/spawn points da Pescaria, configurar colliders e referências do Inspector usando scripts prontos.
+- **Gabriel:** tela curta de instruções de cada modalidade, apresentação visual das provas e telas de resultado/transição.
+- **Cadu:** criar o indicador de progresso da Canoagem e o placar em tempo real da Pescaria (P1, P2 e tempo restante), além de feedbacks simples como “FALTA”, “PEIXE!”, “+PONTOS” ou equivalentes. A lógica de quando esses eventos acontecem continua pertencendo aos scripts de gameplay de Patrick.
 - **Gate da semana:** quatro minigames executáveis isoladamente e quatro personagens selecionáveis, mesmo que ainda sem polimento final.
 
 #### Semana 3 — integração e entrega
 - **Patrick:** integrar as quatro modalidades ao Circuito Olímpico, corrigir bugs de gameplay e evitar novas features após a integração.
 - **Gabriel:** fechar sorteio/transições, placar geral, campeão, revanche/troca de personagens e consistência visual.
-- **Cadu:** rodar matriz de testes P1/P2, personagens e minigames; conferir Build Settings, referências quebradas, Console, cenas e gerar build de apresentação.
+- **Cadu:** criar/fechar o painel de controles e créditos da entrega, polir os componentes de HUD que produziu e corrigir bugs especificamente nessas features. Também participa do playtest final, mas QA não é sua responsabilidade principal.
 - **Gate final:** circuito ponta a ponta jogável com quatro modalidades e quatro personagens, sem erro bloqueante no Console.
+
+### Contrato de trabalho entre Patrick e Cadu
+
+Para evitar conflito em cenas/scripts, Patrick continua dono da **regra do minigame** e expõe somente os dados necessários para a interface, preferencialmente por propriedades, métodos públicos pequenos ou eventos. Cadu fica dono do componente visual que consome esses dados.
+
+Exemplos:
+- Patrick informa tempo/estado da corrida; Cadu controla apresentação do cronômetro.
+- Patrick informa tentativa atual, falta e distância do Salto; Cadu apresenta contador/feedback.
+- Patrick informa progresso/posição da Canoagem; Cadu apresenta indicador visual.
+- Patrick informa pontos, captura e tempo da Pescaria; Cadu apresenta placar e feedback.
+
+Cadu não deve editar `PlayerController`, regras de vitória, física, scripts centrais dos minigames ou cenas em desenvolvimento de Patrick sem combinar antes. O objetivo é permitir trabalho paralelo com features concretas e baixa chance de conflito no Git.
 
 ### MVP mínimo de cada nova modalidade
 
