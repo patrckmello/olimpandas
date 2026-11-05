@@ -20,7 +20,7 @@
 
 ## Prioridade atual
 
-O fluxo `MainMenu → CharacterSelect → HurdlesRace → resultado da MD3` está implementado, incluindo revanche e retorno à seleção. O relatório de verificações está em [integração de personagens](character-selection-integration.md).
+O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → resultado → próximo sorteio` está implementado, com MD3 de modalidades, revanche (novo circuito) e retorno à seleção. O relatório de verificações da seleção está em [integração de personagens](character-selection-integration.md).
 
 Com aproximadamente **3 semanas/aulas restantes para a entrega acadêmica**, o escopo foi reduzido para **4 personagens e 4 minigames**. Esse corte vale para a entrega atual; o restante permanece como roadmap pós-entrega.
 
@@ -116,7 +116,9 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 - **Poderes por modalidade:** cada minigame define explicitamente quais poderes estão disponíveis (incluindo a possibilidade de nenhum). Não presumir Stun/Slow em todos os esportes.
 - **Duração-alvo do circuito:** **5–8 minutos** por Circuito Olímpico completo, como objetivo de design a validar com playtests, não como temporizador global já implementado.
 
-> **Mudança futura, ainda não implementada:** o código atual `GameManager.AddMedal` concede medalha diretamente à vitória da corrida, e `NextRoundButton` recarrega a cena atual. Isso é o comportamento validado no protótipo, **não** a regra final de medalhas por modalidade. Será necessário distinguir vencedor da disputa interna, vencedor da modalidade e campeão geral antes de integrar múltiplas provas.
+> **Implementado em 05/11/2026:** cada modalidade declara só o vencedor da modalidade via `FinishLine.DeclareWinner` → `GameManager.AwardMinigame` (medalha + histórico). Disputas internas (tentativas do Salto, desempates) ficam dentro do minigame. **100m com barreiras = corrida única** (uma corrida vale a medalha da modalidade). `PRÓXIMA PROVA` e `REVANCHE` levam à cena `CircuitDraw`; revanche começa um circuito novo com os mesmos personagens.
+>
+> **Contrato para a UI (Gabriel/Cadu):** `GameManager.DrawNextMinigame()` sorteia e devolve `Minigame` (`DisplayName`, `SceneName`); `GameManager.Results` traz o histórico (`SceneName`, `WinnerId`); `GetScore()`/`GetMedals()` o placar; `MinigameCatalog.All` lista as provas. A tela atual de `CircuitDraw` (`CircuitDrawScreen`) é **provisória** — o visual final de sorteio/transição é do Gabriel.
 
 ### Hipóteses de design a validar por playtest (não são regras fechadas)
 
@@ -152,25 +154,25 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 
 ### Próximas decisões prioritárias
 
-1. **Formato da MD3 interna da corrida:** definir se cada corrida vencida vale 1 ponto interno e duas vitórias dão a medalha geral, ou se a corrida usa outra regra.
+1. ~~**Formato da MD3 interna da corrida**~~ — **decidido em 05/11/2026:** corrida única; vencer a corrida dá a medalha da modalidade.
 2. **Tempo máximo e desempate concreto por modalidade:** como impedir que disputas extras ultrapassem repetidamente a meta de 5–8 minutos.
 3. **Inventário e poderes:** decidir quais são permitidos na Corrida, quando pickups surgem e se os poderes acumulados reiniciam entre disputas.
 4. **Critérios de vitória dos demais esportes:** pontos/tentativas, validade e desempate de cada modalidade antes de desenvolvê-la.
 5. **Duração e ritmo:** definir orçamento de tempo para sorteio, introdução, gameplay e tela de resultado; testar com pessoas.
-6. **Revanche e navegação:** novo sorteio no início da revanche? A seleção atual é `CharacterSelect`; definir pausa/desistência no circuito futuro.
+6. **Revanche e navegação:** revanche faz novo circuito com novo sorteio (implementado). Falta definir pausa/desistência no circuito.
 
 ### Backlog de implementação desse fluxo
 
-- [ ] Definir contrato entre `GameManager` (medalhas do circuito) e placar/regras internas de cada minigame, sem destruir a corrida atual.
+- [x] Definir contrato entre `GameManager` (medalhas do circuito) e placar/regras internas de cada minigame, sem destruir a corrida atual.
 - [ ] Adicionar catálogo de poderes permitidos por modalidade e aplicar as restrições sem afetar o sistema de poderes existente.
-- [ ] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte.
+- [ ] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte. *(Salto já desempata por tentativa extra.)*
 - [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos.
-- [ ] Criar catálogo de modalidades habilitadas e `MinigameRotationManager` simples.
-- [ ] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição.
-- [ ] Criar apresentação de sorteio e transição para a cena sorteada.
-- [ ] Fazer o minigame comunicar **somente o vencedor da modalidade** ao sistema geral de medalhas.
-- [ ] Ajustar os botões de próxima prova, revanche e troca de personagens para o fluxo de Circuito Olímpico.
-- [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria.
+- [x] Criar catálogo de modalidades habilitadas (`MinigameCatalog`) e rotação simples (`MinigameRotation`).
+- [x] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição (não repete enquanto houver inédita; depois evita repetir a última).
+- [ ] Criar apresentação de sorteio e transição para a cena sorteada. *(Versão provisória funcional em `CircuitDraw`; visual final com Gabriel.)*
+- [x] Fazer o minigame comunicar **somente o vencedor da modalidade** ao sistema geral de medalhas.
+- [x] Ajustar os botões de próxima prova, revanche e troca de personagens para o fluxo de Circuito Olímpico.
+- [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria. *(Automatizado com 100m + Salto.)*
 - [ ] Testar pontuação, persistência dos personagens e regresso ao menu no fluxo ponta a ponta.
 
 ## Estado dos sistemas compartilhados
@@ -190,7 +192,8 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 | Tela de seleção / navegação | **IMPLEMENTADO** | `CharacterSelectMenu` recebe confirmações independentes e permite voltar ao `MainMenu`. Ver relatório de testes. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
-| Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo; separar MD3 interna da modalidade e MD3 geral ainda é **PLANEJADO**. |
+| Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo. |
+| Circuito Olímpico (sorteio e rotação de provas) | **IMPLEMENTADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Tela de sorteio provisória. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Aceite humano pendente. |
 | Checkpoint / respawn / DeathZone | **VALIDADO** | Base reutilizável. |
 | PlayerStatusEffects | **VALIDADO** | Base de Stun e Slow confirmada em gameplay. |
 | Poder Stun | **IMPLEMENTADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
@@ -370,7 +373,7 @@ O objetivo continua sendo um **vertical slice local, reutilizável e jogável** 
 ## Entrega da integração de personagens — implementação e aceite
 
 - [ ] Menu permite selecionar e confirmar personagens de P1 e P2 separadamente.
-- [ ] As escolhas são aplicadas ao carregar a cena `HurdlesRace`.
+- [ ] As escolhas são aplicadas ao carregar a modalidade sorteada (`HurdlesRace` ou `LongJump`).
 - [ ] Uma MD3 inteira mantém os personagens escolhidos e o placar entre rodadas.
 - [ ] REVANCHE inicia uma nova MD3 sem alterar os personagens.
 - [ ] TROCAR PERSONAGENS abre a tela de seleção e permite nova combinação.

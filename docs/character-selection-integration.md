@@ -113,3 +113,5 @@ A MD3 atual de corridas permanece estável em escopo. Ela ainda **não implement
 Decisões preservadas: Circuito local 1v1; sorteio surpresa de uma modalidade por vez; evitar repetição enquanto outras estiverem disponíveis; primeiro a duas medalhas de modalidades vence; regras internas próprias por modalidade (MD3 quando fizer sentido); empates resolvidos por disputa extra; poderes permitidos definidos por modalidade; personagens equivalentes em gameplay no MVP; duração-alvo de 5–8 minutos.
 
 `MinigameRotationManager`, sorteio, separação da pontuação interna/geral e regras genéricas de desempate permanecem para o próximo marco. Não foram implementados nesta tarefa.
+
+> **Atualização 05/11/2026:** sorteio, rotação de provas e medalha por modalidade foram implementados depois (`MinigameCatalog`, `MinigameRotation`, cena `CircuitDraw`). A seleção agora inicia o circuito pelo sorteio. Ver [backlog](backlog.md).
