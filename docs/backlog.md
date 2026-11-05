@@ -58,28 +58,28 @@ Uma modalidade só conta como entregue quando existir o fluxo completo **entrada
 
 | Responsável | Foco principal | Tarefas da entrega |
 | --- | --- | --- |
-| **Dev 1 — Patrick** | Mecânicas, sprites e integração de gameplay | Fechar 100m; implementar lógica de Salto, Canoagem e Pescaria; produzir/integrar Grizzly e Urso-de-óculos; manter base compartilhada e contratos dos minigames. |
-| **Dev 2 — UI/fluxo** | Interface e experiência geral | HUDs específicos, instruções de cada prova, telas de sorteio/transição, resultado, medalhas, adaptação da seleção para 4 personagens e consistência visual do menu. |
-| **Dev 3 — apoio/iniciante** | Montagem, conteúdo simples e QA | Duplicar/configurar cenas, importar assets com presets já definidos, posicionar colliders/obstáculos/spawn points, preencher referências no Inspector, testar combinações, registrar bugs e ajudar no build final. |
+| **Patrick** | Mecânicas, sprites e integração de gameplay | Fechar 100m; implementar lógica de Salto, Canoagem e Pescaria; produzir/integrar Grizzly e Urso-de-óculos; manter base compartilhada e contratos dos minigames. |
+| **Gabriel** | Interface e experiência geral | HUDs específicos, instruções de cada prova, telas de sorteio/transição, resultado, medalhas, adaptação da seleção para 4 personagens e consistência visual do menu. |
+| **Cadu** | Montagem, conteúdo simples e QA | Duplicar/configurar cenas, importar assets com presets já definidos, posicionar colliders/obstáculos/spawn points, preencher referências no Inspector, testar combinações, registrar bugs e ajudar no build final. |
 
 ### Plano por semana
 
 #### Semana 1 — consolidar a base
 - **Patrick:** finalizar/polir 100m com barreiras e deixar Salto a distância jogável do início ao fim; iniciar sprites do Grizzly.
-- **UI:** fechar HUD/resultado do 100m, preparar componente visual reutilizável para instruções e resultado das próximas provas, adaptar seleção para quatro personagens sem quebrar os dois já existentes.
-- **Apoio:** revisar referências das cenas atuais, montar a cena base do Salto a partir dos prefabs existentes, posicionar linha de falta/área de pouso, executar checklist de 100m e registrar bugs.
+- **Gabriel:** fechar HUD/resultado do 100m, preparar componente visual reutilizável para instruções e resultado das próximas provas, adaptar seleção para quatro personagens sem quebrar os dois já existentes.
+- **Cadu:** revisar referências das cenas atuais, montar a cena base do Salto a partir dos prefabs existentes, posicionar linha de falta/área de pouso, executar checklist de 100m e registrar bugs.
 - **Gate da semana:** 100m validado + Salto a distância jogável + terceiro personagem pelo menos integrado em teste.
 
 #### Semana 2 — variedade de gameplay
 - **Patrick:** implementar Canoagem MVP e Pescaria MVP; concluir Grizzly e iniciar/concluir Urso-de-óculos conforme pipeline já validado.
-- **UI:** HUD de distância/tentativas do Salto, HUD de corrida da Canoagem e placar/tempo da Pescaria; tela curta de instruções antes de cada modalidade.
-- **Apoio:** montar rio/obstáculos/spawn points da Canoagem, preparar peixes/spawn points da Pescaria, configurar colliders e referências do Inspector usando scripts prontos.
+- **Gabriel:** HUD de distância/tentativas do Salto, HUD de corrida da Canoagem e placar/tempo da Pescaria; tela curta de instruções antes de cada modalidade.
+- **Cadu:** montar rio/obstáculos/spawn points da Canoagem, preparar peixes/spawn points da Pescaria, configurar colliders e referências do Inspector usando scripts prontos.
 - **Gate da semana:** quatro minigames executáveis isoladamente e quatro personagens selecionáveis, mesmo que ainda sem polimento final.
 
 #### Semana 3 — integração e entrega
 - **Patrick:** integrar as quatro modalidades ao Circuito Olímpico, corrigir bugs de gameplay e evitar novas features após a integração.
-- **UI:** fechar sorteio/transições, placar geral, campeão, revanche/troca de personagens e consistência visual.
-- **Apoio:** rodar matriz de testes P1/P2, personagens e minigames; conferir Build Settings, referências quebradas, Console, cenas e gerar build de apresentação.
+- **Gabriel:** fechar sorteio/transições, placar geral, campeão, revanche/troca de personagens e consistência visual.
+- **Cadu:** rodar matriz de testes P1/P2, personagens e minigames; conferir Build Settings, referências quebradas, Console, cenas e gerar build de apresentação.
 - **Gate final:** circuito ponta a ponta jogável com quatro modalidades e quatro personagens, sem erro bloqueante no Console.
 
 ### MVP mínimo de cada nova modalidade
