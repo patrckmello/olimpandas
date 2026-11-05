@@ -55,6 +55,8 @@ public class FinishLine : MonoBehaviour
 
         raceFinished = true;
 
+        StopAllTimers();
+
         int playerId = winner.PlayerId;
 
         bool matchFinished =
@@ -104,6 +106,20 @@ public class FinishLine : MonoBehaviour
         Debug.Log(
             $"PLAYER {playerId} VENCEU A PROVA!"
         );
+    }
+
+    private void StopAllTimers()
+    {
+        Timer[] timers =
+            FindObjectsByType<Timer>(FindObjectsSortMode.None);
+
+        foreach (Timer timer in timers)
+        {
+            if (timer != null)
+            {
+                timer.StopTimer();
+            }
+        }
     }
 
     private IEnumerator ShowVictoryPanel()
