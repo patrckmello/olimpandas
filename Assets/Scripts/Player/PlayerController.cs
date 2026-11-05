@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     public int PlayerId => playerId;
     public float FacingDirection => lastDirection;
     public bool IsStunned => isStunned;
+    public bool IsGrounded => isGrounded;
 
     private void Awake()
     {

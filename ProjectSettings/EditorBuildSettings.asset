@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HurdlesRace.unity
     guid: 8dbcaea3985942449a3c3959e268bdc9
+  - enabled: 1
+    path: Assets/Scenes/LongJump.unity
+    guid: 4809775e5af24ef4a9d6ba1b68147f17
   m_configObjects: {}

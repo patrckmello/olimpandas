@@ -53,6 +53,15 @@ public class FinishLine : MonoBehaviour
         if (winner == null)
             return;
 
+        DeclareWinner(winner);
+    }
+
+    // Também usado por provas sem linha de chegada (ex.: Salto a distância).
+    public void DeclareWinner(PlayerController winner)
+    {
+        if (raceFinished || winner == null)
+            return;
+
         raceFinished = true;
 
         StopAllTimers();

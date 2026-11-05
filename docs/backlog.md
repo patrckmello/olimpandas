@@ -44,7 +44,7 @@ Objetivos imediatos:
 
 **Minigames da entrega:**
 - 100m com barreiras — **EM DESENVOLVIMENTO**;
-- Salto a distância — **PLANEJADO PARA A ENTREGA**;
+- Salto a distância — **EM DESENVOLVIMENTO** (MVP jogável em `LongJump.unity`; arte provisória);
 - Canoagem — **PLANEJADO PARA A ENTREGA**;
 - Pescaria — **PLANEJADO PARA A ENTREGA**.
 
@@ -208,7 +208,7 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 | Minigame | Status | Mecânica atual |
 | --- | --- | --- |
 | **100m com barreiras** | **EM DESENVOLVIMENTO — ENTREGA** | Corrida 1v1, pista de atletismo, barreiras e chegada. Primeiro a cruzar vence. |
-| **Salto a distância** | **PLANEJADO — ENTREGA** | Corrida de aproximação, salto antes da linha e medição da distância válida. |
+| **Salto a distância** | **EM DESENVOLVIMENTO — ENTREGA** | Simultâneo em duas raias; corrida de aproximação, salto antes da linha e medição da distância válida; 3 tentativas, maior marca vence, empate vai a tentativa extra. Dash desativado. |
 | **Lançamento de dardo** | **ADIADO — PÓS-ENTREGA** | Barra de força, ângulo e vento; maior distância válida vence. |
 | **Levantamento de peso** | **ADIADO — PÓS-ENTREGA** | Escolha da carga, timing/força e equilíbrio; maior peso válido vence. |
 | **Sumô** | **ADIADO — PÓS-ENTREGA** | Arena curta com movimentação, investida e disputa por posição; objetivo é tirar o adversário do ringue. |
