@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 22/10/2026.
+> Atualizado em 05/11/2026.
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -22,12 +22,71 @@
 
 O fluxo `MainMenu → CharacterSelect → HurdlesRace → resultado da MD3` está implementado, incluindo revanche e retorno à seleção. O relatório de verificações está em [integração de personagens](character-selection-integration.md).
 
+Com aproximadamente **3 semanas/aulas restantes para a entrega acadêmica**, o escopo foi reduzido para **4 personagens e 4 minigames**. Esse corte vale para a entrega atual; o restante permanece como roadmap pós-entrega.
+
 Objetivos imediatos:
 
-1. concluir o aceite visual e o playtest humano da seleção e corrida nas quatro combinações;
-2. verificar controles, animações, poderes, câmera, checkpoints e respawn sem regressões;
-3. iniciar o próximo marco: contrato de modalidades e `MinigameRotationManager`, mantendo as decisões abaixo;
-4. continuar o polimento de **100m com barreiras** antes de expandir o conteúdo.
+1. fechar e validar **100m com barreiras** como primeira modalidade completa;
+2. implementar **Salto a distância**, **Canoagem** e **Pescaria** em versões MVP curtas, competitivas e completas;
+3. entregar quatro personagens visualmente distintos: **Panda-gigante, Urso-polar, Grizzly e Urso-de-óculos**, todos reutilizando a mesma base de gameplay;
+4. integrar as quatro modalidades ao fluxo do Circuito Olímpico sem reescrever sistemas já estáveis;
+5. reservar a parte final da terceira semana para integração, build, playtest e correção de bugs — sem abrir novas features.
+
+## Escopo da entrega acadêmica — 3 semanas
+
+### Conteúdo obrigatório
+
+**Personagens da entrega:**
+- Panda-gigante — **VALIDADO**;
+- Urso-polar — **VALIDADO**;
+- Grizzly — **PLANEJADO PARA A ENTREGA**;
+- Urso-de-óculos — **PLANEJADO PARA A ENTREGA**.
+
+**Minigames da entrega:**
+- 100m com barreiras — **EM DESENVOLVIMENTO**;
+- Salto a distância — **PLANEJADO PARA A ENTREGA**;
+- Canoagem — **PLANEJADO PARA A ENTREGA**;
+- Pescaria — **PLANEJADO PARA A ENTREGA**.
+
+**Pós-entrega:** Lançamento de dardo, Levantamento de peso, Sumô, Natação e Tênis. Urso-do-sol e Panda-vermelho também ficam fora da entrega acadêmica atual.
+
+### Regra de corte
+
+Uma modalidade só conta como entregue quando existir o fluxo completo **entrada → instrução/contagem → gameplay 1v1 → condição de vitória → resultado → retorno ao circuito**. Polimento extra, efeitos, variedade de mapas e regras secundárias só entram depois que esse fluxo estiver funcional nas quatro modalidades.
+
+### Divisão do time
+
+| Responsável | Foco principal | Tarefas da entrega |
+| --- | --- | --- |
+| **Dev 1 — Patrick** | Mecânicas, sprites e integração de gameplay | Fechar 100m; implementar lógica de Salto, Canoagem e Pescaria; produzir/integrar Grizzly e Urso-de-óculos; manter base compartilhada e contratos dos minigames. |
+| **Dev 2 — UI/fluxo** | Interface e experiência geral | HUDs específicos, instruções de cada prova, telas de sorteio/transição, resultado, medalhas, adaptação da seleção para 4 personagens e consistência visual do menu. |
+| **Dev 3 — apoio/iniciante** | Montagem, conteúdo simples e QA | Duplicar/configurar cenas, importar assets com presets já definidos, posicionar colliders/obstáculos/spawn points, preencher referências no Inspector, testar combinações, registrar bugs e ajudar no build final. |
+
+### Plano por semana
+
+#### Semana 1 — consolidar a base
+- **Patrick:** finalizar/polir 100m com barreiras e deixar Salto a distância jogável do início ao fim; iniciar sprites do Grizzly.
+- **UI:** fechar HUD/resultado do 100m, preparar componente visual reutilizável para instruções e resultado das próximas provas, adaptar seleção para quatro personagens sem quebrar os dois já existentes.
+- **Apoio:** revisar referências das cenas atuais, montar a cena base do Salto a partir dos prefabs existentes, posicionar linha de falta/área de pouso, executar checklist de 100m e registrar bugs.
+- **Gate da semana:** 100m validado + Salto a distância jogável + terceiro personagem pelo menos integrado em teste.
+
+#### Semana 2 — variedade de gameplay
+- **Patrick:** implementar Canoagem MVP e Pescaria MVP; concluir Grizzly e iniciar/concluir Urso-de-óculos conforme pipeline já validado.
+- **UI:** HUD de distância/tentativas do Salto, HUD de corrida da Canoagem e placar/tempo da Pescaria; tela curta de instruções antes de cada modalidade.
+- **Apoio:** montar rio/obstáculos/spawn points da Canoagem, preparar peixes/spawn points da Pescaria, configurar colliders e referências do Inspector usando scripts prontos.
+- **Gate da semana:** quatro minigames executáveis isoladamente e quatro personagens selecionáveis, mesmo que ainda sem polimento final.
+
+#### Semana 3 — integração e entrega
+- **Patrick:** integrar as quatro modalidades ao Circuito Olímpico, corrigir bugs de gameplay e evitar novas features após a integração.
+- **UI:** fechar sorteio/transições, placar geral, campeão, revanche/troca de personagens e consistência visual.
+- **Apoio:** rodar matriz de testes P1/P2, personagens e minigames; conferir Build Settings, referências quebradas, Console, cenas e gerar build de apresentação.
+- **Gate final:** circuito ponta a ponta jogável com quatro modalidades e quatro personagens, sem erro bloqueante no Console.
+
+### MVP mínimo de cada nova modalidade
+
+- **Salto a distância:** corrida de aproximação, linha de falta, detecção do primeiro pouso, distância válida, até 3 tentativas e maior marca vence.
+- **Canoagem:** remadas esquerda/direita geram impulso; alternância eficiente mantém velocidade; excesso de um lado causa desvio; cima/baixo permite evitar obstáculos; colisão reduz velocidade; primeiro a chegar vence. Evitar física naval complexa.
+- **Pescaria:** rodada cronometrada em rio compartilhado, peixes com movimento simples, ação de arremesso/fisgada e etapa curta de recolhimento/timing; peixes dão pontos e maior pontuação vence. Empate usa disputa extra curta.
 
 ## Regras de produto — Circuito Olímpico (decisões de 09/10/2026)
 
@@ -99,7 +158,7 @@ Objetivos imediatos:
 - [ ] Criar apresentação de sorteio e transição para a cena sorteada.
 - [ ] Fazer o minigame comunicar **somente o vencedor da modalidade** ao sistema geral de medalhas.
 - [ ] Ajustar os botões de próxima prova, revanche e troca de personagens para o fluxo de Circuito Olímpico.
-- [ ] Validar com ao menos duas modalidades reais; idealmente três para testar ausência de repetição em um circuito completo.
+- [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria.
 - [ ] Testar pontuação, persistência dos personagens e regresso ao menu no fluxo ponta a ponta.
 
 ## Estado dos sistemas compartilhados
@@ -128,6 +187,7 @@ Objetivos imediatos:
 | Spawn aleatório de pickups | **IMPLEMENTADO** | `PowerSpawnManager` presente no repo. |
 | Countdown de largada | **IMPLEMENTADO** | Fluxo 3 → 2 → 1 → VAI! presente no repo. |
 | Setas de direção dos jogadores | **IMPLEMENTADO** | Alteração de Carlos integrada via PR #1. |
+| Cronômetro de corrida | **IMPLEMENTADO** | Ajuste de Carlos integrado via PR #4; `Timer` existe e está configurado no `PrototypeRace`. Aplicação por modalidade deve ser validada individualmente. |
 
 ## Minigames oficiais planejados
 
@@ -135,15 +195,15 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 
 | Minigame | Status | Mecânica atual |
 | --- | --- | --- |
-| **100m com barreiras** | **EM DESENVOLVIMENTO** | Corrida 1v1, pista de atletismo, barreiras e chegada. Primeiro a cruzar vence. |
-| **Salto a distância** | **PLANEJADO** | Corrida de aproximação, salto antes da linha e medição da distância válida. |
-| **Lançamento de dardo** | **PLANEJADO** | Barra de força, ângulo e vento; maior distância válida vence. |
-| **Levantamento de peso** | **PLANEJADO** | Escolha da carga, timing/força e equilíbrio; maior peso válido vence. |
-| **Sumô** | **PLANEJADO** | Arena curta com movimentação, investida e disputa por posição; objetivo é tirar o adversário do ringue. |
-| **Canoagem** | **PLANEJADO** | Câmera diagonal aérea; rio horizontal com obstáculos; remadas esquerda/direita controlam impulso e rotação, enquanto cima/baixo permitem desviar. |
-| **Natação** | **PLANEJADO** | Braçadas alternadas, ritmo e stamina para impedir spam; virada na borda com timing. |
-| **Tênis** | **PLANEJADO** | Movimento lateral e rebatida baseada em timing, com variações como lob e smash. |
-| **Pescaria** | **PLANEJADO** | Câmera mais aérea; P1 e P2 em margens opostas, rio compartilhado ao centro e peixes em movimento. |
+| **100m com barreiras** | **EM DESENVOLVIMENTO — ENTREGA** | Corrida 1v1, pista de atletismo, barreiras e chegada. Primeiro a cruzar vence. |
+| **Salto a distância** | **PLANEJADO — ENTREGA** | Corrida de aproximação, salto antes da linha e medição da distância válida. |
+| **Lançamento de dardo** | **ADIADO — PÓS-ENTREGA** | Barra de força, ângulo e vento; maior distância válida vence. |
+| **Levantamento de peso** | **ADIADO — PÓS-ENTREGA** | Escolha da carga, timing/força e equilíbrio; maior peso válido vence. |
+| **Sumô** | **ADIADO — PÓS-ENTREGA** | Arena curta com movimentação, investida e disputa por posição; objetivo é tirar o adversário do ringue. |
+| **Canoagem** | **PLANEJADO — ENTREGA** | Câmera diagonal/aérea; rio com obstáculos; remadas esquerda/direita controlam impulso e desvio, enquanto cima/baixo permitem evitar obstáculos. |
+| **Natação** | **ADIADO — PÓS-ENTREGA** | Braçadas alternadas, ritmo e stamina para impedir spam; virada na borda com timing. |
+| **Tênis** | **ADIADO — PÓS-ENTREGA** | Movimento lateral e rebatida baseada em timing, com variações como lob e smash. |
+| **Pescaria** | **PLANEJADO — ENTREGA** | Rio compartilhado, peixes em movimento, rodada cronometrada e disputa por pontos com mecânica simples de fisgada/recolhimento. |
 
 ## User Stories
 
@@ -268,13 +328,15 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 
 **Jogáveis, validados:** Panda-gigante (personagem mestre) e Urso-polar.
 
-**Planejados:** Grizzly, Urso-do-sol, Urso-de-óculos e Panda-vermelho.
+**Planejados para esta entrega:** Grizzly e Urso-de-óculos.
+
+**Pós-entrega:** Urso-do-sol e Panda-vermelho.
 
 Os dois jogáveis reutilizam `PlayerBase`, câmera, poderes, física e fluxo de vitória. A seleção visual é configurada independentemente para P1 e P2. A UI `CharacterSelect` está implementada com prévias, navegação independente, confirmação/cancelamento e início condicionado às duas confirmações.
 
 Fluxo, métodos e roteiro de validação: [docs/character-selection-integration.md](character-selection-integration.md).
 
-A produção do restante do elenco deve esperar a estabilidade do recorte local em mais provas.
+Para a entrega acadêmica, o elenco fecha em quatro personagens. Grizzly e Urso-de-óculos devem reutilizar integralmente `PlayerBase`, câmera, poderes, física e fluxo de vitória; nenhuma mecânica exclusiva de personagem entra neste prazo.
 
 ## Escopo adiado
 
@@ -287,7 +349,9 @@ Continuam fora do foco atual:
 - ranking online;
 - seis jogadores simultâneos;
 - expansão WebGL como prioridade;
-- produção dos seis personagens antes de validar múltiplos minigames.
+- produção dos seis personagens antes de validar múltiplos minigames;
+- Lançamento de dardo, Levantamento de peso, Sumô, Natação e Tênis até depois da entrega acadêmica;
+- Urso-do-sol e Panda-vermelho até depois da entrega acadêmica.
 
 O objetivo continua sendo um **vertical slice local, reutilizável e jogável** antes de expandir escopo.
 
