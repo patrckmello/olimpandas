@@ -33,6 +33,8 @@ public class MultiplayerCameraFollow : MonoBehaviour
     private bool isFocusingWinner = false;
     private Transform winnerTarget;
 
+    private float? zoomOverride;
+
     private void Awake()
     {
         cam = GetComponent<Camera>();
@@ -95,6 +97,9 @@ public class MultiplayerCameraFollow : MonoBehaviour
             maxZoom
         );
 
+        if (zoomOverride.HasValue)
+            targetZoom = zoomOverride.Value;
+
         cam.orthographicSize =
             Mathf.SmoothDamp(
                 cam.orthographicSize,
@@ -137,6 +142,12 @@ public class MultiplayerCameraFollow : MonoBehaviour
         // para a transição começar limpa.
         moveVelocity = Vector3.zero;
         zoomVelocity = 0f;
+    }
+
+    // Zoom temporário (ex.: pouso no Salto a distância); null volta ao automático.
+    public void SetZoomOverride(float? zoom)
+    {
+        zoomOverride = zoom;
     }
 
     public void StopWinnerFocus()

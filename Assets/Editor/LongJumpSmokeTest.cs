@@ -61,6 +61,17 @@ public static class LongJumpSmokeTest
         Check(data.FindProperty("statusText").objectReferenceValue != null, "Status text");
         Check(result != null && !result.GetComponent<Collider2D>().enabled, "Result screen without finish trigger");
         Check(data.FindProperty("attempts").intValue == 3, "Three attempts");
+        foreach (PlayerController player in players)
+            Check(player.GetComponent<LongJumpRunner>() != null, "Rhythm runner on " + player.name);
+        foreach (string property in new[] { "foulBoards", "bestMarkers" })
+        {
+            SerializedProperty array = data.FindProperty(property);
+            Check(array.arraySize == 2, property + " per lane");
+            for (int i = 0; i < 2; i++)
+                Check(array.GetArrayElementAtIndex(i).objectReferenceValue != null, property + " reference");
+        }
+        Check(data.FindProperty("landingDust").objectReferenceValue != null, "Landing dust");
+        Check(data.FindProperty("cameraFollow").objectReferenceValue != null, "Camera follow");
 
         SessionState.SetBool(Running, true);
         EditorApplication.EnterPlaymode();
@@ -129,25 +140,52 @@ public class LongJumpSmokeRunner : MonoBehaviour
     {
         LongJumpManager manager = FindAnyObjectByType<LongJumpManager>();
         PlayerController[] players = FindObjectsByType<PlayerController>().OrderBy(p => p.PlayerId).ToArray();
+        LongJumpRunner[] runners = players.Select(p => p.GetComponent<LongJumpRunner>()).ToArray();
+        Transform[] markers = Field<Transform[]>(manager, "bestMarkers");
         float lineX = Field<Transform>(manager, "foulLine").position.x;
+        var perfects = new List<int>();
+        manager.PerfectTakeoff += perfects.Add;
         manager.AttemptResolved += (player, valid, mark) =>
             results.Add((manager.CurrentAttempt, player, valid, mark));
 
-        // Tentativa 1: os dois saltam e caem no mesmo ponto -> marcas iguais.
+        // Tentativa 1: P1 sai na tábua perfeita, P2 longe dela; os dois caem
+        // no mesmo ponto -> marcas iguais (velocidade zero, bônus não altera).
         yield return WaitForAttempt(manager, players, 1);
-        foreach (PlayerController player in players)
-            Lift(player, lineX - 3f);
+        LongJumpSmokeTest.Check(markers.All(m => !m.gameObject.activeSelf), "Flags hidden before first mark");
+        Lift(players[0], lineX - 0.2f);
+        Lift(players[1], lineX - 3f);
         yield return WaitAirborne(players);
+        LongJumpSmokeTest.Check(perfects.SequenceEqual(new[] { 1 }), "Only P1 perfect takeoff");
+        LongJumpSmokeTest.Check(Mathf.Approximately(Time.timeScale, Field<float>(manager, "slowMotionScale")),
+            "Slow motion while everyone flies, got " + Time.timeScale);
         foreach (PlayerController player in players)
             MoveX(player, lineX + 3f);
         yield return WaitUntil(() => Count(1) == 2, 3f, "Attempt 1 landings");
+        LongJumpSmokeTest.Check(Time.timeScale == 1f, "Slow motion restored");
+        LongJumpSmokeTest.Check(Field<ParticleSystem>(manager, "landingDust").particleCount > 0, "Sand dust on landing");
         foreach (var r in results.Where(r => r.attempt == 1))
-            LongJumpSmokeTest.Check(r.valid && Mathf.Abs(r.mark - 6f) < 0.3f, $"P{r.player} valid ~6 m, got {r.mark}");
+            LongJumpSmokeTest.Check(r.valid && Mathf.Abs(r.mark - 4.2f) < 0.2f, $"P{r.player} valid ~4.2 m, got {r.mark}");
+        for (int i = 0; i < 2; i++)
+            LongJumpSmokeTest.Check(markers[i].gameObject.activeSelf &&
+                Mathf.Abs(markers[i].position.x - (lineX + 3f)) < 0.1f, $"Best mark flag P{i + 1}");
 
-        // Tentativas 2 e 3: ninguém salta -> falta por tempo.
-        yield return WaitUntil(() => Count(3) == 2, 30f, "Attempts 2-3 time out");
+        // Tentativa 2: alternar acelera, repetir o lado não; sem toques a velocidade cai.
+        yield return WaitForAttempt(manager, players, 2);
+        float tapBoost = Field<float>(runners[0], "tapBoost");
+        runners[0].RegisterTap(1);
+        runners[0].RegisterTap(1);
+        runners[0].RegisterTap(-1);
+        LongJumpSmokeTest.Check(Mathf.Abs(runners[0].Speed - 2f * tapBoost) < 0.05f,
+            "Alternating taps add speed, got " + runners[0].Speed);
+        yield return new WaitForSeconds(0.3f);
+        LongJumpSmokeTest.Check(runners[0].Speed < 2f * tapBoost &&
+            players[0].GetComponent<Rigidbody2D>().linearVelocity.x > 0.1f, "Speed decays and drives the runner");
+
+        // Tentativas 2 e 3: ninguém salta -> falta por tempo; bandeiras ficam.
+        yield return WaitUntil(() => Count(3) == 2, 45f, "Attempts 2-3 time out");
         LongJumpSmokeTest.Check(results.Where(r => r.attempt >= 2).All(r => !r.valid), "Timeouts are fouls");
         LongJumpSmokeTest.Check(GameManager.Instance.GetScore() == "0 x 0", "No medal on tie");
+        LongJumpSmokeTest.Check(Mathf.Abs(markers[0].position.x - (lineX + 3f)) < 0.1f, "Flag keeps best mark");
 
         // Desempate: P1 salta, P2 pisa além da linha.
         yield return WaitForAttempt(manager, players, 4);
@@ -163,7 +201,8 @@ public class LongJumpSmokeRunner : MonoBehaviour
         LongJumpSmokeTest.Check(GameManager.Instance.GetScore() == "1 x 0", "P1 medal, got " + GameManager.Instance.GetScore());
         FinishLine result = Field<FinishLine>(manager, "resultScreen");
         LongJumpSmokeTest.Check(Field<GameObject>(result, "victoryPanel").activeInHierarchy, "Victory panel");
-        LongJumpSmokeTest.Check(manager.GetBestMark(1) > 5.5f && manager.GetBestMark(2) > 5.5f, "Best marks kept");
+        LongJumpSmokeTest.Check(manager.GetBestMark(1) > 4f && manager.GetBestMark(2) > 4f, "Best marks kept");
+        LongJumpSmokeTest.Check(Time.timeScale == 1f, "Normal time at the end");
     }
 
     private int Count(int attempt) => results.Count(r => r.attempt == attempt);
@@ -181,10 +220,11 @@ public class LongJumpSmokeRunner : MonoBehaviour
         yield return null;
     }
 
-    private static void Lift(PlayerController player, float x)
+    private static void Lift(PlayerController player, float frontX)
     {
         Rigidbody2D body = player.GetComponent<Rigidbody2D>();
-        body.position = new Vector2(x, body.position.y + 2f);
+        float halfWidth = player.GetComponent<Collider2D>().bounds.extents.x;
+        body.position = new Vector2(frontX - halfWidth, body.position.y + 2f);
         body.WakeUp();
     }
 

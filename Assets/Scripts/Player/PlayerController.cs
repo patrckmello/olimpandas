@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     private bool airDashAvailable = true;
 
+    private float? forcedRunSpeed;
+
     private readonly HashSet<Collider2D>
         groundColliders = new();
 
@@ -47,6 +49,8 @@ public class PlayerController : MonoBehaviour
     public float FacingDirection => lastDirection;
     public bool IsStunned => isStunned;
     public bool IsGrounded => isGrounded;
+    public KeyCode LeftKey => leftKey;
+    public KeyCode RightKey => rightKey;
 
     private void Awake()
     {
@@ -111,17 +115,34 @@ public class PlayerController : MonoBehaviour
         if (isDashing)
             return;
 
+        float speed =
+            forcedRunSpeed.HasValue && horizontal != 0f
+                ? forcedRunSpeed.Value
+                : horizontal * moveSpeed;
+
         rb.linearVelocity = new Vector2(
-            horizontal *
-            moveSpeed *
+            speed *
             movementMultiplier,
 
             rb.linearVelocity.y
         );
     }
 
+    // Provas com corrida própria (ex.: Salto a distância) definem a
+    // velocidade para frente; null devolve o controle normal por A/D.
+    public void SetForcedRunSpeed(float? speed)
+    {
+        forcedRunSpeed = speed;
+    }
+
     private void ReadMovementInput()
     {
+        if (forcedRunSpeed.HasValue)
+        {
+            horizontal = forcedRunSpeed.Value > 0.01f ? 1f : 0f;
+            return;
+        }
+
         horizontal = 0f;
 
         if (Input.GetKey(leftKey))
