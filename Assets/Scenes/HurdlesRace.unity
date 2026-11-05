@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e406027284c843408b2b7906f703ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NextRoundButton
+  characterSelectSceneName: CharacterSelect
 --- !u!114 &20791736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1669,7 +1670,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &631473921
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1831,6 +1832,7 @@ MonoBehaviour:
   - {fileID: 1297175554}
   - {fileID: 1747761371}
   countdownText: {fileID: 1743537560}
+  timer: {fileID: 0}
   stepDuration: 1
   goDuration: 0.8
 --- !u!4 &671773821
@@ -3546,6 +3548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e406027284c843408b2b7906f703ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NextRoundButton
+  characterSelectSceneName: CharacterSelect
 --- !u!1001 &1493932202
 PrefabInstance:
   m_ObjectHideFlags: 0
