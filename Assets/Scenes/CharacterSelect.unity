@@ -869,7 +869,7 @@ MonoBehaviour:
   - Urso Polar
   startButton: {fileID: 1223294309}
   backButton: {fileID: 1995247065}
-  gameSceneName: HurdlesRace
+  gameSceneName: CircuitDraw
   mainMenuSceneName: MainMenu
 --- !u!4 &368268561
 Transform:

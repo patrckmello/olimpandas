@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LongJump.unity
     guid: 4809775e5af24ef4a9d6ba1b68147f17
+  - enabled: 1
+    path: Assets/Scenes/CircuitDraw.unity
+    guid: 195e73efdcc2e0320b7d867fbc9876b6
   m_configObjects: {}

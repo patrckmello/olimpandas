@@ -1,4 +1,19 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+// Modalidade já disputada no circuito e quem levou a medalha.
+public readonly struct MinigameResult
+{
+    public readonly string SceneName;
+    public readonly int WinnerId;
+
+    public MinigameResult(string sceneName, int winnerId)
+    {
+        SceneName = sceneName;
+        WinnerId = winnerId;
+    }
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +24,12 @@ public class GameManager : MonoBehaviour
 
     public int Player1Medals { get; private set; }
     public int Player2Medals { get; private set; }
+
+    private readonly List<MinigameResult> results = new();
+    private readonly System.Random random = new();
+
+    // Histórico do circuito atual, na ordem das provas.
+    public IReadOnlyList<MinigameResult> Results => results;
 
     private void Awake()
     {
@@ -46,6 +67,23 @@ public class GameManager : MonoBehaviour
         return HasWinner(playerId);
     }
 
+    // Só o vencedor da modalidade ganha medalha do circuito.
+    public bool AwardMinigame(string sceneName, int playerId)
+    {
+        results.Add(new MinigameResult(sceneName, playerId));
+        return AddMedal(playerId);
+    }
+
+    // Próxima modalidade do circuito (null se nenhuma estiver disponível).
+    public Minigame DrawNextMinigame()
+    {
+        return MinigameRotation.Draw(
+            MinigameCatalog.Available(),
+            results.Select(r => r.SceneName).ToList(),
+            random
+        );
+    }
+
     public int GetMedals(int playerId)
     {
         return playerId == 1 ? Player1Medals : Player2Medals;
@@ -65,6 +103,7 @@ public class GameManager : MonoBehaviour
     {
         Player1Medals = 0;
         Player2Medals = 0;
+        results.Clear();
 
         Debug.Log("Nova partida iniciada.");
     }

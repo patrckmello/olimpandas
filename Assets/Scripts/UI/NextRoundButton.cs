@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 public class NextRoundButton : MonoBehaviour
 {
     [SerializeField] private string characterSelectSceneName = "CharacterSelect";
+    [SerializeField] private string drawSceneName = "CircuitDraw";
 
-    // Próxima rodada ou revanche com os mesmos personagens.
+    // Próxima prova do circuito ou, se ele acabou, revanche
+    // (novo circuito com os mesmos personagens).
     public void NextRound()
     {
         if (GameManager.Instance != null && GameManager.Instance.IsMatchFinished())
@@ -14,9 +16,7 @@ public class NextRoundButton : MonoBehaviour
             GameManager.Instance.ResetMatch();
         }
 
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex
-        );
+        SceneManager.LoadScene(drawSceneName);
     }
 
     // Inicia uma revanche diretamente.
@@ -26,9 +26,7 @@ public class NextRoundButton : MonoBehaviour
             GameManager.Instance.ResetMatch();
 
         // Mantém os personagens selecionados e bloqueados.
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex
-        );
+        SceneManager.LoadScene(drawSceneName);
     }
 
     // Prepara uma nova seleção.

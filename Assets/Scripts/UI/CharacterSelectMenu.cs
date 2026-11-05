@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Tela de seleção de personagens (P1 e P2 independentes, podem repetir).
-/// Fica numa cena própria (ex.: "CharacterSelect"), entre MainMenu e HurdlesRace.
+/// Fica numa cena própria (ex.: "CharacterSelect"), entre MainMenu e o sorteio do circuito.
 /// Usa apenas a API pública do CharacterSelectionManager:
 /// Instance, SelectCharacter, GetCharacter, ConfirmSelection, UnlockSelection.
 /// </summary>
@@ -43,7 +43,7 @@ public class CharacterSelectMenu : MonoBehaviour
     [Header("Navegação")]
     [SerializeField] private Button startButton;
     [SerializeField] private Button backButton;
-    [SerializeField] private string gameSceneName = "HurdlesRace";
+    [SerializeField] private string gameSceneName = "CircuitDraw";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     private CharacterType[] characters;

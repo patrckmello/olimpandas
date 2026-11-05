@@ -26,7 +26,7 @@ public static class CharacterSelectionFlowSmokeTest
 
     public static void Run()
     {
-        foreach (string scene in new[] { "MainMenu", "CharacterSelect", "HurdlesRace" })
+        foreach (string scene in new[] { "MainMenu", "CharacterSelect", "CircuitDraw", "HurdlesRace", "LongJump" })
             if (!EditorBuildSettings.scenes.Any(s => s.enabled && s.path == $"Assets/Scenes/{scene}.unity"))
                 throw new Exception("Missing build scene: " + scene);
         EditorSceneManager.OpenScene("Assets/Scenes/MainMenu.unity");
@@ -112,17 +112,21 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
             Check(!start.interactable, "Cancel confirmation");
             panel2.confirmButton.onClick.Invoke();
             start.onClick.Invoke();
-            yield return null;
-            yield return null;
+            yield return WaitForDrawnMinigame();
             var selection = CharacterSelectionManager.Instance;
             var score = GameManager.Instance;
             Check(score != null && selection != null, "Managers initialized");
             Check(score.GetScore() == "0 x 0", "New MD3 score");
 
-            // Both players win rounds; alternate the final winner across combinations.
+            // Both players win modalities; alternate the final winner across combinations.
             int champion = p1 == CharacterType.PandaGigante ? 1 : 2;
-            foreach (int winner in new[] { champion, 3 - champion, champion })
+            int[] winners = { champion, 3 - champion, champion };
+            string previous = null;
+            foreach (int winner in winners)
             {
+                string current = SceneManager.GetActiveScene().name;
+                Check(current != previous, "Modality repeated back-to-back: " + current);
+                previous = current;
                 yield return new WaitForSeconds(4.1f); // Real countdown completes.
                 Check(CharacterSelectionManager.Instance == selection && GameManager.Instance == score,
                     "Persistent manager identity");
@@ -145,16 +149,17 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
                 if (!score.IsMatchFinished())
                 {
                     ClickResult("NextRound");
-                    yield return null;
-                    yield return null;
-                    Check(score.GetScore() == after, "Score preserved between rounds");
+                    yield return WaitForDrawnMinigame();
+                    Check(score.GetScore() == after, "Score preserved between modalities");
                 }
             }
             Check(score.GetMedals(champion) == 2 && score.GetMedals(3 - champion) == 1, "MD3 2-1");
+            Check(score.Results.Select(r => r.WinnerId).SequenceEqual(winners), "Circuit history winners");
+            Check(score.Results[0].SceneName != score.Results[1].SceneName, "No repeat while unused modalities remain");
             ClickResult("NextRound"); // Same serialized button becomes REVANCHE.
-            yield return null;
-            yield return null;
-            Check(score.GetScore() == "0 x 0" && selection.IsSelectionLocked, "Rematch reset and lock");
+            Check(score.GetScore() == "0 x 0" && score.Results.Count == 0, "Rematch starts a new circuit");
+            yield return WaitForDrawnMinigame();
+            Check(selection.IsSelectionLocked, "Rematch keeps selection locked");
             CheckVisual(1, p1);
             CheckVisual(2, p2);
             // Complete a second MD3 quickly to exercise the actual change button.
@@ -196,6 +201,26 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
             "Direct race bootstrap");
         CheckVisual(1, CharacterType.PandaGigante);
         CheckVisual(2, CharacterType.UrsoPolar);
+    }
+
+    // Seleção/próxima prova passam pela tela de sorteio e caem numa modalidade do catálogo.
+    private static IEnumerator WaitForDrawnMinigame()
+    {
+        yield return WaitUntil(() => SceneManager.GetActiveScene().name == "CircuitDraw", 2f, "Draw screen");
+        yield return WaitUntil(() => MinigameCatalog.All.Any(m => m.SceneName == SceneManager.GetActiveScene().name),
+            6f, "Drawn modality loaded");
+        yield return null;
+    }
+
+    private static IEnumerator WaitUntil(Func<bool> condition, float timeout, string label)
+    {
+        float start = Time.realtimeSinceStartup;
+        while (!condition())
+        {
+            if (Time.realtimeSinceStartup - start > timeout)
+                throw new Exception("Character selection: timed out waiting for " + label);
+            yield return null;
+        }
     }
 
     private static void Choose(CharacterSelectMenu.PlayerPanel panel, CharacterType character)

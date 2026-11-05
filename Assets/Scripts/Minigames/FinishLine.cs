@@ -1,6 +1,7 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class FinishLine : MonoBehaviour
@@ -69,7 +70,10 @@ public class FinishLine : MonoBehaviour
         int playerId = winner.PlayerId;
 
         bool matchFinished =
-            GameManager.Instance.AddMedal(playerId);
+            GameManager.Instance.AwardMinigame(
+                SceneManager.GetActiveScene().name,
+                playerId
+            );
 
         // Congela os jogadores e dispara a vitória.
         FreezeAllPlayers(winner);
