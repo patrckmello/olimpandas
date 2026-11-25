@@ -36,9 +36,10 @@ public class CharacterSelectMenu : MonoBehaviour
     [SerializeField] private PlayerPanel player2 = new PlayerPanel { playerId = 2 };
 
     [Header("Personagens (mesma ordem do enum CharacterType)")]
-    [Tooltip("Ordem: PandaGigante, UrsoPolar")]
+    [Tooltip("Ordem: PandaGigante, UrsoPolar, Grizzly, UrsoDeOculos")]
     [SerializeField] private Sprite[] previews;
-    [SerializeField] private string[] displayNames = { "Panda Gigante", "Urso Polar" };
+    [SerializeField] private string[] displayNames =
+        { "Panda Gigante", "Urso Polar", "Grizzly", "Urso de Óculos" };
 
     [Header("Navegação")]
     [SerializeField] private Button startButton;
