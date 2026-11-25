@@ -91,7 +91,7 @@ public class FinishLine : MonoBehaviour
             victoryText.text =
                 $"PLAYER {playerId}\nCAMPEÃO!";
 
-            nextButtonText.text = "REVANCHE";
+            SetNextLabel("REVANCHE");
 
             if (changeCharacterButton != null)
             {
@@ -103,7 +103,7 @@ public class FinishLine : MonoBehaviour
             victoryText.text =
                 $"PLAYER {playerId}\nVENCEU!";
 
-            nextButtonText.text = "PRÓXIMA PROVA";
+            SetNextLabel("PRÓXIMA PROVA");
 
             if (changeCharacterButton != null)
             {
@@ -119,6 +119,13 @@ public class FinishLine : MonoBehaviour
         Debug.Log(
             $"PLAYER {playerId} VENCEU A PROVA!"
         );
+    }
+
+    // Opcional: botão com o texto desenhado na imagem não tem label.
+    private void SetNextLabel(string label)
+    {
+        if (nextButtonText != null)
+            nextButtonText.text = label;
     }
 
     private void StopAllTimers()
