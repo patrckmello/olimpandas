@@ -6,6 +6,8 @@ public class PlayerCharacterVisual : MonoBehaviour
     [Header("Prefabs dos personagens")]
     [SerializeField] private GameObject pandaGigantePrefab;
     [SerializeField] private GameObject ursoPolarPrefab;
+    [SerializeField] private GameObject grizzlyPrefab;
+    [SerializeField] private GameObject ursoDeOculosPrefab;
 
     private PlayerController playerController;
 
@@ -37,9 +39,13 @@ public class PlayerCharacterVisual : MonoBehaviour
 
     private void ApplyCharacter(CharacterType character)
     {
-        GameObject selectedPrefab = character == CharacterType.UrsoPolar
-            ? ursoPolarPrefab
-            : pandaGigantePrefab;
+        GameObject selectedPrefab = character switch
+        {
+            CharacterType.UrsoPolar => ursoPolarPrefab,
+            CharacterType.Grizzly => grizzlyPrefab,
+            CharacterType.UrsoDeOculos => ursoDeOculosPrefab,
+            _ => pandaGigantePrefab
+        };
 
         if (selectedPrefab == null)
         {

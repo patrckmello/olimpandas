@@ -26,7 +26,7 @@ public static class CharacterSelectionFlowSmokeTest
 
     public static void Run()
     {
-        foreach (string scene in new[] { "MainMenu", "CharacterSelect", "CircuitDraw", "HurdlesRace", "LongJump" })
+        foreach (string scene in new[] { "MainMenu", "CharacterSelect", "CircuitDraw", "HurdlesRace", "LongJump", "Canoeing", "Fishing", "Podium" })
             if (!EditorBuildSettings.scenes.Any(s => s.enabled && s.path == $"Assets/Scenes/{scene}.unity"))
                 throw new Exception("Missing build scene: " + scene);
         EditorSceneManager.OpenScene("Assets/Scenes/MainMenu.unity");
@@ -93,8 +93,10 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
         yield return null;
         yield return null;
 
-        foreach (CharacterType p1 in Enum.GetValues(typeof(CharacterType)))
-        foreach (CharacterType p2 in Enum.GetValues(typeof(CharacterType)))
+        // Todos contra o seguinte (cada personagem passa por P1 e P2) e uma dupla igual.
+        var all = (CharacterType[])Enum.GetValues(typeof(CharacterType));
+        var pairs = all.Select((c, i) => (p1: c, p2: all[(i + 1) % all.Length])).Append((all[0], all[0]));
+        foreach (var (p1, p2) in pairs)
         {
             Check(SceneManager.GetActiveScene().name == "CharacterSelect", "Selection navigation");
             CharacterSelectMenu menu = FindAnyObjectByType<CharacterSelectMenu>();
@@ -142,10 +144,16 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
                 string after = score.GetScore();
                 Call(finish, "OnTriggerEnter2D", player.GetComponent<Collider2D>());
                 Check(score.GetScore() == after, "Repeated finish awarded twice");
-                yield return new WaitForSeconds(1.2f);
-                Check(Field<GameObject>(finish, "victoryPanel").activeInHierarchy, "Victory panel");
-                Check(Field<GameObject>(finish, "changeCharacterButton").activeSelf == score.IsMatchFinished(),
+                yield return WaitForPodium();
+                PodiumScreen podium = FindAnyObjectByType<PodiumScreen>();
+                Check(Field<GameObject>(podium, "changeCharacterButton").activeSelf == score.IsMatchFinished(),
                     "Change characters visibility");
+                CharacterType champ = winner == 1 ? p1 : p2;
+                Check(AssetDatabase.GetAssetPath(Field<SpriteRenderer>(podium, "winnerActor").sprite).Contains($"/{champ}/"),
+                    "Winner on the podium");
+                Check(Field<TMPro.TMP_Text>(podium, "titleText").text.Contains("JOGADOR " + winner), "Podium title");
+                Check(MedalsOn(podium, "medalsP1") == score.GetMedals(1) && MedalsOn(podium, "medalsP2") == score.GetMedals(2),
+                    "Podium medals");
                 if (!score.IsMatchFinished())
                 {
                     ClickResult("NextRound");
@@ -168,7 +176,7 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
             Call(FindAnyObjectByType<FinishLine>(), "OnTriggerEnter2D",
                 FindObjectsByType<PlayerController>()
                     .Single(p => p.PlayerId == champion).GetComponent<Collider2D>());
-            yield return new WaitForSeconds(1.2f);
+            yield return WaitForPodium();
             ClickResult("ChangeCharacters");
             yield return null;
             yield return null;
@@ -208,9 +216,18 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
     {
         yield return WaitUntil(() => SceneManager.GetActiveScene().name == "CircuitDraw", 2f, "Draw screen");
         yield return WaitUntil(() => MinigameCatalog.All.Any(m => m.SceneName == SceneManager.GetActiveScene().name),
-            6f, "Drawn modality loaded");
+            14f, "Drawn modality loaded");
         yield return null;
     }
+
+    private static IEnumerator WaitForPodium()
+    {
+        yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Podium", 4f, "Podium");
+        yield return WaitUntil(() => FindAnyObjectByType<PodiumScreen>().IsReady, 8f, "Podium ready");
+    }
+
+    private static int MedalsOn(PodiumScreen podium, string field) =>
+        Field<Image[]>(podium, field).Count(i => i.sprite == Field<Sprite>(podium, "medalOn"));
 
     private static IEnumerator WaitUntil(Func<bool> condition, float timeout, string label)
     {
@@ -225,7 +242,8 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
 
     private static void Choose(CharacterSelectMenu.PlayerPanel panel, CharacterType character)
     {
-        if (CharacterSelectionManager.Instance.GetCharacter(panel.playerId) != character)
+        for (int i = 0; i < Enum.GetValues(typeof(CharacterType)).Length &&
+             CharacterSelectionManager.Instance.GetCharacter(panel.playerId) != character; i++)
             panel.nextButton.onClick.Invoke();
         Check(CharacterSelectionManager.Instance.GetCharacter(panel.playerId) == character, "Independent choice");
     }
@@ -234,11 +252,14 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
     {
         PlayerController player = FindObjectsByType<PlayerController>().Single(p => p.PlayerId == id);
         var visual = player.GetComponent<PlayerCharacterVisual>();
-        GameObject source = Field<GameObject>(visual,
-            character == CharacterType.PandaGigante ? "pandaGigantePrefab" : "ursoPolarPrefab");
+        string field = character.ToString();
+        GameObject source = Field<GameObject>(visual, char.ToLowerInvariant(field[0]) + field.Substring(1) + "Prefab");
         Check(source != null, "Character prefab reference");
         Transform target = player.transform.Find("Visual");
         Transform expected = source.transform.Find("Visual");
+        Sprite sprite = expected.GetComponent<SpriteRenderer>().sprite;
+        Check(sprite != null && AssetDatabase.GetAssetPath(sprite).Contains($"/{character}/"),
+            "Prefab sprite of " + character);
         Check(target.GetComponent<Animator>().runtimeAnimatorController == expected.GetComponent<Animator>().runtimeAnimatorController,
             "Selected animator");
         Check(target.localScale == expected.localScale && target.localPosition == expected.localPosition, "Visual transform");

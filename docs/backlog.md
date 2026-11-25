@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 05/11/2026.
+> Atualizado em 25/11/2026.
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -20,7 +20,7 @@
 
 ## Prioridade atual
 
-O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → resultado → próximo sorteio` está implementado, com MD3 de modalidades, revanche (novo circuito) e retorno à seleção. O relatório de verificações da seleção está em [integração de personagens](character-selection-integration.md).
+O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → Podium → próximo sorteio` está implementado, com MD3 de modalidades, revanche (novo circuito) e retorno à seleção. O relatório de verificações da seleção está em [integração de personagens](character-selection-integration.md).
 
 Com aproximadamente **3 semanas/aulas restantes para a entrega acadêmica**, o escopo foi reduzido para **4 personagens e 4 minigames**. Esse corte vale para a entrega atual; o restante permanece como roadmap pós-entrega.
 
@@ -39,14 +39,14 @@ Objetivos imediatos:
 **Personagens da entrega:**
 - Panda-gigante — **VALIDADO**;
 - Urso-polar — **VALIDADO**;
-- Grizzly — **PLANEJADO PARA A ENTREGA**;
-- Urso-de-óculos — **PLANEJADO PARA A ENTREGA**.
+- Grizzly — **IMPLEMENTADO** (falta playtest);
+- Urso-de-óculos — **IMPLEMENTADO** (falta playtest).
 
 **Minigames da entrega:**
 - 100m com barreiras — **VALIDADO**;
-- Salto a distância — **VALIDADO** (`LongJump.unity`; integração ao circuito pendente);
-- Canoagem — **PLANEJADO PARA A ENTREGA**;
-- Pescaria — **PLANEJADO PARA A ENTREGA**.
+- Salto a distância — **VALIDADO** (`LongJump.unity`, no circuito);
+- Canoagem — **IMPLEMENTADO** (`Canoeing.unity`, no circuito; falta playtest);
+- Pescaria — **IMPLEMENTADO** (`Fishing.unity`, no circuito; falta playtest).
 
 **Pós-entrega:** Lançamento de dardo, Levantamento de peso, Sumô, Natação e Tênis. Urso-do-sol e Panda-vermelho também ficam fora da entrega acadêmica atual.
 
@@ -118,7 +118,13 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 
 > **Implementado em 05/11/2026:** cada modalidade declara só o vencedor da modalidade via `FinishLine.DeclareWinner` → `GameManager.AwardMinigame` (medalha + histórico). Disputas internas (tentativas do Salto, desempates) ficam dentro do minigame. **100m com barreiras = corrida única** (uma corrida vale a medalha da modalidade). `PRÓXIMA PROVA` e `REVANCHE` levam à cena `CircuitDraw`; revanche começa um circuito novo com os mesmos personagens.
 >
-> **Contrato para a UI (Gabriel/Cadu):** `GameManager.DrawNextMinigame()` sorteia e devolve `Minigame` (`DisplayName`, `SceneName`); `GameManager.Results` traz o histórico (`SceneName`, `WinnerId`); `GetScore()`/`GetMedals()` o placar; `MinigameCatalog.All` lista as provas. A tela atual de `CircuitDraw` (`CircuitDrawScreen`) é **provisória** — o visual final de sorteio/transição é do Gabriel.
+> **Contrato da Canoagem (Cadu):** `CanoeRaceManager` expõe `GetProgress(playerId)` (0 a 1), `GetSpeedRatio(playerId)`, `ElapsedTime`, `TimeLimit`, `IsRacing` e os eventos `RaceStarted` e `Collided`.
+>
+> **Contrato da Pescaria (Cadu):** `FishingManager` expõe `GetScore(playerId)`, `RemainingTime`, `RoundTime`, `IsFishing`, `IsSuddenDeath` e os eventos `RoundStarted`, `SuddenDeathStarted`, `Caught`, `ScoreChanged` e `Missed`. O `ScoreText` da cena é provisório.
+>
+> **Resultado (Gabriel):** depois de cada prova o `FinishLine` carrega a cena `Podium` (`PodiumScreen`), com medalha, placar e os botões PRÓXIMA PROVA, REVANCHE e TROCAR PERSONAGEM. O `VictoryPanel` de cada prova ficou de reserva, para quando `Podium` não está no Build Settings.
+>
+> **Contrato para a UI (Gabriel/Cadu):** `GameManager.DrawNextMinigame()` sorteia e devolve `Minigame` (`DisplayName`, `SceneName`); `GameManager.Results` traz o histórico (`SceneName`, `WinnerId`); `GetScore()`/`GetMedals()` o placar; `MinigameCatalog.All` lista as provas. A tela `CircuitDraw` (`CircuitDrawScreen`) tem carrossel de cartas e mostra objetivo e controles de cada prova (`Minigame.Goal`, `ControlsP1`, `ControlsP2`).
 
 ### Hipóteses de design a validar por playtest (não são regras fechadas)
 
@@ -165,14 +171,15 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 
 - [x] Definir contrato entre `GameManager` (medalhas do circuito) e placar/regras internas de cada minigame, sem destruir a corrida atual.
 - [ ] Adicionar catálogo de poderes permitidos por modalidade e aplicar as restrições sem afetar o sistema de poderes existente.
-- [ ] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte. *(Salto já desempata por tentativa extra.)*
+- [x] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte. *(Salto: tentativa extra; Canoagem: segue até alguém abrir vantagem; Pescaria: morte súbita.)*
 - [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos.
 - [x] Criar catálogo de modalidades habilitadas (`MinigameCatalog`) e rotação simples (`MinigameRotation`).
 - [x] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição (não repete enquanto houver inédita; depois evita repetir a última).
-- [ ] Criar apresentação de sorteio e transição para a cena sorteada. *(Versão provisória funcional em `CircuitDraw`; visual final com Gabriel.)*
+- [x] Criar apresentação de sorteio e transição para a cena sorteada. *(Carrossel com instruções em `CircuitDraw`.)*
+- [x] Criar pódio com a medalha do vencedor e o campeão do circuito. *(`Podium`.)*
 - [x] Fazer o minigame comunicar **somente o vencedor da modalidade** ao sistema geral de medalhas.
 - [x] Ajustar os botões de próxima prova, revanche e troca de personagens para o fluxo de Circuito Olímpico.
-- [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria. *(Automatizado com 100m + Salto.)*
+- [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria. *(Automatizado com as quatro; falta playtest.)*
 - [ ] Testar pontuação, persistência dos personagens e regresso ao menu no fluxo ponta a ponta.
 
 ## Estado dos sistemas compartilhados
@@ -189,11 +196,11 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 | Seleção dinâmica P1/P2 | **VALIDADO** | Panda/Panda, Panda/Polar, Polar/Panda e Polar/Polar testados em Unity. |
 | Escolha persistente/travada na MD3 | **VALIDADO** | `CharacterSelectionManager`, `MatchCharacterInitializer` e aplicação por `PlayerCharacterVisual`. |
 | Botões REVANCHE e TROCAR PERSONAGENS | **IMPLEMENTADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano da integração pendente. |
-| Tela de seleção / navegação | **IMPLEMENTADO** | `CharacterSelectMenu` recebe confirmações independentes e permite voltar ao `MainMenu`. Ver relatório de testes. |
+| Tela de seleção / navegação | **IMPLEMENTADO** | Cada jogador escolhe no próprio teclado (P1 A/D/W/S, P2 setas) ou com o mouse; Enter inicia e Esc volta ao `MainMenu`. Ver relatório de testes. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
 | Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo. |
-| Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Tela de sorteio provisória. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Playtest ok em 05/11/2026. |
+| Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Sorteio em carrossel e pódio, aguardando playtest. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Playtest ok em 05/11/2026. |
 | Checkpoint / respawn / DeathZone | **VALIDADO** | Base reutilizável. |
 | PlayerStatusEffects | **VALIDADO** | Base de Stun e Slow confirmada em gameplay. |
 | Poder Stun | **IMPLEMENTADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
@@ -215,10 +222,10 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 | **Lançamento de dardo** | **ADIADO — PÓS-ENTREGA** | Barra de força, ângulo e vento; maior distância válida vence. |
 | **Levantamento de peso** | **ADIADO — PÓS-ENTREGA** | Escolha da carga, timing/força e equilíbrio; maior peso válido vence. |
 | **Sumô** | **ADIADO — PÓS-ENTREGA** | Arena curta com movimentação, investida e disputa por posição; objetivo é tirar o adversário do ringue. |
-| **Canoagem** | **PLANEJADO — ENTREGA** | Câmera diagonal/aérea; rio com obstáculos; remadas esquerda/direita controlam impulso e desvio, enquanto cima/baixo permitem evitar obstáculos. |
+| **Canoagem** | **IMPLEMENTADO — ENTREGA** | Uma raia por canoa, obstáculos iguais nas duas. Alternar esquerda/direita acelera; insistir num lado rende pouco e vira a canoa; remar mais rápido que o ritmo ideal não rende mais. Cima/baixo desvia; bater reduz a velocidade. Primeira proa a chegar vence; aos 60 s vence quem estiver na frente. Sem poderes. |
 | **Natação** | **ADIADO — PÓS-ENTREGA** | Braçadas alternadas, ritmo e stamina para impedir spam; virada na borda com timing. |
 | **Tênis** | **ADIADO — PÓS-ENTREGA** | Movimento lateral e rebatida baseada em timing, com variações como lob e smash. |
-| **Pescaria** | **PLANEJADO — ENTREGA** | Rio compartilhado, peixes em movimento, rodada cronometrada e disputa por pontos com mecânica simples de fisgada/recolhimento. |
+| **Pescaria** | **IMPLEMENTADO — ENTREGA** | Rio vertical entre P1 (esquerda) e P2 (direita), varas fixas. Cada peixe mostra uma sequência de setas; a primeira escolhe o peixe e quem completa antes pesca (mesmo quadro: os dois pontuam). Peixes de 1, 2 e 3 pontos, dourado (5) e bota (−2, mínimo zero). 60 s; empate vai a morte súbita sem bota. Sem poderes. |
 
 ## User Stories
 
@@ -337,13 +344,13 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 - P1 e P2 ficam em margens opostas do rio.
 - Os peixes se movimentam pela área compartilhada.
 - Os dois jogadores conseguem interagir com a pescaria simultaneamente sem sobreposição confusa.
-- A condição de pontuação e vitória deve ser definida antes da implementação do MVP.
+- Maior pontuação em 60 s vence; empate vai a morte súbita (próximo peixe decide). Definido em 24/11/2026.
 
 ## Personagens
 
 **Jogáveis, validados:** Panda-gigante (personagem mestre) e Urso-polar.
 
-**Planejados para esta entrega:** Grizzly e Urso-de-óculos.
+**Jogáveis, aguardando playtest:** Grizzly e Urso-de-óculos.
 
 **Pós-entrega:** Urso-do-sol e Panda-vermelho.
 
@@ -373,7 +380,7 @@ O objetivo continua sendo um **vertical slice local, reutilizável e jogável** 
 ## Entrega da integração de personagens — implementação e aceite
 
 - [ ] Menu permite selecionar e confirmar personagens de P1 e P2 separadamente.
-- [ ] As escolhas são aplicadas ao carregar a modalidade sorteada (`HurdlesRace` ou `LongJump`).
+- [ ] As escolhas são aplicadas ao carregar a modalidade sorteada (`HurdlesRace`, `LongJump`, `Canoeing` ou `Fishing`).
 - [ ] Uma MD3 inteira mantém os personagens escolhidos e o placar entre rodadas.
 - [ ] REVANCHE inicia uma nova MD3 sem alterar os personagens.
 - [ ] TROCAR PERSONAGENS abre a tela de seleção e permite nova combinação.
