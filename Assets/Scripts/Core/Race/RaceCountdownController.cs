@@ -25,6 +25,7 @@ public class RaceCountdownController : MonoBehaviour
         yield return ShowStep("2");
         yield return ShowStep("1");
 
+        Sfx.Countdown("VAI!");
         if (countdownText != null)
         {
             countdownText.text = "VAI!";
@@ -48,6 +49,7 @@ public class RaceCountdownController : MonoBehaviour
 
     private IEnumerator ShowStep(string text)
     {
+        Sfx.Countdown(text);
         if (countdownText != null)
         {
             countdownText.text = text;

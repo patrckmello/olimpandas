@@ -23,11 +23,21 @@ public class MainMenu : MonoBehaviour
 
     public void Jogar()
     {
+        Sfx.Play(SfxId.UiConfirm);
         SceneManager.LoadScene(nomeCenaJogo);
     }
 
-    public void AbrirOpcoes()  => painelOpcoes.SetActive(true);
-    public void FecharOpcoes() => painelOpcoes.SetActive(false);
+    public void AbrirOpcoes()
+    {
+        Sfx.Play(SfxId.UiConfirm);
+        painelOpcoes.SetActive(true);
+    }
+
+    public void FecharOpcoes()
+    {
+        Sfx.Play(SfxId.UiBack);
+        painelOpcoes.SetActive(false);
+    }
 
     public void DefinirVolume(float valor)
     {

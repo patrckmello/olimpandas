@@ -123,6 +123,7 @@ public class CanoePaddler : MonoBehaviour
         lastSide = side;
         lastStrokeTime = Time.time;
         Emit(strokeParticles);
+        Sfx.Play(side == Left ? SfxId.PaddleLeft : SfxId.PaddleRight, 0.7f);
         Stroked?.Invoke(side);
     }
 
@@ -194,6 +195,8 @@ public class CanoePaddler : MonoBehaviour
         push = (offset >= 0f ? 1f : -1f) * hitPush;
 
         Emit(hitParticles);
+        Sfx.Play(SfxId.CanoeHit);
+        Sfx.PlayVoice(PlayerId, "dano");
         Hit?.Invoke();
     }
 

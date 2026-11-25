@@ -11,6 +11,8 @@ public class NextRoundButton : MonoBehaviour
     // (novo circuito com os mesmos personagens).
     public void NextRound()
     {
+        Sfx.Play(SfxId.UiConfirm);
+
         if (GameManager.Instance != null && GameManager.Instance.IsMatchFinished())
         {
             GameManager.Instance.ResetMatch();
@@ -22,6 +24,8 @@ public class NextRoundButton : MonoBehaviour
     // Inicia uma revanche diretamente.
     public void Rematch()
     {
+        Sfx.Play(SfxId.UiConfirm);
+
         if (GameManager.Instance != null)
             GameManager.Instance.ResetMatch();
 
@@ -32,6 +36,8 @@ public class NextRoundButton : MonoBehaviour
     // Prepara uma nova seleção.
     public void ChangeCharacters()
     {
+        Sfx.Play(SfxId.UiConfirm);
+
         if (GameManager.Instance != null)
             GameManager.Instance.ResetMatch();
 

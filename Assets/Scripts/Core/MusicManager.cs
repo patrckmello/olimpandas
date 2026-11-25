@@ -23,6 +23,7 @@ public class MusicManager : MonoBehaviour
 
     [SerializeField] private SceneMusic[] sceneMusics;
     [SerializeField, Range(0f, 1f)] private float musicVolume = 0.6f;
+    [SerializeField, Range(0f, 1f)] private float duckedFactor = 0.3f;
 
     private AudioSource source;
 
@@ -71,6 +72,7 @@ private void LogAudioState()
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        SetDucked(false);
         PlayForScene(scene.name);
     }
 
@@ -101,6 +103,12 @@ private void LogAudioState()
 
         source.clip = clip;
         source.Play();
+    }
+
+    /// <summary>Abaixa a música sob um jingle; volta ao normal na próxima cena.</summary>
+    public void SetDucked(bool ducked)
+    {
+        source.volume = ducked ? musicVolume * duckedFactor : musicVolume;
     }
 
     public void Stop()
