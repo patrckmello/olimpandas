@@ -23,7 +23,7 @@ public class FishingManager : MonoBehaviour
     [SerializeField] private FishKind[] kinds;
     [SerializeField] private float riverHalfWidth = 2.3f;
     [SerializeField] private float spawnY = 7.5f;
-    [SerializeField] private float zoneTop = 4.6f;
+    [SerializeField] private float zoneTop = 3.5f;
     [SerializeField] private float zoneBottom = -5.4f;
     [SerializeField] private float spawnInterval = 1.1f;
     [Tooltip("No máximo 4: cada peixe no rio começa com uma seta diferente.")]
@@ -103,6 +103,7 @@ public class FishingManager : MonoBehaviour
         yield return ShowStep("2", stepDuration);
         yield return ShowStep("1", stepDuration);
         Announce("VAI!", goDuration);
+        Sfx.Countdown("VAI!");
 
         foreach (FishingPlayer player in players)
             player.Begin(this);
@@ -114,6 +115,7 @@ public class FishingManager : MonoBehaviour
             yield return null;
             RemainingTime = Mathf.Max(0f, RemainingTime - Time.deltaTime);
         }
+        Sfx.Play(SfxId.Whistle);
 
         if (scores[0] == scores[1])
         {
@@ -150,6 +152,9 @@ public class FishingManager : MonoBehaviour
         foreach (RiverFish fish in river.Where(f => f.transform.position.y < zoneBottom).ToList())
             Remove(fish);
 
+        foreach (RiverFish fish in river)
+            fish.SetReachable(IsReachable(fish));
+
         if (Time.time >= nextSpawn)
         {
             nextSpawn = Time.time + spawnInterval;
@@ -166,6 +171,8 @@ public class FishingManager : MonoBehaviour
             RiverFish fish = group.Key;
             if (!river.Remove(fish))
                 continue;
+
+            Sfx.Play(fish.Kind.IsJunk ? SfxId.JunkCaught : SfxId.FishCaught);
 
             foreach (var (player, _) in group)
             {
@@ -246,6 +253,7 @@ public class FishingManager : MonoBehaviour
 
     private IEnumerator ShowStep(string text, float duration)
     {
+        Sfx.Countdown(text);
         SetStatus(text);
         yield return new WaitForSeconds(duration);
     }

@@ -214,12 +214,10 @@ public class CanoeSmokeRunner : MonoBehaviour
         Teleport(canoes[1], finish.position.x - 1f, Field<float>(canoes[1], "laneCenterY"));
         yield return WaitUntil(() => !manager.IsRacing, 2f, "Finish line crossed");
         CanoeSmokeTest.Check(Mathf.Approximately(manager.GetProgress(2), 1f), "Winner at full progress");
-        yield return new WaitForSeconds(1.5f);
+        CanoeSmokeTest.Check(canoes.All(c => Mathf.Abs(c.transform.eulerAngles.z) < 0.5f), "Canoes straight at the end");
+        yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Podium", 3f, "Podium");
         CanoeSmokeTest.Check(GameManager.Instance.GetScore() == "1 x 1", "P2 medal, got " + GameManager.Instance.GetScore());
         CanoeSmokeTest.Check(GameManager.Instance.Results.All(r => r.SceneName == "Canoeing"), "Circuit history");
-        FinishLine result = Field<FinishLine>(manager, "resultScreen");
-        CanoeSmokeTest.Check(Field<GameObject>(result, "victoryPanel").activeInHierarchy, "Victory panel");
-        CanoeSmokeTest.Check(canoes.All(c => Mathf.Abs(c.transform.eulerAngles.z) < 0.5f), "Canoes straight at the end");
     }
 
     private void Bind()
