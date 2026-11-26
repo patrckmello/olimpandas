@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 25/11/2026 (noite, véspera da entrega).
+> Atualizado em 26/11/2026 — **v1.0.0 / entrega validada em playtest**.
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -18,19 +18,11 @@
 | **PLANEJADO** | Mecânica aprovada para desenvolvimento posterior. |
 | **ADIADO** | Fora do escopo atual de desenvolvimento. |
 
-## Prioridade atual
+## Estado da entrega v1.0.0
 
-O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → Podium → próximo sorteio` está implementado, com MD3 de modalidades, revanche (novo circuito) e retorno à seleção. O relatório de verificações da seleção está em [integração de personagens](character-selection-integration.md).
+O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → Podium → próximo sorteio` foi **validado ponta a ponta em playtest**. A entrega acadêmica fecha com **4 personagens e 4 minigames**, todos confirmados funcionando pelo time em 26/11/2026.
 
-Com aproximadamente **3 semanas/aulas restantes para a entrega acadêmica**, o escopo foi reduzido para **4 personagens e 4 minigames**. Esse corte vale para a entrega atual; o restante permanece como roadmap pós-entrega.
-
-Objetivos imediatos:
-
-1. fechar e validar **100m com barreiras** como primeira modalidade completa;
-2. implementar **Salto a distância**, **Canoagem** e **Pescaria** em versões MVP curtas, competitivas e completas;
-3. entregar quatro personagens visualmente distintos: **Panda-gigante, Urso-polar, Grizzly e Urso-de-óculos**, todos reutilizando a mesma base de gameplay;
-4. integrar as quatro modalidades ao fluxo do Circuito Olímpico sem reescrever sistemas já estáveis;
-5. reservar a parte final da terceira semana para integração, build, playtest e correção de bugs — sem abrir novas features.
+O escopo da v1.0.0 está concluído. Itens marcados como **ADIADO / PÓS-ENTREGA** continuam sendo roadmap e não fazem parte da validação desta versão.
 
 ## Escopo da entrega acadêmica — 3 semanas
 
@@ -39,14 +31,14 @@ Objetivos imediatos:
 **Personagens da entrega:**
 - Panda-gigante — **VALIDADO**;
 - Urso-polar — **VALIDADO**;
-- Grizzly — **IMPLEMENTADO** (falta playtest);
-- Urso-de-óculos — **IMPLEMENTADO** (falta playtest).
+- Grizzly — **VALIDADO**;
+- Urso-de-óculos — **VALIDADO**.
 
 **Minigames da entrega:**
 - 100m com barreiras — **VALIDADO**;
 - Salto a distância — **VALIDADO** (`LongJump.unity`, no circuito);
-- Canoagem — **IMPLEMENTADO** (`Canoeing.unity`, no circuito; falta playtest);
-- Pescaria — **IMPLEMENTADO** (`Fishing.unity`, no circuito; falta playtest).
+- Canoagem — **VALIDADO** (`Canoeing.unity`, no circuito);
+- Pescaria — **VALIDADO** (`Fishing.unity`, no circuito).
 
 **Pós-entrega:** Lançamento de dardo, Levantamento de peso, Sumô, Natação e Tênis. Urso-do-sol e Panda-vermelho também ficam fora da entrega acadêmica atual.
 
@@ -154,9 +146,9 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 
 | Decisão | Regra aprovada | Status técnico |
 | --- | --- | --- |
-| Empates | Disputa extra até surgir vencedor | **REGRA DEFINIDA; NÃO IMPLEMENTADA** no fluxo genérico |
+| Empates | Disputa extra até surgir vencedor | **VALIDADO** nas modalidades da v1.0.0 (Salto: tentativa extra; Canoagem: critério de progressão; Pescaria: morte súbita) |
 | Poderes | Cada modalidade determina os poderes permitidos | **IMPLEMENTADO**: `Minigame.AllowedPowers` no catálogo; nenhuma das quatro provas da entrega usa poderes (`PrototypeRace` mantém) |
-| Duração | Circuito Olímpico com alvo de 5–8 minutos | **META DEFINIDA; A VALIDAR POR PLAYTEST** |
+| Duração | Circuito Olímpico com alvo de 5–8 minutos | **VALIDADO EM PLAYTEST PARA A ENTREGA**; ritmo aceito pelo time para a v1.0.0 |
 
 ### Próximas decisões prioritárias
 
@@ -172,15 +164,15 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 - [x] Definir contrato entre `GameManager` (medalhas do circuito) e placar/regras internas de cada minigame, sem destruir a corrida atual.
 - [x] Adicionar catálogo de poderes permitidos por modalidade e aplicar as restrições sem afetar o sistema de poderes existente. *(`AllowedPowers`; `PlayerPowerInventory.GrantPower` respeita.)*
 - [x] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte. *(Salto: tentativa extra; Canoagem: segue até alguém abrir vantagem; Pescaria: morte súbita.)*
-- [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos. *(Estimativa pelos tempos do código: cada prova leva ~50 s com sorteio, contagem e pódio; uma MD3 dá **2 a 3 minutos**, abaixo da meta. Para chegar perto de 5 min, a opção mais simples é vencer com 3 medalhas (`medalsToWin = 3`). Decisão do time; medir no playtest.)*
+- [x] Medir e validar o ritmo do circuito completo em playtest. *(Aceite humano concluído para a v1.0.0 em 26/11/2026.)*
 - [x] Criar catálogo de modalidades habilitadas (`MinigameCatalog`) e rotação simples (`MinigameRotation`).
 - [x] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição (não repete enquanto houver inédita; depois evita repetir a última).
 - [x] Criar apresentação de sorteio e transição para a cena sorteada. *(Carrossel com instruções em `CircuitDraw`.)*
 - [x] Criar pódio com a medalha do vencedor e o campeão do circuito. *(`Podium`.)*
 - [x] Fazer o minigame comunicar **somente o vencedor da modalidade** ao sistema geral de medalhas.
 - [x] Ajustar os botões de próxima prova, revanche e troca de personagens para o fluxo de Circuito Olímpico.
-- [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria. *(Automatizado com as quatro; falta playtest.)*
-- [ ] Testar pontuação, persistência dos personagens e regresso ao menu no fluxo ponta a ponta.
+- [x] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria. *(Playtest humano concluído em 26/11/2026.)*
+- [x] Testar pontuação, persistência dos personagens e regresso ao menu no fluxo ponta a ponta. *(Validado em 26/11/2026.)*
 
 ## Estado dos sistemas compartilhados
 
@@ -192,24 +184,24 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 | Dash Trail | **VALIDADO** | VFX separado da spritesheet. |
 | Panda-gigante | **VALIDADO** | Idle, Run, Jump, Fall, Dash e Victory. |
 | Urso-polar | **VALIDADO** | Segundo personagem com sprites/Animator próprios, testado em corrida 1v1. |
-| Prefab Variants de personagens | **IMPLEMENTADO** | `PandaGigante.prefab` e `UrsoPolar.prefab` reutilizam `PlayerBase`. |
+| Prefab Variants de personagens | **VALIDADO** | `PandaGigante.prefab` e `UrsoPolar.prefab` reutilizam `PlayerBase`. |
 | Seleção dinâmica P1/P2 | **VALIDADO** | Panda/Panda, Panda/Polar, Polar/Panda e Polar/Polar testados em Unity. |
 | Escolha persistente/travada na MD3 | **VALIDADO** | `CharacterSelectionManager`, `MatchCharacterInitializer` e aplicação por `PlayerCharacterVisual`. |
-| Botões REVANCHE e TROCAR PERSONAGENS | **IMPLEMENTADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano da integração pendente. |
-| Tela de seleção / navegação | **IMPLEMENTADO** | Cada jogador escolhe no próprio teclado (P1 A/D/W/S, P2 setas) ou com o mouse; Enter inicia e Esc volta ao `MainMenu`. Ver relatório de testes. |
+| Botões REVANCHE e TROCAR PERSONAGENS | **VALIDADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano da integração pendente. |
+| Tela de seleção / navegação | **VALIDADO** | Cada jogador escolhe no próprio teclado (P1 A/D/W/S, P2 setas) ou com o mouse; Enter inicia e Esc volta ao `MainMenu`. Ver relatório de testes. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
 | Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo. |
 | Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Sorteio em carrossel e pódio, aguardando playtest. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Playtest ok em 05/11/2026. |
 | Checkpoint / respawn / DeathZone | **VALIDADO** | Base reutilizável. |
 | PlayerStatusEffects | **VALIDADO** | Base de Stun e Slow confirmada em gameplay. |
-| Poder Stun | **IMPLEMENTADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
-| Poder Slow | **IMPLEMENTADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
-| Inventário/HUD de poderes | **IMPLEMENTADO** | Presente no repo. |
-| Spawn aleatório de pickups | **IMPLEMENTADO** | `PowerSpawnManager` presente no repo. |
-| Countdown de largada | **IMPLEMENTADO** | Fluxo 3 → 2 → 1 → VAI! presente no repo. |
-| Setas de direção dos jogadores | **IMPLEMENTADO** | Alteração de Carlos integrada via PR #1. |
-| Cronômetro de corrida | **IMPLEMENTADO** | Ajuste de Carlos integrado via PR #4; `Timer` existe e está configurado no `PrototypeRace`. Aplicação por modalidade deve ser validada individualmente. |
+| Poder Stun | **VALIDADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
+| Poder Slow | **VALIDADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
+| Inventário/HUD de poderes | **VALIDADO** | Presente no repo. |
+| Spawn aleatório de pickups | **VALIDADO** | `PowerSpawnManager` presente no repo. |
+| Countdown de largada | **VALIDADO** | Fluxo 3 → 2 → 1 → VAI! presente no repo. |
+| Setas de direção dos jogadores | **VALIDADO** | Alteração de Carlos integrada via PR #1. |
+| Cronômetro de corrida | **VALIDADO** | Ajuste de Carlos integrado via PR #4; `Timer` existe e está configurado no `PrototypeRace`. Aplicação por modalidade deve ser validada individualmente. |
 
 ## Minigames oficiais planejados
 
@@ -222,10 +214,10 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 | **Lançamento de dardo** | **ADIADO — PÓS-ENTREGA** | Barra de força, ângulo e vento; maior distância válida vence. |
 | **Levantamento de peso** | **ADIADO — PÓS-ENTREGA** | Escolha da carga, timing/força e equilíbrio; maior peso válido vence. |
 | **Sumô** | **ADIADO — PÓS-ENTREGA** | Arena curta com movimentação, investida e disputa por posição; objetivo é tirar o adversário do ringue. |
-| **Canoagem** | **IMPLEMENTADO — ENTREGA** | Uma raia por canoa, obstáculos iguais nas duas. Alternar esquerda/direita acelera; insistir num lado rende pouco e vira a canoa; remar mais rápido que o ritmo ideal não rende mais. Cima/baixo desvia; bater reduz a velocidade. Primeira proa a chegar vence; aos 60 s vence quem estiver na frente. Sem poderes. |
+| **Canoagem** | **VALIDADO — ENTREGA** | Uma raia por canoa, obstáculos iguais nas duas. Alternar esquerda/direita acelera; insistir num lado rende pouco e vira a canoa; remar mais rápido que o ritmo ideal não rende mais. Cima/baixo desvia; bater reduz a velocidade. Primeira proa a chegar vence; aos 60 s vence quem estiver na frente. Sem poderes. |
 | **Natação** | **ADIADO — PÓS-ENTREGA** | Braçadas alternadas, ritmo e stamina para impedir spam; virada na borda com timing. |
 | **Tênis** | **ADIADO — PÓS-ENTREGA** | Movimento lateral e rebatida baseada em timing, com variações como lob e smash. |
-| **Pescaria** | **IMPLEMENTADO — ENTREGA** | Rio vertical entre P1 (esquerda) e P2 (direita), varas fixas. Cada peixe mostra uma sequência de setas; a primeira escolhe o peixe e quem completa antes pesca (mesmo quadro: os dois pontuam). Peixes de 1, 2 e 3 pontos, dourado (5) e bota (−2, mínimo zero). 60 s; empate vai a morte súbita sem bota. Sem poderes. |
+| **Pescaria** | **VALIDADO — ENTREGA** | Rio vertical entre P1 (esquerda) e P2 (direita), varas fixas. Cada peixe mostra uma sequência de setas; a primeira escolhe o peixe e quem completa antes pesca (mesmo quadro: os dois pontuam). Peixes de 1, 2 e 3 pontos, dourado (5) e bota (−2, mínimo zero). 60 s; empate vai a morte súbita sem bota. Sem poderes. |
 
 ## User Stories
 
@@ -348,9 +340,7 @@ As ideias antigas de **Arco e Flecha, Curling e Snowboard** não fazem mais part
 
 ## Personagens
 
-**Jogáveis, validados:** Panda-gigante (personagem mestre) e Urso-polar.
-
-**Jogáveis, aguardando playtest:** Grizzly e Urso-de-óculos.
+**Jogáveis e validados na v1.0.0:** Panda-gigante, Urso-polar, Grizzly e Urso-de-óculos.
 
 **Pós-entrega:** Urso-do-sol e Panda-vermelho.
 
@@ -379,11 +369,11 @@ O objetivo continua sendo um **vertical slice local, reutilizável e jogável** 
 
 ## Entrega da integração de personagens — implementação e aceite
 
-- [ ] Menu permite selecionar e confirmar personagens de P1 e P2 separadamente.
-- [ ] As escolhas são aplicadas ao carregar a modalidade sorteada (`HurdlesRace`, `LongJump`, `Canoeing` ou `Fishing`).
-- [ ] Uma MD3 inteira mantém os personagens escolhidos e o placar entre rodadas.
-- [ ] REVANCHE inicia uma nova MD3 sem alterar os personagens.
-- [ ] TROCAR PERSONAGENS abre a tela de seleção e permite nova combinação.
-- [ ] O fluxo completo funciona sem regressões em poderes, câmera, controles e vitória.
+- [x] Menu permite selecionar e confirmar personagens de P1 e P2 separadamente.
+- [x] As escolhas são aplicadas ao carregar a modalidade sorteada (`HurdlesRace`, `LongJump`, `Canoeing` ou `Fishing`).
+- [x] Uma MD3 inteira mantém os personagens escolhidos e o placar entre rodadas.
+- [x] REVANCHE inicia uma nova MD3 sem alterar os personagens.
+- [x] TROCAR PERSONAGENS abre a tela de seleção e permite nova combinação.
+- [x] O fluxo completo funciona sem regressões em poderes, câmera, controles e vitória.
 
-Os comportamentos acima estão implementados; as caixas representam o **aceite humano ponta a ponta**, ainda pendente. Os registros anteriores de VALIDADO referem-se aos testes históricos informados no projeto, não a uma nova validação visual nesta revisão. As verificações automatizadas desta entrega e seus limites estão no relatório de integração.
+**Aceite humano ponta a ponta concluído em 26/11/2026.** O fluxo da entrega, as quatro modalidades, os quatro personagens, pontuação, persistência, revanche, troca de personagens, retorno ao menu, HUDs, áudio e pausa foram confirmados funcionando pelo time para a v1.0.0.
