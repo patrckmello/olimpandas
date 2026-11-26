@@ -22,6 +22,8 @@ public static class MinigameCatalog
     {
         new Minigame("100m com barreiras", "HurdlesRace"),
         new Minigame("Salto a distância", "LongJump"),
+        new Minigame("Canoagem", "Canoeing"),
+        new Minigame("Pescaria", "Fishing"),
     };
 
     // Só as que podem ser carregadas (cena presente e habilitada no Build Settings).
