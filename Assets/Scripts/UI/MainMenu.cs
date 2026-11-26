@@ -8,12 +8,14 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject painelOpcoes;
     [SerializeField] private Slider sliderVolume;
     [SerializeField] private Toggle toggleTelaCheia;
+    [Tooltip("Escondidos enquanto as opções estão abertas.")]
+    [SerializeField] private GameObject[] botoesMenu = {};
 
     private const string ChaveVolume = "volume";
 
     private void Start()
     {
-        painelOpcoes.SetActive(false);
+        MostrarOpcoes(false);
 
         float volume = PlayerPrefs.GetFloat(ChaveVolume, 1f);
         AudioListener.volume = volume;
@@ -30,13 +32,20 @@ public class MainMenu : MonoBehaviour
     public void AbrirOpcoes()
     {
         Sfx.Play(SfxId.UiConfirm);
-        painelOpcoes.SetActive(true);
+        MostrarOpcoes(true);
     }
 
     public void FecharOpcoes()
     {
         Sfx.Play(SfxId.UiBack);
-        painelOpcoes.SetActive(false);
+        MostrarOpcoes(false);
+    }
+
+    private void MostrarOpcoes(bool abertas)
+    {
+        painelOpcoes.SetActive(abertas);
+        foreach (GameObject botao in botoesMenu)
+            botao.SetActive(!abertas);
     }
 
     public void DefinirVolume(float valor)
