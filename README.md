@@ -73,11 +73,11 @@ Os peixes valem pontuações diferentes, o peixe dourado vale mais e a bota desc
 
 ## Executar a versão compilada
 
-A v1.0.0 foi preparada para distribuição em **Windows x64** e **Linux x64**.
+A v1.0.0 tem **Windows x64** e **Linux x64** como plataformas standalone da entrega. Os pacotes devem conter todos os arquivos gerados pela Unity para a plataforma correspondente.
 
 ### Windows
 
-1. Baixe o pacote Windows da release `v1.0.0`.
+1. Baixe o pacote Windows da release `v1.0.0` quando o artefato estiver anexado.
 2. Extraia o arquivo ZIP inteiro para uma pasta.
 3. Execute `Olimpandas.exe`.
 4. Mantenha a pasta `Olimpandas_Data` junto do executável.
@@ -86,7 +86,7 @@ O Windows pode exibir um aviso do SmartScreen porque o executável acadêmico n�
 
 ### Linux
 
-1. Baixe o pacote Linux da release `v1.0.0`.
+1. Baixe o pacote Linux da release `v1.0.0` quando o artefato estiver anexado.
 2. Extraia o arquivo.
 3. No terminal, entre na pasta extraída.
 4. Dê permissão de execução e abra o jogo:
