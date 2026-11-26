@@ -98,14 +98,21 @@ public class Sfx : MonoBehaviour
 
         ambience = CreateSource();
         ambience.loop = true;
-        ambience.volume = AmbienceVolume;
+        ApplyVolume();
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+        AudioVolumes.Changed += ApplyVolume;
     }
 
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        AudioVolumes.Changed -= ApplyVolume;
+    }
+
+    private void ApplyVolume()
+    {
+        ambience.volume = AmbienceVolume * AudioVolumes.Effects;
     }
 
     private AudioSource CreateSource()
@@ -130,7 +137,7 @@ public class Sfx : MonoBehaviour
         AudioSource source = sources[nextSource];
         nextSource = (nextSource + 1) % sources.Length;
         source.clip = variations[Random.Range(0, variations.Count)];
-        source.volume = volume;
+        source.volume = volume * AudioVolumes.Effects;
         source.pitch = pitch;
         source.PlayDelayed(Mathf.Max(0f, delay));
     }

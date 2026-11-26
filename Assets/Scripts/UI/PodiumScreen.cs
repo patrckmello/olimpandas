@@ -20,6 +20,8 @@ public class PodiumScreen : MonoBehaviour
     [SerializeField] private ParticleSystem confetti;
     [Tooltip("Ordem do enum CharacterType.")]
     [SerializeField] private GameObject[] characterPrefabs;
+    [Tooltip("Ordem do enum CharacterType.")]
+    [SerializeField] private MedalAnchors[] medalAnchors;
 
     [Header("Textos")]
     [SerializeField] private TMP_Text titleText;
@@ -46,9 +48,21 @@ public class PodiumScreen : MonoBehaviour
     [SerializeField] private float victoryInterval = 2.4f;
     [SerializeField] private float raysSpeed = 18f;
 
+    // Centro do peito em cada quadro de vitória, em pixels do quadro de 256 (origem no topo).
+    [Serializable]
+    public class MedalAnchors
+    {
+        public Vector2[] victory;
+    }
+
+    private const float FrameSize = 256f;
+
     public bool IsReady { get; private set; }
 
     private Animator winnerAnimator;
+    private Vector2[] chest;
+    private float medalDrop;
+    private bool medalActive;
 
     private IEnumerator Start()
     {
@@ -59,11 +73,14 @@ public class PodiumScreen : MonoBehaviour
         bool champion = hasResult && game.HasWinner(winner);
 
         winnerAnimator = Dress(winnerActor, winner);
+        chest = medalAnchors[(int)CharacterOf(winner)].victory;
         Dress(loserActor, 3 - winner);
 
         titleText.text = champion ? $"JOGADOR {winner} É CAMPEÃO!" : $"JOGADOR {winner} VENCEU!";
         Minigame minigame = MinigameCatalog.All.FirstOrDefault(m => m.SceneName == result.SceneName);
         subtitleText.text = champion ? "CIRCUITO OLÍMPICO" : minigame?.DisplayName.ToUpperInvariant() ?? "PÓDIO";
+        if (!champion && result.Detail != "")
+            subtitleText.text += "  •  " + result.Detail;
 
         nextImage.sprite = champion ? rematchSprite : nextSprite;
         changeCharacterButton.SetActive(champion);
@@ -125,13 +142,35 @@ public class PodiumScreen : MonoBehaviour
         rays.Rotate(0f, 0f, raysSpeed * Time.deltaTime);
     }
 
+    // Depois do Animator: a medalha acompanha o peito quadro a quadro.
+    private void LateUpdate()
+    {
+        if (medalActive)
+            medal.position = ChestPosition() + Vector3.up * medalDrop;
+    }
+
+    private Vector3 ChestPosition()
+    {
+        string sprite = winnerActor.sprite.name;
+        int frame = sprite.Contains("Victory")
+            ? int.Parse(sprite.Substring(sprite.LastIndexOf('_') + 1))
+            : 0;
+        Vector2 pixel = chest[Mathf.Min(frame, chest.Length - 1)];
+        Vector3 scale = winnerActor.transform.lossyScale;
+        return winnerActor.transform.position + new Vector3(
+            (pixel.x / FrameSize - 0.5f) * scale.x,
+            (0.5f - pixel.y / FrameSize) * scale.y,
+            0f);
+    }
+
+    private static CharacterType CharacterOf(int playerId) => CharacterSelectionManager.Instance != null
+        ? CharacterSelectionManager.Instance.GetCharacter(playerId)
+        : CharacterType.PandaGigante;
+
     // Veste o ator com a aparência do personagem escolhido pelo jogador.
     private Animator Dress(SpriteRenderer actor, int playerId)
     {
-        CharacterType character = CharacterSelectionManager.Instance != null
-            ? CharacterSelectionManager.Instance.GetCharacter(playerId)
-            : CharacterType.PandaGigante;
-        Transform visual = characterPrefabs[(int)character].transform.Find("Visual");
+        Transform visual = characterPrefabs[(int)CharacterOf(playerId)].transform.Find("Visual");
         Animator animator = actor.GetComponent<Animator>();
         actor.sprite = visual.GetComponent<SpriteRenderer>().sprite;
         animator.runtimeAnimatorController = visual.GetComponent<Animator>().runtimeAnimatorController;
@@ -158,22 +197,25 @@ public class PodiumScreen : MonoBehaviour
 
     private IEnumerator DropMedal()
     {
-        Vector3 end = medal.position;
         Vector3 scale = medal.localScale;
+        medalDrop = 5f;
+        medalActive = true;
         medal.gameObject.SetActive(true);
         yield return Animate(medalDuration, t =>
         {
-            medal.position = end + Vector3.up * (5f * (1f - EaseOutBack(t)));
+            medalDrop = 5f * (1f - EaseOutBack(t));
             medal.localScale = scale * Mathf.Lerp(1.8f, 1f, t);
         });
     }
 
     private IEnumerator Celebrate()
     {
+        winnerAnimator.SetTrigger("Victory");
         while (true)
         {
-            winnerAnimator.SetTrigger("Victory");
             yield return new WaitForSeconds(victoryInterval);
+            // O estado de vitória não tem saída: recomeça o clipe.
+            winnerAnimator.Play(winnerAnimator.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0f);
         }
     }
 

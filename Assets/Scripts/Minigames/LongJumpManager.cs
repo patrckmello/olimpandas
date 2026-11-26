@@ -114,7 +114,7 @@ public class LongJumpManager : MonoBehaviour
         }
 
         SetStatus(null);
-        resultScreen.DeclareWinner(winner.controller);
+        resultScreen.DeclareWinner(winner.controller, HudColors.Meters(winner.bestMark));
     }
 
     private void OnDestroy()
@@ -143,6 +143,8 @@ public class LongJumpManager : MonoBehaviour
                 imprint.gameObject.SetActive(false);
         }
 
+        if (IsTiebreak)
+            Sfx.Play(SfxId.Tie);
         yield return ShowStep(IsTiebreak ? "DESEMPATE" : $"TENTATIVA {attempt}/{attempts}");
         yield return ShowStep("3");
         yield return ShowStep("2");
@@ -297,6 +299,8 @@ public class LongJumpManager : MonoBehaviour
 
     private void SetCinematic(bool on)
     {
+        if (PauseMenu.IsPaused)
+            return;
         Time.timeScale = on ? slowMotionScale : 1f;
         if (cameraFollow != null)
             cameraFollow.SetZoomOverride(on ? flightZoom : (float?)null);

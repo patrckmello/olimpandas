@@ -120,6 +120,7 @@ public class FishingManager : MonoBehaviour
         if (scores[0] == scores[1])
         {
             IsSuddenDeath = true;
+            Sfx.Play(SfxId.Tie);
             foreach (RiverFish fish in river.Where(f => f.Kind.IsJunk).ToList())
                 Remove(fish);
             Announce("DESEMPATE!\nO PRÓXIMO PEIXE VENCE", suddenDeathDuration);
@@ -136,7 +137,7 @@ public class FishingManager : MonoBehaviour
         foreach (RiverFish fish in river.ToList())
             Remove(fish);
 
-        resultScreen.DeclareWinner((scores[0] > scores[1] ? players[0] : players[1]).Player);
+        resultScreen.DeclareWinner((scores[0] > scores[1] ? players[0] : players[1]).Player, $"{scores[0]} x {scores[1]} pontos");
     }
 
     private void Update()
@@ -150,7 +151,11 @@ public class FishingManager : MonoBehaviour
         ResolveCatches();
 
         foreach (RiverFish fish in river.Where(f => f.transform.position.y < zoneBottom).ToList())
+        {
+            if (!fish.Kind.IsJunk && players.Any(p => p.Target == fish))
+                Sfx.Play(SfxId.FishEscaped);
             Remove(fish);
+        }
 
         foreach (RiverFish fish in river)
             fish.SetReachable(IsReachable(fish));
@@ -213,6 +218,8 @@ public class FishingManager : MonoBehaviour
         for (int i = 1; i < sequence.Length; i++)
             sequence[i] = AllArrows[UnityEngine.Random.Range(0, AllArrows.Length)];
 
+        if (kind.points >= 5)
+            Sfx.Play(SfxId.GoldenFish);
         Spawn(kind, sequence,
             new Vector2(UnityEngine.Random.Range(-riverHalfWidth, riverHalfWidth), spawnY));
     }

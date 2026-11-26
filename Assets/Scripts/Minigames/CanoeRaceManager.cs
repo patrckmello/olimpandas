@@ -96,7 +96,7 @@ public class CanoeRaceManager : MonoBehaviour
         SetStatus(null);
         foreach (CanoePaddler canoe in canoes)
             canoe.Stop();
-        resultScreen.DeclareWinner(winner.Player);
+        resultScreen.DeclareWinner(winner.Player, Timer.Format(ElapsedTime));
     }
 
     private CanoePaddler FindWinner()

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerPowerInventory : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class PlayerPowerInventory : MonoBehaviour
 
     public void GrantPower(PowerType power)
     {
+        // Cada prova declara os poderes permitidos no MinigameCatalog.
+        if (!MinigameCatalog.AllowsPower(SceneManager.GetActiveScene().name, power))
+            return;
+
         currentPower = power;
 
         Debug.Log(

@@ -49,6 +49,7 @@ public static class CircuitRotationSmokeTest
             "Scenes outside the catalog do not block the draw");
         Check(MinigameRotation.Draw(four.Take(1).ToArray(), new List<string> { "A" }, random).SceneName == "A",
             "Single modality repeats");
+        Check(MinigameCatalog.AllowsPower("PrototypeRace", PlayerPowerInventory.PowerType.Stun), "Prototype keeps powers");
         Check(MinigameRotation.Draw(Array.Empty<Minigame>(), new List<string>(), random) == null,
             "Nothing available returns null");
     }
@@ -93,6 +94,9 @@ public static class CircuitRotationSmokeTest
                 c.FindPropertyRelative("art").objectReferenceValue != null), "Draw card art: " + minigame.SceneName);
             Check(minigame.Goal != "" && minigame.ControlsP1 != "" && minigame.ControlsP2 != "",
                 "Instructions: " + minigame.SceneName);
+            Check(!MinigameCatalog.AllowsPower(minigame.SceneName, PlayerPowerInventory.PowerType.Stun) &&
+                !MinigameCatalog.AllowsPower(minigame.SceneName, PlayerPowerInventory.PowerType.Slow),
+                "No powers in " + minigame.SceneName);
         }
     }
 

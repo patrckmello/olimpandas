@@ -136,7 +136,7 @@ public class CanoePaddler : MonoBehaviour
     {
         UpdateVisual();
 
-        if (!racing || !InputEnabled)
+        if (!racing || !InputEnabled || PauseMenu.IsPaused)
             return;
 
         if (Input.GetKeyDown(player.LeftKey))

@@ -7,11 +7,14 @@ public readonly struct MinigameResult
 {
     public readonly string SceneName;
     public readonly int WinnerId;
+    // Resultado para mostrar no pódio (tempo, marca ou placar). Pode ser vazio.
+    public readonly string Detail;
 
-    public MinigameResult(string sceneName, int winnerId)
+    public MinigameResult(string sceneName, int winnerId, string detail = "")
     {
         SceneName = sceneName;
         WinnerId = winnerId;
+        Detail = detail ?? "";
     }
 }
 
@@ -68,9 +71,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Só o vencedor da modalidade ganha medalha do circuito.
-    public bool AwardMinigame(string sceneName, int playerId)
+    public bool AwardMinigame(string sceneName, int playerId, string detail = "")
     {
-        results.Add(new MinigameResult(sceneName, playerId));
+        results.Add(new MinigameResult(sceneName, playerId, detail));
         return AddMedal(playerId);
     }
 
