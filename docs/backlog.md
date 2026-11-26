@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 24/11/2026.
+> Atualizado em 25/11/2026.
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -20,7 +20,7 @@
 
 ## Prioridade atual
 
-O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → resultado → próximo sorteio` está implementado, com MD3 de modalidades, revanche (novo circuito) e retorno à seleção. O relatório de verificações da seleção está em [integração de personagens](character-selection-integration.md).
+O fluxo `MainMenu → CharacterSelect → CircuitDraw (sorteio) → modalidade sorteada → Podium → próximo sorteio` está implementado, com MD3 de modalidades, revanche (novo circuito) e retorno à seleção. O relatório de verificações da seleção está em [integração de personagens](character-selection-integration.md).
 
 Com aproximadamente **3 semanas/aulas restantes para a entrega acadêmica**, o escopo foi reduzido para **4 personagens e 4 minigames**. Esse corte vale para a entrega atual; o restante permanece como roadmap pós-entrega.
 
@@ -122,9 +122,9 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 >
 > **Contrato da Pescaria (Cadu):** `FishingManager` expõe `GetScore(playerId)`, `RemainingTime`, `RoundTime`, `IsFishing`, `IsSuddenDeath` e os eventos `RoundStarted`, `SuddenDeathStarted`, `Caught`, `ScoreChanged` e `Missed`. O `ScoreText` da cena é provisório.
 >
-> **Botões de resultado (Gabriel):** o `nextButtonText` do `FinishLine` é opcional. Com o texto desenhado na imagem, o botão não muda para REVANCHE no fim do circuito; falta a arte.
+> **Resultado (Gabriel):** depois de cada prova o `FinishLine` carrega a cena `Podium` (`PodiumScreen`), com medalha, placar e os botões PRÓXIMA PROVA, REVANCHE e TROCAR PERSONAGEM. O `VictoryPanel` de cada prova ficou de reserva, para quando `Podium` não está no Build Settings.
 >
-> **Contrato para a UI (Gabriel/Cadu):** `GameManager.DrawNextMinigame()` sorteia e devolve `Minigame` (`DisplayName`, `SceneName`); `GameManager.Results` traz o histórico (`SceneName`, `WinnerId`); `GetScore()`/`GetMedals()` o placar; `MinigameCatalog.All` lista as provas. A tela atual de `CircuitDraw` (`CircuitDrawScreen`) é **provisória** — o visual final de sorteio/transição é do Gabriel.
+> **Contrato para a UI (Gabriel/Cadu):** `GameManager.DrawNextMinigame()` sorteia e devolve `Minigame` (`DisplayName`, `SceneName`); `GameManager.Results` traz o histórico (`SceneName`, `WinnerId`); `GetScore()`/`GetMedals()` o placar; `MinigameCatalog.All` lista as provas. A tela `CircuitDraw` (`CircuitDrawScreen`) tem carrossel de cartas e mostra objetivo e controles de cada prova (`Minigame.Goal`, `ControlsP1`, `ControlsP2`).
 
 ### Hipóteses de design a validar por playtest (não são regras fechadas)
 
@@ -175,7 +175,8 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 - [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos.
 - [x] Criar catálogo de modalidades habilitadas (`MinigameCatalog`) e rotação simples (`MinigameRotation`).
 - [x] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição (não repete enquanto houver inédita; depois evita repetir a última).
-- [ ] Criar apresentação de sorteio e transição para a cena sorteada. *(Versão provisória funcional em `CircuitDraw`; visual final com Gabriel.)*
+- [x] Criar apresentação de sorteio e transição para a cena sorteada. *(Carrossel com instruções em `CircuitDraw`.)*
+- [x] Criar pódio com a medalha do vencedor e o campeão do circuito. *(`Podium`.)*
 - [x] Fazer o minigame comunicar **somente o vencedor da modalidade** ao sistema geral de medalhas.
 - [x] Ajustar os botões de próxima prova, revanche e troca de personagens para o fluxo de Circuito Olímpico.
 - [ ] Validar o fluxo com as quatro modalidades da entrega: 100m com barreiras, Salto a distância, Canoagem e Pescaria. *(Automatizado com as quatro; falta playtest.)*
@@ -195,11 +196,11 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 | Seleção dinâmica P1/P2 | **VALIDADO** | Panda/Panda, Panda/Polar, Polar/Panda e Polar/Polar testados em Unity. |
 | Escolha persistente/travada na MD3 | **VALIDADO** | `CharacterSelectionManager`, `MatchCharacterInitializer` e aplicação por `PlayerCharacterVisual`. |
 | Botões REVANCHE e TROCAR PERSONAGENS | **IMPLEMENTADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano da integração pendente. |
-| Tela de seleção / navegação | **IMPLEMENTADO** | `CharacterSelectMenu` recebe confirmações independentes e permite voltar ao `MainMenu`. Ver relatório de testes. |
+| Tela de seleção / navegação | **IMPLEMENTADO** | Cada jogador escolhe no próprio teclado (P1 A/D/W/S, P2 setas) ou com o mouse; Enter inicia e Esc volta ao `MainMenu`. Ver relatório de testes. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
 | Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo. |
-| Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Tela de sorteio provisória. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Playtest ok em 05/11/2026. |
+| Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Sorteio em carrossel e pódio, aguardando playtest. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Playtest ok em 05/11/2026. |
 | Checkpoint / respawn / DeathZone | **VALIDADO** | Base reutilizável. |
 | PlayerStatusEffects | **VALIDADO** | Base de Stun e Slow confirmada em gameplay. |
 | Poder Stun | **IMPLEMENTADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
