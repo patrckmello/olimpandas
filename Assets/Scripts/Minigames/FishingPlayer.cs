@@ -83,6 +83,8 @@ public class FishingPlayer : MonoBehaviour
 
         Progress++;
         Target.SetProgress(PlayerId, Progress);
+        // Cada seta certa da sequência soa um pouco mais aguda.
+        Sfx.Play(SfxId.ArrowHit, 0.8f, 1f + 0.1f * (Progress - 1));
 
         if (Progress >= Target.Sequence.Count)
             manager.Complete(this, Target);
@@ -114,6 +116,7 @@ public class FishingPlayer : MonoBehaviour
     {
         Release();
         lockedUntil = Time.time + missLockout;
+        Sfx.Play(SfxId.ArrowMiss);
         Missed?.Invoke();
     }
 

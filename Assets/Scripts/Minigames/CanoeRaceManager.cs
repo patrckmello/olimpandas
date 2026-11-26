@@ -70,6 +70,7 @@ public class CanoeRaceManager : MonoBehaviour
         yield return ShowStep("2", stepDuration);
         yield return ShowStep("1", stepDuration);
         SetStatus("VAI!");
+        Sfx.Countdown("VAI!");
 
         foreach (CanoePaddler canoe in canoes)
             canoe.Begin();
@@ -116,6 +117,7 @@ public class CanoeRaceManager : MonoBehaviour
 
     private IEnumerator ShowStep(string text, float duration)
     {
+        Sfx.Countdown(text);
         SetStatus(text);
         yield return new WaitForSeconds(duration);
     }

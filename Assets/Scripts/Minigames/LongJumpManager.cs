@@ -148,6 +148,7 @@ public class LongJumpManager : MonoBehaviour
         yield return ShowStep("2");
         yield return ShowStep("1");
         SetStatus("VAI!");
+        Sfx.Countdown("VAI!");
 
         foreach (Jumper jumper in jumpers)
         {
@@ -222,6 +223,7 @@ public class LongJumpManager : MonoBehaviour
         SpriteRenderer board = Lane(foulBoards, jumper);
         if (board != null)
             StartCoroutine(Flash(board));
+        Sfx.Play(SfxId.PerfectTakeoff);
         PerfectTakeoff?.Invoke(jumper.controller.PlayerId);
     }
 
@@ -234,6 +236,7 @@ public class LongJumpManager : MonoBehaviour
         // Poeira e marca só quando cai dentro da caixa de areia.
         if (sandPit == null || (feet.x > sandPit.bounds.min.x && feet.x < sandPit.bounds.max.x))
         {
+            Sfx.Play(SfxId.SandLanding);
             if (landingDust != null)
             {
                 var emit = new ParticleSystem.EmitParams { position = feet, applyShapeToPosition = true };
@@ -275,6 +278,9 @@ public class LongJumpManager : MonoBehaviour
         jumper.lastMark = mark;
         if (mark > jumper.bestMark)
             jumper.bestMark = mark;
+
+        if (mark == NoMark)
+            Sfx.Play(SfxId.Whistle);
 
         Freeze(jumper);
         AttemptResolved?.Invoke(jumper.controller.PlayerId, mark != NoMark, mark);
@@ -332,6 +338,7 @@ public class LongJumpManager : MonoBehaviour
 
     private IEnumerator ShowStep(string text)
     {
+        Sfx.Countdown(text);
         SetStatus(text);
         yield return new WaitForSeconds(stepDuration);
     }

@@ -229,11 +229,17 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 5a1431b46a269f340a0714706bc21292, type: 3}
   - sceneName: CharacterSelect
     clip: {fileID: 8300000, guid: 5a1431b46a269f340a0714706bc21292, type: 3}
+  - sceneName: CircuitDraw
+    clip: {fileID: 8300000, guid: 5a1431b46a269f340a0714706bc21292, type: 3}
   - sceneName: HurdlesRace
-    clip: {fileID: 8300000, guid: 5a1431b46a269f340a0714706bc21292, type: 3}
+    clip: {fileID: 8300000, guid: d5205714ddfb5494e90f6039a2f4e872, type: 3}
   - sceneName: LongJump
-    clip: {fileID: 8300000, guid: 5a1431b46a269f340a0714706bc21292, type: 3}
-  musicVolume: 1
+    clip: {fileID: 8300000, guid: d4ada0f5de78f5840a34be9e86f64114, type: 3}
+  - sceneName: Canoeing
+    clip: {fileID: 8300000, guid: 98c83874c14c0e443ac6bc54ef5dc230, type: 3}
+  - sceneName: Fishing
+    clip: {fileID: 8300000, guid: e5a66359eb5341e41acce865bcc4582c, type: 3}
+  musicVolume: 0.6
 --- !u!82 &220329410
 AudioSource:
   m_ObjectHideFlags: 0
