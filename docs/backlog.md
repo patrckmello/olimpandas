@@ -118,7 +118,7 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 >
 > **Contrato para a UI (Gabriel/Cadu):** `GameManager.DrawNextMinigame()` sorteia e devolve `Minigame` (`DisplayName`, `SceneName`); `GameManager.Results` traz o histórico (`SceneName`, `WinnerId`); `GetScore()`/`GetMedals()` o placar; `MinigameCatalog.All` lista as provas. A tela `CircuitDraw` (`CircuitDrawScreen`) tem carrossel de cartas e mostra objetivo e controles de cada prova (`Minigame.Goal`, `ControlsP1`, `ControlsP2`).
 
-### Hipóteses de design a validar por playtest (não são regras fechadas)
+### Hipóteses de design pós-v1.0.0 (não bloqueiam a entrega)
 
 - A meta **definida** é **5–8 minutos por Circuito Olímpico**; medir por playtest e ajustar tempos internos para aproximar o jogo dessa meta.
 - Corrida e Sumô são candidatos a MD3 interna; Tênis pode funcionar por pontos, Pescaria por pontuação com cronômetro, e provas de marca por tentativas. Definir regras exatas separadamente antes da implementação de cada uma.
@@ -187,12 +187,12 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 | Prefab Variants de personagens | **VALIDADO** | `PandaGigante.prefab` e `UrsoPolar.prefab` reutilizam `PlayerBase`. |
 | Seleção dinâmica P1/P2 | **VALIDADO** | Panda/Panda, Panda/Polar, Polar/Panda e Polar/Polar testados em Unity. |
 | Escolha persistente/travada na MD3 | **VALIDADO** | `CharacterSelectionManager`, `MatchCharacterInitializer` e aplicação por `PlayerCharacterVisual`. |
-| Botões REVANCHE e TROCAR PERSONAGENS | **VALIDADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano da integração pendente. |
+| Botões REVANCHE e TROCAR PERSONAGENS | **VALIDADO** | Revanche preserva personagens; troca zera placar, desbloqueia e carrega `CharacterSelect`. Aceite humano concluído em 26/11/2026. |
 | Tela de seleção / navegação | **VALIDADO** | Cada jogador escolhe no próprio teclado (P1 A/D/W/S, P2 setas) ou com o mouse; Enter inicia e Esc volta ao `MainMenu`. Ver relatório de testes. |
 | Câmera multiplayer dinâmica | **VALIDADO** | Enquadra os dois jogadores e possui foco no vencedor. |
 | FinishLine e Victory | **VALIDADO** | Congela a prova, entrega medalha e exibe resultado. |
 | Melhor de 3 / medalhas (fluxo atual da corrida) | **VALIDADO** | Primeiro a 2 medalhas vence a partida no protótipo. |
-| Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Sorteio em carrossel e pódio, aguardando playtest. Smoke tests: `CircuitRotationSmokeTest` e `CharacterSelectionFlowSmokeTest`. Playtest ok em 05/11/2026. |
+| Circuito Olímpico (sorteio e rotação de provas) | **VALIDADO** | MD3 de modalidades: `MinigameCatalog` + `MinigameRotation` + `CircuitDraw`; medalha só para o vencedor da modalidade. Sorteio em carrossel e pódio validados no fluxo final da v1.0.0. |
 | Checkpoint / respawn / DeathZone | **VALIDADO** | Base reutilizável. |
 | PlayerStatusEffects | **VALIDADO** | Base de Stun e Slow confirmada em gameplay. |
 | Poder Stun | **VALIDADO** | Controller, projétil, pickup, impacto e feedback existem no repo. |
