@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -104,6 +105,8 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
             var panel2 = Field<CharacterSelectMenu.PlayerPanel>(menu, "player2");
             Button start = Field<Button>(menu, "startButton");
             Check(!start.interactable, "Start before confirmation");
+            yield return CheckKeys(menu, panel1);
+            yield return CheckKeys(menu, panel2);
             Choose(panel1, p1);
             Choose(panel2, p2);
             panel1.confirmButton.onClick.Invoke();
@@ -152,6 +155,9 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
                 Check(AssetDatabase.GetAssetPath(Field<SpriteRenderer>(podium, "winnerActor").sprite).Contains($"/{champ}/"),
                     "Winner on the podium");
                 Check(Field<TMPro.TMP_Text>(podium, "titleText").text.Contains("JOGADOR " + winner), "Podium title");
+                SpriteRenderer actor = Field<SpriteRenderer>(podium, "winnerActor");
+                Vector3 hang = Field<Transform>(podium, "medal").position - actor.transform.position;
+                Check(Mathf.Abs(hang.x) < 0.8f && hang.y < 0.1f && hang.y > -0.9f, "Medal on the chest, got " + hang);
                 Check(MedalsOn(podium, "medalsP1") == score.GetMedals(1) && MedalsOn(podium, "medalsP2") == score.GetMedals(2),
                     "Podium medals");
                 if (!score.IsMatchFinished())
@@ -218,6 +224,34 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
         yield return WaitUntil(() => MinigameCatalog.All.Any(m => m.SceneName == SceneManager.GetActiveScene().name),
             14f, "Drawn modality loaded");
         yield return null;
+    }
+
+    // Cada jogador troca de urso, fica pronto e volta com as próprias teclas.
+    private static IEnumerator CheckKeys(CharacterSelectMenu menu, CharacterSelectMenu.PlayerPanel panel)
+    {
+        int count = Enum.GetValues(typeof(CharacterType)).Length, start = panel.index;
+        yield return PressKey(menu, panel.rightKey);
+        Check(panel.index == (start + 1) % count, "Right key moves P" + panel.playerId);
+        yield return PressKey(menu, panel.leftKey);
+        Check(panel.index == start, "Left key moves P" + panel.playerId);
+        yield return PressKey(menu, panel.confirmKey);
+        Check(panel.ready, "Confirm key readies P" + panel.playerId);
+        yield return PressKey(menu, panel.cancelKey);
+        Check(!panel.ready, "Cancel key releases P" + panel.playerId);
+        Check(panel.keyButtons.Length == 4, "Clickable keys of P" + panel.playerId);
+        panel.keyButtons[1].onClick.Invoke();
+        panel.keyButtons[0].onClick.Invoke();
+        panel.keyButtons[2].onClick.Invoke();
+        Check(panel.index == start && panel.ready, "Key buttons of P" + panel.playerId);
+        panel.keyButtons[3].onClick.Invoke();
+        Check(!panel.ready, "Cancel key button of P" + panel.playerId);
+    }
+
+    private static IEnumerator PressKey(CharacterSelectMenu menu, KeyCode key)
+    {
+        Field<HashSet<KeyCode>>(menu, "windowKeys").Add(key);
+        yield return null;
+        yield return new WaitForSecondsRealtime(0.15f);
     }
 
     private static IEnumerator WaitForPodium()

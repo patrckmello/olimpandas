@@ -8,6 +8,12 @@ public class Timer : MonoBehaviour
     float elapsedTime;
     bool isRunning;
 
+    public float ElapsedTime => elapsedTime;
+
+    // 00:12,4
+    public static string Format(float seconds) =>
+        $"{(int)(seconds / 60f):00}:{(seconds % 60f).ToString("00.0", System.Globalization.CultureInfo.InvariantCulture).Replace('.', ',')}";
+
     public void StartTimer()
     {
         elapsedTime = 0f;

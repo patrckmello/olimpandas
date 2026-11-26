@@ -6705,6 +6705,35 @@ MonoBehaviour:
   - {fileID: 7023038094467537321, guid: 57c8d4a40759700709789bbb3bd5ca8e, type: 3}
   - {fileID: 7023038094467537321, guid: c5626ae22a8346442b437a5d5e104e43, type: 3}
   - {fileID: 7023038094467537321, guid: 316fb296ba2c6bb478b1d0350e1a9d22, type: 3}
+  medalAnchors:
+  - victory:
+    - {x: 159, y: 153}
+    - {x: 157, y: 145}
+    - {x: 155, y: 145}
+    - {x: 161, y: 138}
+    - {x: 163, y: 147}
+    - {x: 135, y: 153}
+  - victory:
+    - {x: 155, y: 158}
+    - {x: 145, y: 158}
+    - {x: 148, y: 158}
+    - {x: 141, y: 157}
+    - {x: 137, y: 167}
+    - {x: 133, y: 153}
+  - victory:
+    - {x: 148, y: 153}
+    - {x: 138, y: 153}
+    - {x: 143, y: 153}
+    - {x: 136, y: 153}
+    - {x: 135, y: 153}
+    - {x: 136, y: 153}
+  - victory:
+    - {x: 150, y: 147}
+    - {x: 141, y: 150}
+    - {x: 148, y: 149}
+    - {x: 143, y: 143}
+    - {x: 138, y: 155}
+    - {x: 145, y: 149}
   titleText: {fileID: 1997883917}
   subtitleText: {fileID: 990971643}
   medalsP1:
@@ -6776,7 +6805,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.76, y: 0.58, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.36, y: 0.36, z: 0.36}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1451739967}
@@ -7310,7 +7339,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96

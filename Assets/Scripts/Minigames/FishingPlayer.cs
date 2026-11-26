@@ -122,7 +122,7 @@ public class FishingPlayer : MonoBehaviour
 
     private void Update()
     {
-        if (!fishing)
+        if (!fishing || PauseMenu.IsPaused)
             return;
 
         if (Input.GetKeyDown(upKey)) Press(FishArrow.Up);
