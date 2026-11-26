@@ -50,6 +50,8 @@ public class Hurdle : MonoBehaviour
             return;
 
         Drop(direction);
+        Sfx.Play(SfxId.HurdleHit);
+        Sfx.PlayVoice(player.PlayerId, "dano");
         PlayerStatusEffects effects = player.GetComponent<PlayerStatusEffects>();
         if (effects != null)
             effects.ApplySlow(impactSlowMultiplier, impactSlowDuration);

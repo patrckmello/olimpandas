@@ -109,9 +109,14 @@ public static class HurdlesRaceSceneSmokeTest
             throw new Exception("Countdown or camera is not connected to both players.");
 
         SerializedObject finishData = new SerializedObject(finish);
-        foreach (string property in new[] { "victoryPanel", "victoryText", "medalText", "nextButtonText" })
+        foreach (string property in new[] { "victoryPanel", "victoryText", "medalText" })
             if (finishData.FindProperty(property).objectReferenceValue == null)
                 throw new Exception("Finish UI is missing " + property);
+        // O botão tem um label trocável ou o texto desenhado na própria imagem.
+        if (finishData.FindProperty("nextButtonText").objectReferenceValue == null &&
+            !FindAll<NextRoundButton>(scene).All(button =>
+                button.TryGetComponent(out UnityEngine.UI.Image image) && image.sprite != null))
+            throw new Exception("Result buttons have neither a label nor an image.");
         if (!EditorBuildSettings.scenes.Any(entry => entry.path == path && entry.enabled))
             throw new Exception("HurdlesRace is missing from Build Settings.");
 

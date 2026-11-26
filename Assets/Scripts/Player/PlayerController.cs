@@ -42,6 +42,10 @@ public class PlayerController : MonoBehaviour
 
     private float? forcedRunSpeed;
 
+    // Distância entre dois sons de passo.
+    private const float StepLength = 1.2f;
+    private float distanceSinceStep;
+
     private readonly HashSet<Collider2D>
         groundColliders = new();
 
@@ -126,6 +130,24 @@ public class PlayerController : MonoBehaviour
 
             rb.linearVelocity.y
         );
+
+        PlaySteps();
+    }
+
+    private void PlaySteps()
+    {
+        if (!isGrounded || horizontal == 0f)
+        {
+            distanceSinceStep = 0f;
+            return;
+        }
+
+        distanceSinceStep += Mathf.Abs(rb.linearVelocity.x) * Time.fixedDeltaTime;
+        if (distanceSinceStep < StepLength)
+            return;
+
+        distanceSinceStep = 0f;
+        Sfx.Play(SfxId.Step, 0.5f);
     }
 
     // Provas com corrida própria (ex.: Salto a distância) definem a
@@ -211,6 +233,7 @@ public class PlayerController : MonoBehaviour
 
         groundColliders.Clear();
         isGrounded = false;
+        Sfx.Play(SfxId.Jump, 0.6f);
     }
 
     private void HandleDash()
@@ -236,6 +259,7 @@ public class PlayerController : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
+        Sfx.Play(SfxId.Dash, 0.8f);
 
         if (animator != null)
         {

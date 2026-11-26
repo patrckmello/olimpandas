@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Run in an isolated project copy with -batchmode -executeMethod
 // LongJumpSmokeTest.Run (without -quit). Does not save scenes.
@@ -111,7 +112,12 @@ public class LongJumpSmokeRunner : MonoBehaviour
     private bool failed;
     private readonly List<(int attempt, int player, bool valid, float mark)> results = new();
 
-    private void Awake() => Application.logMessageReceived += OnLog;
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        Application.logMessageReceived += OnLog;
+    }
+
     private void OnDestroy() => Application.logMessageReceived -= OnLog;
 
     private void OnLog(string message, string stack, LogType type)
@@ -210,11 +216,9 @@ public class LongJumpSmokeRunner : MonoBehaviour
         yield return WaitUntil(() => Count(4) == 2, 3f, "Tiebreak resolved");
         LongJumpSmokeTest.Check(results.Single(r => r.attempt == 4 && r.player == 2).valid == false, "P2 foul over line");
 
-        yield return new WaitForSeconds(3.5f); // marcas + atraso do painel
-        LongJumpSmokeTest.Check(GameManager.Instance.GetScore() == "1 x 0", "P1 medal, got " + GameManager.Instance.GetScore());
-        FinishLine result = Field<FinishLine>(manager, "resultScreen");
-        LongJumpSmokeTest.Check(Field<GameObject>(result, "victoryPanel").activeInHierarchy, "Victory panel");
         LongJumpSmokeTest.Check(manager.GetBestMark(1) > 4f && manager.GetBestMark(2) > 4f, "Best marks kept");
+        yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Podium", 6f, "Podium");
+        LongJumpSmokeTest.Check(GameManager.Instance.GetScore() == "1 x 0", "P1 medal, got " + GameManager.Instance.GetScore());
         LongJumpSmokeTest.Check(Time.timeScale == 1f, "Normal time at the end");
     }
 

@@ -23,6 +23,10 @@ public class FinishLine : MonoBehaviour
     [SerializeField]
     private float victoryDisplayDelay = 1.1f;
 
+    [Header("Pódio")]
+    [SerializeField]
+    private string podiumSceneName = "Podium";
+
     private bool raceFinished = false;
 
     private void Awake()
@@ -75,6 +79,11 @@ public class FinishLine : MonoBehaviour
                 playerId
             );
 
+        Sfx.Play(SfxId.CrowdCheer, 0.7f);
+        Sfx.PlayVoice(playerId, "vitoria");
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.SetDucked(true);
+
         // Congela os jogadores e dispara a vitória.
         FreezeAllPlayers(winner);
 
@@ -91,7 +100,7 @@ public class FinishLine : MonoBehaviour
             victoryText.text =
                 $"PLAYER {playerId}\nCAMPEÃO!";
 
-            nextButtonText.text = "REVANCHE";
+            SetNextLabel("REVANCHE");
 
             if (changeCharacterButton != null)
             {
@@ -103,7 +112,7 @@ public class FinishLine : MonoBehaviour
             victoryText.text =
                 $"PLAYER {playerId}\nVENCEU!";
 
-            nextButtonText.text = "PRÓXIMA PROVA";
+            SetNextLabel("PRÓXIMA PROVA");
 
             if (changeCharacterButton != null)
             {
@@ -119,6 +128,13 @@ public class FinishLine : MonoBehaviour
         Debug.Log(
             $"PLAYER {playerId} VENCEU A PROVA!"
         );
+    }
+
+    // Opcional: botão com o texto desenhado na imagem não tem label.
+    private void SetNextLabel(string label)
+    {
+        if (nextButtonText != null)
+            nextButtonText.text = label;
     }
 
     private void StopAllTimers()
@@ -141,7 +157,11 @@ public class FinishLine : MonoBehaviour
             victoryDisplayDelay
         );
 
-        victoryPanel.SetActive(true);
+        // Sem o pódio no Build Settings, mostra o painel da própria cena.
+        if (Application.CanStreamedLevelBeLoaded(podiumSceneName))
+            SceneManager.LoadScene(podiumSceneName);
+        else
+            victoryPanel.SetActive(true);
     }
 
     private void FreezeAllPlayers(PlayerController winner)

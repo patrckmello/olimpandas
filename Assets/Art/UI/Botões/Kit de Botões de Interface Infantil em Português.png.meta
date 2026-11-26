@@ -1,0 +1,661 @@
+fileFormatVersion: 2
+guid: 9939dae40b065514e87bd6786d254c26
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_0"
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 684
+        width: 545
+        height: 212
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05e34ed95bea21b488988c4fab5ca11c
+      internalID: 2114668911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_1"
+      rect:
+        serializedVersion: 2
+        x: 945
+        y: 506
+        width: 389
+        height: 163
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 389, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52320518806a8a7478b38cb293012d5a
+      internalID: -274940397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_2"
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 502
+        width: 221
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b34af54cdb6345844a03ecfe0dfd14af
+      internalID: -342667338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_3"
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 502
+        width: 217
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e6eba2b9c4a15e4e9e9412ee77f7063
+      internalID: 1711644348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_4"
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 504
+        width: 413
+        height: 166
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cc89c1a7a4d8f041803e0ad7db0bd16
+      internalID: -1524969843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_5"
+      rect:
+        serializedVersion: 2
+        x: 1339
+        y: 504
+        width: 376
+        height: 164
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86fc8ab27871de94a90f8cbbcf42ef57
+      internalID: 587649465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_6"
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 355
+        width: 356
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 737faedcda0852b4f95de3847ed7d820
+      internalID: -876751590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_7"
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 355
+        width: 384
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c73b8ab946d3dd419d21b45c2c43b79
+      internalID: 2058208183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_8"
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 352
+        width: 470
+        height: 139
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c31702859f5ea2b4c859f21a2df3aff1
+      internalID: 1070874379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_9"
+      rect:
+        serializedVersion: 2
+        x: 1299
+        y: 354
+        width: 385
+        height: 137
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96ab5c444afd0494b96799576d516f86
+      internalID: -1480622920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_10"
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 217
+        width: 376
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4938fec3ddb03714799932584d396c15
+      internalID: 369966526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_11"
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 213
+        width: 377
+        height: 132
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab2b1dd4c5dbf64479f951d17f1b242c
+      internalID: 694945210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_12"
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 214
+        width: 446
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70ef0fab7e67d7848a9ef9d12b400ca5
+      internalID: -1634935578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_13"
+      rect:
+        serializedVersion: 2
+        x: 1308
+        y: 212
+        width: 389
+        height: 133
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 272391c9d2d005c48b4a05947b2a67d1
+      internalID: -295895408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_14"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 616
+        height: 188
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7628d9b244659974d93d7a19f7d880fa
+      internalID: 536069993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_15"
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 49
+        width: 146
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 145, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebcdb5a8cf46ba44db7425930c27179a
+      internalID: 1045204003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_16"
+      rect:
+        serializedVersion: 2
+        x: 1082
+        y: 49
+        width: 151
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 391b149796dbbef438647a01fe6cb3a9
+      internalID: 1234063534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_18"
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 48
+        width: 143
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0138ee8279105ef47811f35995ac74e6
+      internalID: -927336267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_19"
+      rect:
+        serializedVersion: 2
+        x: 932
+        y: 46
+        width: 150
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41f5f2962614a3b45804cf5bf0a92134
+      internalID: -604676064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_17"
+      rect:
+        serializedVersion: 2
+        x: 1266
+        y: 64
+        width: 122
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab8f9b5e2d5e1fd468e9b283485b79b0
+      internalID: -1699950102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_20"
+      rect:
+        serializedVersion: 2
+        x: 1389
+        y: 65
+        width: 107
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87462f4d10e5e094fbd0dfd3676105d1
+      internalID: -2063177148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_21"
+      rect:
+        serializedVersion: 2
+        x: 1497
+        y: 64
+        width: 106
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc3b55a6d96ea204caba42490df63e05
+      internalID: 1342853918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_22"
+      rect:
+        serializedVersion: 2
+        x: 1605
+        y: 63
+        width: 111
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b99c22bb3c263994bb5e1e845da6bd7b
+      internalID: -145673922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: eb16027d99aac124eab74e8c10e8966a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_0": 2114668911
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_1": -274940397
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_10": 369966526
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_11": 694945210
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_12": -1634935578
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_13": -295895408
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_14": 536069993
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_15": 1045204003
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_16": 1234063534
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_17": -1699950102
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_18": -927336267
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_19": -604676064
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_2": -342667338
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_20": -2063177148
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_21": 1342853918
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_22": -145673922
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_3": 1711644348
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_4": -1524969843
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_5": 587649465
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_6": -876751590
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_7": 2058208183
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_8": 1070874379
+      "Kit de Bot\xF5es de Interface Infantil em Portugu\xEAs_9": -1480622920
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

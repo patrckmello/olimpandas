@@ -58,7 +58,7 @@ public static class CircuitRotationSmokeTest
         Check(MinigameCatalog.All.Count >= 2, "At least two modalities in the circuit");
         Check(MinigameCatalog.All.Select(m => m.SceneName).Distinct().Count() == MinigameCatalog.All.Count,
             "Unique catalog scenes");
-        foreach (string scene in MinigameCatalog.All.Select(m => m.SceneName).Append(DrawScene))
+        foreach (string scene in MinigameCatalog.All.Select(m => m.SceneName).Append(DrawScene).Append("Podium"))
             Check(EditorBuildSettings.scenes.Any(s => s.enabled && Path.GetFileNameWithoutExtension(s.path) == scene),
                 "Enabled build scene: " + scene);
 
@@ -85,6 +85,15 @@ public static class CircuitRotationSmokeTest
         var data = new SerializedObject(screen);
         foreach (string text in new[] { "eventText", "minigameText", "scoreText" })
             Check(data.FindProperty(text).objectReferenceValue != null, "Draw screen " + text);
+        SerializedProperty cards = data.FindProperty("cards");
+        foreach (Minigame minigame in MinigameCatalog.All)
+        {
+            Check(Enumerable.Range(0, cards.arraySize).Select(i => cards.GetArrayElementAtIndex(i)).Any(c =>
+                c.FindPropertyRelative("sceneName").stringValue == minigame.SceneName &&
+                c.FindPropertyRelative("art").objectReferenceValue != null), "Draw card art: " + minigame.SceneName);
+            Check(minigame.Goal != "" && minigame.ControlsP1 != "" && minigame.ControlsP2 != "",
+                "Instructions: " + minigame.SceneName);
+        }
     }
 
     private static string StringField(Object target, string name) =>
