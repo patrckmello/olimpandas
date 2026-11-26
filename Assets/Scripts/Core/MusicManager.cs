@@ -26,6 +26,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float duckedFactor = 0.3f;
 
     private AudioSource source;
+    private bool isDucked;
 
     private void Awake()
     {
@@ -42,9 +43,10 @@ public class MusicManager : MonoBehaviour
         source = GetComponent<AudioSource>();
         source.loop = true;
         source.playOnAwake = false;
-        source.volume = musicVolume;
+        ApplyVolume();
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+        AudioVolumes.Changed += ApplyVolume;
     }
 
     private void Start()
@@ -67,7 +69,10 @@ private void LogAudioState()
     private void OnDestroy()
     {
         if (Instance == this)
+        {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            AudioVolumes.Changed -= ApplyVolume;
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -108,7 +113,19 @@ private void LogAudioState()
     /// <summary>Abaixa a música sob um jingle; volta ao normal na próxima cena.</summary>
     public void SetDucked(bool ducked)
     {
-        source.volume = ducked ? musicVolume * duckedFactor : musicVolume;
+        isDucked = ducked;
+        ApplyVolume();
+    }
+
+    private void ApplyVolume()
+    {
+        source.volume = musicVolume * AudioVolumes.Music * (isDucked ? duckedFactor : 1f);
+    }
+
+    /// <summary>Volta à faixa da cena atual (ex.: ao fechar os créditos).</summary>
+    public void RestoreSceneMusic()
+    {
+        PlayForScene(SceneManager.GetActiveScene().name);
     }
 
     public void Stop()

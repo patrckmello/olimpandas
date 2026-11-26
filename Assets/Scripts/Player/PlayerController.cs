@@ -97,6 +97,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (PauseMenu.IsPaused)
+            return;
+
         // Stun bloqueia todos os comandos.
         if (isStunned)
         {

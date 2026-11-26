@@ -31,6 +31,10 @@ O projeto já possui:
 - countdown de largada;
 - Circuito Olímpico: sorteio de uma modalidade por vez, sem repetir enquanto houver inédita; vence quem ganhar duas medalhas;
 - quatro modalidades: 100m com barreiras, Salto a distância, Canoagem e Pescaria;
+- menu com controles de cada prova, opções (volume geral, música e efeitos, tela cheia) e créditos;
+- sorteio animado com objetivo e controles da prova; pódio com medalha após cada prova;
+- HUD de cada prova (tentativas e melhor marca no Salto, progresso na Canoagem, placar e tempo na Pescaria) e avisos como FALTA!, PERFEITO!, BATEU! e PEIXE!;
+- pausa nas provas (Esc): continuar, reiniciar a prova ou voltar ao menu com confirmação;
 - Panda-gigante, Urso-polar, Grizzly e Urso-de-óculos com animações independentes de Idle, Run, Jump, Fall, Dash e Victory;
 - prefabs variantes de `PlayerBase` para os quatro personagens;
 - tela `CharacterSelect` com escolhas independentes de P1/P2, personagens repetidos e confirmação dos dois antes de iniciar;
@@ -59,7 +63,7 @@ Na Canoagem e na Pescaria, o Jogador 1 usa `W` `A` `S` `D` e o Jogador 2 as seta
 - **Canoagem:** alternar esquerda/direita para remar e cima/baixo para desviar;
 - **Pescaria:** digitar a sequência de setas do peixe; a primeira seta escolhe o peixe.
 
-As teclas de poderes são configuradas por jogador no Inspector e podem mudar durante o desenvolvimento.
+Esc pausa qualquer prova. As provas da entrega não usam poderes; Stun e Slow ficam só no protótipo (`PrototypeRace`).
 
 ## Minigames
 

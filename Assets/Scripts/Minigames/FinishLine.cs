@@ -29,6 +29,8 @@ public class FinishLine : MonoBehaviour
 
     private bool raceFinished = false;
 
+    public bool IsFinished => raceFinished;
+
     private void Awake()
     {
         if (multiplayerCamera == null)
@@ -62,7 +64,8 @@ public class FinishLine : MonoBehaviour
     }
 
     // Também usado por provas sem linha de chegada (ex.: Salto a distância).
-    public void DeclareWinner(PlayerController winner)
+    // detail: tempo, marca ou placar mostrado no pódio. Sem ele, usa o cronômetro da cena.
+    public void DeclareWinner(PlayerController winner, string detail = null)
     {
         if (raceFinished || winner == null)
             return;
@@ -70,13 +73,19 @@ public class FinishLine : MonoBehaviour
         raceFinished = true;
 
         StopAllTimers();
+        if (detail == null)
+        {
+            Timer timer = FindAnyObjectByType<Timer>();
+            detail = timer != null && timer.ElapsedTime > 0f ? Timer.Format(timer.ElapsedTime) : "";
+        }
 
         int playerId = winner.PlayerId;
 
         bool matchFinished =
             GameManager.Instance.AwardMinigame(
                 SceneManager.GetActiveScene().name,
-                playerId
+                playerId,
+                detail
             );
 
         Sfx.Play(SfxId.CrowdCheer, 0.7f);

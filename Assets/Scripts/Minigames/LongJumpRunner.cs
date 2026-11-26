@@ -64,7 +64,7 @@ public class LongJumpRunner : MonoBehaviour
 
     private void Update()
     {
-        if (!running || !player.enabled)
+        if (!running || !player.enabled || PauseMenu.IsPaused)
             return;
 
         if (Input.GetKeyDown(player.LeftKey))

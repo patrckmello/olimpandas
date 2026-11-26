@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -36,6 +37,8 @@ public class CharacterSelectMenu : MonoBehaviour
         public KeyCode rightKey = KeyCode.D;
         public KeyCode confirmKey = KeyCode.W;
         public KeyCode cancelKey = KeyCode.S;
+        [Tooltip("Teclas desenhadas, clicáveis: esquerda, direita, confirmar, cancelar.")]
+        public Button[] keyButtons;
 
         [HideInInspector] public int index;
         [HideInInspector] public bool ready;
@@ -64,8 +67,16 @@ public class CharacterSelectMenu : MonoBehaviour
     [Header("Navegação")]
     [SerializeField] private Button startButton;
     [SerializeField] private Button backButton;
+    [SerializeField] private Button enterKeyButton;
+    [SerializeField] private Button escKeyButton;
     [SerializeField] private string gameSceneName = "CircuitDraw";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
+
+    // A mesma tecla chega por duas vias (Input e eventos da janela) e só conta uma vez.
+    private const float SameKeyGap = 0.12f;
+    private readonly HashSet<KeyCode> windowKeys = new();
+    private readonly HashSet<KeyCode> heldKeys = new();
+    private readonly Dictionary<KeyCode, float> lastPress = new();
 
     private CharacterType[] characters;
     private bool navigating;
@@ -98,6 +109,8 @@ public class CharacterSelectMenu : MonoBehaviour
 
         startButton.onClick.AddListener(StartMatch);
         backButton.onClick.AddListener(BackToMainMenu);
+        if (enterKeyButton != null) enterKeyButton.onClick.AddListener(StartMatch);
+        if (escKeyButton != null) escKeyButton.onClick.AddListener(BackToMainMenu);
 
         RefreshAll();
     }
@@ -131,6 +144,13 @@ public class CharacterSelectMenu : MonoBehaviour
         p.previousButton.onClick.AddListener(() => Cycle(p, -1));
         p.nextButton.onClick.AddListener(() => Cycle(p, +1));
         p.confirmButton.onClick.AddListener(() => ToggleReady(p));
+        if (p.keyButtons != null && p.keyButtons.Length == 4)
+        {
+            p.keyButtons[0].onClick.AddListener(() => Cycle(p, -1));
+            p.keyButtons[1].onClick.AddListener(() => Cycle(p, +1));
+            p.keyButtons[2].onClick.AddListener(() => SetReady(p, true));
+            p.keyButtons[3].onClick.AddListener(() => SetReady(p, false));
+        }
 
         Apply(p);
     }
@@ -147,19 +167,42 @@ public class CharacterSelectMenu : MonoBehaviour
         ReadKeys(player1);
         ReadKeys(player2);
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Pressed(KeyCode.Escape))
             BackToMainMenu();
-        else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
-                 Input.GetKeyDown(KeyCode.Space))
+        else if (Pressed(KeyCode.Return) || Pressed(KeyCode.KeypadEnter) || Pressed(KeyCode.Space))
             StartMatch();
+    }
+
+    private bool Pressed(KeyCode key)
+    {
+        bool pressed = Input.GetKeyDown(key);
+        pressed |= windowKeys.Remove(key);
+        if (!pressed || (lastPress.TryGetValue(key, out float last) && Time.unscaledTime - last < SameKeyGap))
+            return false;
+
+        lastPress[key] = Time.unscaledTime;
+        return true;
+    }
+
+    private void OnGUI()
+    {
+        Event current = Event.current;
+        if (current.keyCode == KeyCode.None)
+            return;
+
+        // Segurar a tecla repete o evento: só o primeiro vale.
+        if (current.type == EventType.KeyDown && heldKeys.Add(current.keyCode))
+            windowKeys.Add(current.keyCode);
+        else if (current.type == EventType.KeyUp)
+            heldKeys.Remove(current.keyCode);
     }
 
     private void ReadKeys(PlayerPanel p)
     {
-        if (Input.GetKeyDown(p.leftKey)) Cycle(p, -1);
-        if (Input.GetKeyDown(p.rightKey)) Cycle(p, +1);
-        if (Input.GetKeyDown(p.confirmKey) && !p.ready) ToggleReady(p);
-        if (Input.GetKeyDown(p.cancelKey) && p.ready) ToggleReady(p);
+        if (Pressed(p.leftKey)) Cycle(p, -1);
+        if (Pressed(p.rightKey)) Cycle(p, +1);
+        if (Pressed(p.confirmKey)) SetReady(p, true);
+        if (Pressed(p.cancelKey)) SetReady(p, false);
     }
 
     private void Cycle(PlayerPanel p, int direction)
@@ -171,6 +214,11 @@ public class CharacterSelectMenu : MonoBehaviour
         Restart(p, 0.1f);
         Apply(p);
         RefreshAll();
+    }
+
+    private void SetReady(PlayerPanel p, bool ready)
+    {
+        if (p.ready != ready) ToggleReady(p);
     }
 
     private void ToggleReady(PlayerPanel p)

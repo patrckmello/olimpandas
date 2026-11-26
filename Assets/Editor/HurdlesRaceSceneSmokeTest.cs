@@ -24,7 +24,9 @@ public static class HurdlesRaceSceneSmokeTest
         RaceCountdownController countdown = FindOne<RaceCountdownController>(scene);
         MultiplayerCameraFollow camera = FindOne<MultiplayerCameraFollow>(scene);
         FindOne<GameManager>(scene);
-        FindOne<Canvas>(scene);
+        // A pausa tem a própria Canvas, por cima de tudo; a da prova é única.
+        if (FindAll<Canvas>(scene).Count(c => c.isRootCanvas && c.GetComponent<PauseMenu>() == null) != 1)
+            throw new Exception("Expected one race Canvas besides the pause menu.");
 
         if (players.Length != 2 || players[0].PlayerId != 1 || players[1].PlayerId != 2)
             throw new Exception("The race needs one P1 and one P2.");
