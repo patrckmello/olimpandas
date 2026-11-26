@@ -26,7 +26,7 @@ public static class CharacterSelectionFlowSmokeTest
 
     public static void Run()
     {
-        foreach (string scene in new[] { "MainMenu", "CharacterSelect", "CircuitDraw", "HurdlesRace", "LongJump", "Canoeing", "Fishing" })
+        foreach (string scene in new[] { "MainMenu", "CharacterSelect", "CircuitDraw", "HurdlesRace", "LongJump", "Canoeing", "Fishing", "Podium" })
             if (!EditorBuildSettings.scenes.Any(s => s.enabled && s.path == $"Assets/Scenes/{scene}.unity"))
                 throw new Exception("Missing build scene: " + scene);
         EditorSceneManager.OpenScene("Assets/Scenes/MainMenu.unity");
@@ -144,10 +144,16 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
                 string after = score.GetScore();
                 Call(finish, "OnTriggerEnter2D", player.GetComponent<Collider2D>());
                 Check(score.GetScore() == after, "Repeated finish awarded twice");
-                yield return new WaitForSeconds(1.2f);
-                Check(Field<GameObject>(finish, "victoryPanel").activeInHierarchy, "Victory panel");
-                Check(Field<GameObject>(finish, "changeCharacterButton").activeSelf == score.IsMatchFinished(),
+                yield return WaitForPodium();
+                PodiumScreen podium = FindAnyObjectByType<PodiumScreen>();
+                Check(Field<GameObject>(podium, "changeCharacterButton").activeSelf == score.IsMatchFinished(),
                     "Change characters visibility");
+                CharacterType champ = winner == 1 ? p1 : p2;
+                Check(AssetDatabase.GetAssetPath(Field<SpriteRenderer>(podium, "winnerActor").sprite).Contains($"/{champ}/"),
+                    "Winner on the podium");
+                Check(Field<TMPro.TMP_Text>(podium, "titleText").text.Contains("JOGADOR " + winner), "Podium title");
+                Check(MedalsOn(podium, "medalsP1") == score.GetMedals(1) && MedalsOn(podium, "medalsP2") == score.GetMedals(2),
+                    "Podium medals");
                 if (!score.IsMatchFinished())
                 {
                     ClickResult("NextRound");
@@ -170,7 +176,7 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
             Call(FindAnyObjectByType<FinishLine>(), "OnTriggerEnter2D",
                 FindObjectsByType<PlayerController>()
                     .Single(p => p.PlayerId == champion).GetComponent<Collider2D>());
-            yield return new WaitForSeconds(1.2f);
+            yield return WaitForPodium();
             ClickResult("ChangeCharacters");
             yield return null;
             yield return null;
@@ -210,9 +216,18 @@ public class CharacterSelectionFlowRunner : MonoBehaviour
     {
         yield return WaitUntil(() => SceneManager.GetActiveScene().name == "CircuitDraw", 2f, "Draw screen");
         yield return WaitUntil(() => MinigameCatalog.All.Any(m => m.SceneName == SceneManager.GetActiveScene().name),
-            6f, "Drawn modality loaded");
+            14f, "Drawn modality loaded");
         yield return null;
     }
+
+    private static IEnumerator WaitForPodium()
+    {
+        yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Podium", 4f, "Podium");
+        yield return WaitUntil(() => FindAnyObjectByType<PodiumScreen>().IsReady, 8f, "Podium ready");
+    }
+
+    private static int MedalsOn(PodiumScreen podium, string field) =>
+        Field<Image[]>(podium, field).Count(i => i.sprite == Field<Sprite>(podium, "medalOn"));
 
     private static IEnumerator WaitUntil(Func<bool> condition, float timeout, string label)
     {

@@ -23,6 +23,10 @@ public class FinishLine : MonoBehaviour
     [SerializeField]
     private float victoryDisplayDelay = 1.1f;
 
+    [Header("Pódio")]
+    [SerializeField]
+    private string podiumSceneName = "Podium";
+
     private bool raceFinished = false;
 
     private void Awake()
@@ -74,6 +78,11 @@ public class FinishLine : MonoBehaviour
                 SceneManager.GetActiveScene().name,
                 playerId
             );
+
+        Sfx.Play(SfxId.CrowdCheer, 0.7f);
+        Sfx.PlayVoice(playerId, "vitoria");
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.SetDucked(true);
 
         // Congela os jogadores e dispara a vitória.
         FreezeAllPlayers(winner);
@@ -148,7 +157,11 @@ public class FinishLine : MonoBehaviour
             victoryDisplayDelay
         );
 
-        victoryPanel.SetActive(true);
+        // Sem o pódio no Build Settings, mostra o painel da própria cena.
+        if (Application.CanStreamedLevelBeLoaded(podiumSceneName))
+            SceneManager.LoadScene(podiumSceneName);
+        else
+            victoryPanel.SetActive(true);
     }
 
     private void FreezeAllPlayers(PlayerController winner)

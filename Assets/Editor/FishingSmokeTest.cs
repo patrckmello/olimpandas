@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Run in an isolated project copy with -batchmode -executeMethod
 // FishingSmokeTest.Run (without -quit). Does not save scenes.
@@ -104,7 +105,12 @@ public class FishingSmokeRunner : MonoBehaviour
     private FishingPlayer p2;
     private List<RiverFish> river;
 
-    private void Awake() => Application.logMessageReceived += OnLog;
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        Application.logMessageReceived += OnLog;
+    }
+
     private void OnDestroy() => Application.logMessageReceived -= OnLog;
 
     private void OnLog(string message, string stack, LogType type)
@@ -167,6 +173,16 @@ public class FishingSmokeRunner : MonoBehaviour
             Call(manager, "SpawnRandom");
         FishingSmokeTest.Check(river.Count == 4 && river.Select(f => f.Sequence[0]).Distinct().Count() == 4,
             "Four fish with distinct first arrows, got " + river.Count);
+
+        // A sequência só aparece quando o peixe está ao alcance.
+        yield return StopSpawns();
+        RiverFish far = manager.Spawn(fishKind, Arrows("UDL"), new Vector2(0f, Field<float>(manager, "zoneTop") + 1f));
+        yield return Frames(2);
+        Transform prompt = Field<Transform>(far, "prompt");
+        FishingSmokeTest.Check(!prompt.gameObject.activeSelf && manager.FindFish(FishArrow.Up) == null, "Prompt hidden out of reach");
+        yield return WaitUntil(() => manager.FindFish(FishArrow.Up) == far, 2f, "Fish comes into reach");
+        yield return Frames(2);
+        FishingSmokeTest.Check(prompt.gameObject.activeSelf, "Prompt shown within reach");
 
         // Pesca: sequência certa pontua.
         yield return StopSpawns();
@@ -249,11 +265,10 @@ public class FishingSmokeRunner : MonoBehaviour
         manager.Spawn(fishKind, Arrows("UL"), Vector2.zero);
         Type(p2, "UL");
         yield return WaitUntil(() => !manager.IsFishing, 1f, "Sudden death decided");
-        yield return new WaitForSeconds(1.5f);
-        FishingSmokeTest.Check(GameManager.Instance.GetScore() == "0 x 1", "P2 medal, got " + GameManager.Instance.GetScore());
-        FinishLine result = Field<FinishLine>(manager, "resultScreen");
-        FishingSmokeTest.Check(Field<GameObject>(result, "victoryPanel").activeInHierarchy, "Victory panel");
+        yield return null;
         FishingSmokeTest.Check(river.Count == 0, "River cleared at the end");
+        yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Podium", 3f, "Podium");
+        FishingSmokeTest.Check(GameManager.Instance.GetScore() == "0 x 1", "P2 medal, got " + GameManager.Instance.GetScore());
     }
 
     // Limpa o rio e adia o próximo peixe aleatório, para o teste controlar a cena.

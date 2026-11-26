@@ -76,6 +76,13 @@ public class RiverFish : MonoBehaviour
 
         SetProgress(1, 0);
         SetProgress(2, 0);
+        SetReachable(false);
+    }
+
+    // A sequência só aparece quando já dá para fisgar o peixe.
+    public void SetReachable(bool reachable)
+    {
+        prompt.gameObject.SetActive(reachable && !IsCaught);
     }
 
     // Acende as marcas do jogador nas setas que ele já acertou.

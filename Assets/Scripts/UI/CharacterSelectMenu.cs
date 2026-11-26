@@ -1,12 +1,13 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// Tela de seleção de personagens (P1 e P2 independentes, podem repetir).
-/// Fica numa cena própria (ex.: "CharacterSelect"), entre MainMenu e o sorteio do circuito.
+/// Tela de seleção de personagens (P1 e P2 ao mesmo tempo, podem repetir).
+/// Cada jogador usa as próprias teclas; os botões continuam funcionando no mouse.
 /// Usa apenas a API pública do CharacterSelectionManager:
 /// Instance, SelectCharacter, GetCharacter, ConfirmSelection, UnlockSelection.
 /// </summary>
@@ -26,9 +27,29 @@ public class CharacterSelectMenu : MonoBehaviour
         public TMP_Text characterNameLabel;
         public TMP_Text confirmButtonLabel;
         public TMP_Text statusLabel;
+        public GameObject readyStamp;
+        [Tooltip("Cursor deste jogador em cada carta, na ordem do enum.")]
+        public GameObject[] cursors;
+
+        [Header("Teclado")]
+        public KeyCode leftKey = KeyCode.A;
+        public KeyCode rightKey = KeyCode.D;
+        public KeyCode confirmKey = KeyCode.W;
+        public KeyCode cancelKey = KeyCode.S;
 
         [HideInInspector] public int index;
         [HideInInspector] public bool ready;
+        [NonSerialized] public float animationTime;
+        [NonSerialized] public float punch;
+        [NonSerialized] public Vector3 previewScale;
+    }
+
+    [Serializable]
+    public class CharacterEntry
+    {
+        public string displayName;
+        public Sprite[] idle;
+        public Sprite[] victory;
     }
 
     [Header("Painéis")]
@@ -36,10 +57,9 @@ public class CharacterSelectMenu : MonoBehaviour
     [SerializeField] private PlayerPanel player2 = new PlayerPanel { playerId = 2 };
 
     [Header("Personagens (mesma ordem do enum CharacterType)")]
-    [Tooltip("Ordem: PandaGigante, UrsoPolar, Grizzly, UrsoDeOculos")]
-    [SerializeField] private Sprite[] previews;
-    [SerializeField] private string[] displayNames =
-        { "Panda Gigante", "Urso Polar", "Grizzly", "Urso de Óculos" };
+    [SerializeField] private CharacterEntry[] entries;
+    [SerializeField] private float idleFps = 8f;
+    [SerializeField] private float victoryFps = 5f;
 
     [Header("Navegação")]
     [SerializeField] private Button startButton;
@@ -76,8 +96,8 @@ public class CharacterSelectMenu : MonoBehaviour
         SetupPanel(player1);
         SetupPanel(player2);
 
-        if (startButton != null) startButton.onClick.AddListener(StartMatch);
-        if (backButton != null) backButton.onClick.AddListener(BackToMainMenu);
+        startButton.onClick.AddListener(StartMatch);
+        backButton.onClick.AddListener(BackToMainMenu);
 
         RefreshAll();
     }
@@ -105,6 +125,8 @@ public class CharacterSelectMenu : MonoBehaviour
         p.index = Mathf.Max(0, Array.IndexOf(characters,
             CharacterSelectionManager.Instance.GetCharacter(p.playerId)));
         p.ready = false;
+        if (p.previewImage != null)
+            p.previewScale = p.previewImage.transform.localScale;
 
         p.previousButton.onClick.AddListener(() => Cycle(p, -1));
         p.nextButton.onClick.AddListener(() => Cycle(p, +1));
@@ -113,20 +135,59 @@ public class CharacterSelectMenu : MonoBehaviour
         Apply(p);
     }
 
+    private void Update()
+    {
+        Animate(player1);
+        Animate(player2);
+
+        // Nada fica selecionado: senão as setas e o Enter também mexeriam nos botões.
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        ReadKeys(player1);
+        ReadKeys(player2);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            BackToMainMenu();
+        else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
+                 Input.GetKeyDown(KeyCode.Space))
+            StartMatch();
+    }
+
+    private void ReadKeys(PlayerPanel p)
+    {
+        if (Input.GetKeyDown(p.leftKey)) Cycle(p, -1);
+        if (Input.GetKeyDown(p.rightKey)) Cycle(p, +1);
+        if (Input.GetKeyDown(p.confirmKey) && !p.ready) ToggleReady(p);
+        if (Input.GetKeyDown(p.cancelKey) && p.ready) ToggleReady(p);
+    }
+
     private void Cycle(PlayerPanel p, int direction)
     {
-        if (p.ready) return;
+        if (p.ready || navigating) return;
 
         p.index = (p.index + direction + characters.Length) % characters.Length;
+        Sfx.Play(SfxId.UiConfirm, 0.6f);
+        Restart(p, 0.1f);
         Apply(p);
         RefreshAll();
     }
 
     private void ToggleReady(PlayerPanel p)
     {
+        if (navigating) return;
+
         p.ready = !p.ready;
+        Sfx.Play(p.ready ? SfxId.Ready : SfxId.UiBack);
+        Restart(p, 0.16f);
         Apply(p);
         RefreshAll();
+    }
+
+    private static void Restart(PlayerPanel p, float punch)
+    {
+        p.animationTime = 0f;
+        p.punch = punch;
     }
 
     // Grava a escolha do jogador no manager persistente.
@@ -140,18 +201,14 @@ public class CharacterSelectMenu : MonoBehaviour
         RefreshPanel(player1);
         RefreshPanel(player2);
 
-        if (startButton != null)
-            startButton.interactable = player1.ready && player2.ready;
+        startButton.interactable = player1.ready && player2.ready;
     }
 
     private void RefreshPanel(PlayerPanel p)
     {
-        if (p.previewImage != null && previews != null && p.index < previews.Length)
-            p.previewImage.sprite = previews[p.index];
-
         if (p.characterNameLabel != null)
-            p.characterNameLabel.text = displayNames != null && p.index < displayNames.Length
-                ? displayNames[p.index]
+            p.characterNameLabel.text = entries != null && p.index < entries.Length
+                ? entries[p.index].displayName
                 : characters[p.index].ToString();
 
         if (p.confirmButtonLabel != null)
@@ -160,8 +217,33 @@ public class CharacterSelectMenu : MonoBehaviour
         if (p.statusLabel != null)
             p.statusLabel.text = p.ready ? "PRONTO!" : "Escolhendo...";
 
+        if (p.readyStamp != null)
+            p.readyStamp.SetActive(p.ready);
+
+        if (p.cursors != null)
+            for (int i = 0; i < p.cursors.Length; i++)
+                p.cursors[i].SetActive(i == p.index);
+
         p.previousButton.interactable = !p.ready;
         p.nextButton.interactable = !p.ready;
+    }
+
+    // Idle enquanto escolhe, comemoração quando confirma.
+    private void Animate(PlayerPanel p)
+    {
+        if (p.previewImage == null || entries == null || p.index >= entries.Length)
+            return;
+
+        Sprite[] frames = p.ready ? entries[p.index].victory : entries[p.index].idle;
+        if (frames == null || frames.Length == 0)
+            return;
+
+        p.animationTime += Time.deltaTime;
+        int frame = (int)(p.animationTime * (p.ready ? victoryFps : idleFps));
+        p.previewImage.sprite = frames[frame % frames.Length];
+
+        p.punch = Mathf.MoveTowards(p.punch, 0f, 0.6f * Time.deltaTime);
+        p.previewImage.transform.localScale = p.previewScale * (1f + p.punch);
     }
 
     private void StartMatch()
@@ -169,6 +251,7 @@ public class CharacterSelectMenu : MonoBehaviour
         if (navigating || !(player1.ready && player2.ready)) return;
         navigating = true;
         startButton.interactable = false;
+        Sfx.Play(SfxId.UiConfirm);
 
         // Garante as duas escolhas no manager, trava e carrega a prova.
         var selection = CharacterSelectionManager.Instance;
@@ -183,6 +266,7 @@ public class CharacterSelectMenu : MonoBehaviour
     {
         if (navigating) return;
         navigating = true;
+        Sfx.Play(SfxId.UiBack);
         CharacterSelectionManager.Instance.UnlockSelection();
         if (GameManager.Instance != null) GameManager.Instance.ResetMatch();
         SceneManager.LoadScene(mainMenuSceneName);
