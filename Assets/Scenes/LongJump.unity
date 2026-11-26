@@ -8990,6 +8990,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterVisual
   pandaGigantePrefab: {fileID: 3349970141900836677, guid: dfc770310f1ba2f71b12002d4600a109, type: 3}
   ursoPolarPrefab: {fileID: 7023038094467537321, guid: 57c8d4a40759700709789bbb3bd5ca8e, type: 3}
+  grizzlyPrefab: {fileID: 7023038094467537321, guid: c5626ae22a8346442b437a5d5e104e43, type: 3}
+  ursoDeOculosPrefab: {fileID: 7023038094467537321, guid: 316fb296ba2c6bb478b1d0350e1a9d22, type: 3}
 --- !u!114 &1747761383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9670,6 +9672,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterVisual
   pandaGigantePrefab: {fileID: 3349970141900836677, guid: dfc770310f1ba2f71b12002d4600a109, type: 3}
   ursoPolarPrefab: {fileID: 7023038094467537321, guid: 57c8d4a40759700709789bbb3bd5ca8e, type: 3}
+  grizzlyPrefab: {fileID: 7023038094467537321, guid: c5626ae22a8346442b437a5d5e104e43, type: 3}
+  ursoDeOculosPrefab: {fileID: 7023038094467537321, guid: 316fb296ba2c6bb478b1d0350e1a9d22, type: 3}
 --- !u!114 &6837757503715517517
 MonoBehaviour:
   m_ObjectHideFlags: 0

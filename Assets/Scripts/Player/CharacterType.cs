@@ -2,6 +2,8 @@
 public enum CharacterType
 {
     PandaGigante,
-    UrsoPolar
+    UrsoPolar,
+    Grizzly,
+    UrsoDeOculos
 }
 
