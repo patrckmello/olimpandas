@@ -1,6 +1,6 @@
 # Product Backlog — Olimpandas
 
-> Atualizado em 25/11/2026.
+> Atualizado em 25/11/2026 (noite, véspera da entrega).
 >
 > Este backlog deve refletir o estado real do projeto. Em caso de divergência, a prioridade é:
 > 1. teste confirmado no Unity;
@@ -60,7 +60,7 @@ Uma modalidade só conta como entregue quando existir o fluxo completo **entrada
 | --- | --- | --- |
 | **Patrick** | Mecânicas, sprites e integração de gameplay | Fechar 100m; implementar lógica de Salto, Canoagem e Pescaria; produzir/integrar Grizzly e Urso-de-óculos; manter base compartilhada e contratos dos minigames. |
 | **Gabriel** | UI principal e fluxo de navegação | Menu, seleção de personagens, telas de sorteio/transição, resultado geral, medalhas, campeão, revanche/troca de personagens e consistência visual entre as telas. |
-| **Cadu (EoGarlos)** | Microfeatures de UI/gamefeel com implementação própria | Criar componentes fechados de HUD e feedback, com script + prefab próprios: cronômetro, contador de tentativas, placar da Pescaria, indicador de progresso da Canoagem, avisos simples de falta/resultado e painel de controles/créditos. Não altera lógica interna dos minigames de Patrick; consome dados/eventos expostos por eles. |
+| **Cadu (EoGarlos)** | Microfeatures de UI/gamefeel com implementação própria *(entregues em 25/11: HUDs `LongJumpHud`, `CanoeHud`, `FishingHud`, avisos `HudPopup`, painéis de controles e créditos no menu)* | Criar componentes fechados de HUD e feedback, com script + prefab próprios: cronômetro, contador de tentativas, placar da Pescaria, indicador de progresso da Canoagem, avisos simples de falta/resultado e painel de controles/créditos. Não altera lógica interna dos minigames de Patrick; consome dados/eventos expostos por eles. |
 
 ### Plano por semana
 
@@ -155,7 +155,7 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 | Decisão | Regra aprovada | Status técnico |
 | --- | --- | --- |
 | Empates | Disputa extra até surgir vencedor | **REGRA DEFINIDA; NÃO IMPLEMENTADA** no fluxo genérico |
-| Poderes | Cada modalidade determina os poderes permitidos | **REGRA DEFINIDA; CONFIGURAÇÃO POR MODALIDADE PENDENTE** |
+| Poderes | Cada modalidade determina os poderes permitidos | **IMPLEMENTADO**: `Minigame.AllowedPowers` no catálogo; nenhuma das quatro provas da entrega usa poderes (`PrototypeRace` mantém) |
 | Duração | Circuito Olímpico com alvo de 5–8 minutos | **META DEFINIDA; A VALIDAR POR PLAYTEST** |
 
 ### Próximas decisões prioritárias
@@ -165,14 +165,14 @@ Cadu não deve editar `PlayerController`, regras de vitória, física, scripts c
 3. **Inventário e poderes:** decidir quais são permitidos na Corrida, quando pickups surgem e se os poderes acumulados reiniciam entre disputas.
 4. **Critérios de vitória dos demais esportes:** pontos/tentativas, validade e desempate de cada modalidade antes de desenvolvê-la.
 5. **Duração e ritmo:** definir orçamento de tempo para sorteio, introdução, gameplay e tela de resultado; testar com pessoas.
-6. **Revanche e navegação:** revanche faz novo circuito com novo sorteio (implementado). Falta definir pausa/desistência no circuito.
+6. **Revanche e navegação:** revanche faz novo circuito com novo sorteio. **Pausa implementada**: Esc nas provas abre CONTINUAR, REINICIAR (só a prova, placar mantido) e MENU (com confirmação; zera o circuito).
 
 ### Backlog de implementação desse fluxo
 
 - [x] Definir contrato entre `GameManager` (medalhas do circuito) e placar/regras internas de cada minigame, sem destruir a corrida atual.
-- [ ] Adicionar catálogo de poderes permitidos por modalidade e aplicar as restrições sem afetar o sistema de poderes existente.
+- [x] Adicionar catálogo de poderes permitidos por modalidade e aplicar as restrições sem afetar o sistema de poderes existente. *(`AllowedPowers`; `PlayerPowerInventory.GrantPower` respeita.)*
 - [x] Implementar mecanismo de disputa extra para empate, com regras concretas por esporte. *(Salto: tentativa extra; Canoagem: segue até alguém abrir vantagem; Pescaria: morte súbita.)*
-- [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos.
+- [ ] Medir duração do circuito completo e ajustar para meta de 5–8 minutos. *(Estimativa pelos tempos do código: cada prova leva ~50 s com sorteio, contagem e pódio; uma MD3 dá **2 a 3 minutos**, abaixo da meta. Para chegar perto de 5 min, a opção mais simples é vencer com 3 medalhas (`medalsToWin = 3`). Decisão do time; medir no playtest.)*
 - [x] Criar catálogo de modalidades habilitadas (`MinigameCatalog`) e rotação simples (`MinigameRotation`).
 - [x] Sortear uma modalidade por vez, com histórico da MD3 geral e política de repetição (não repete enquanto houver inédita; depois evita repetir a última).
 - [x] Criar apresentação de sorteio e transição para a cena sorteada. *(Carrossel com instruções em `CircuitDraw`.)*
